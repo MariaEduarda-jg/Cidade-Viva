@@ -452,7 +452,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   areaName: Onde Eu Vou?
-  cenaDoMinigame: Minigame_Template
+  cenaDoMinigame: Minigame_OndeEuVou
 --- !u!1 &700000011
 GameObject:
   m_ObjectHideFlags: 0

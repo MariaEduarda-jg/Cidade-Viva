@@ -34,6 +34,8 @@ Unity 6 (6000.6.0f1), C#, plataforma-alvo Web (WebGL) e Desktop. Render pipeline
 - `Hub.unity`: terreno 100x100, Player (`PlayerMovement` com setas/WASD + `HubSpawn`), câmera com `CameraFollow`, 9 áreas `Area_*` (cubos trigger com `AreaTrigger`, um material por área) numa grade de -20 a 20.
 - `Minigame_Template.unity`: cena placeholder com câmera e botão "Voltar" (`VoltarAoHub.Voltar()`).
 - Navegação: entrar numa área carrega `AreaTrigger.cenaDoMinigame` (hoje todas usam `Minigame_Template`). Ao voltar, `HubSpawn` põe o jogador no `PontoDeRetorno` (10, 1, -10), fora das áreas (o centro do mapa é a `Area_PedalSeguro`). As duas cenas estão em Build Settings.
+- `Minigame_OndeEuVou.unity` (cópia do template, em Build Settings; `Area_OndeEuVou` aponta pra ela): Canvas com rua placeholder, 3 `PlacaArrastavel` (PARE/FAIXA/SEMAFORO) e 3 `AlvoPlaca`; `OndeEuVouManager` conta erros (100 − 10 por placa solta no alvo errado; soltar no vazio não conta) e chama `GameProgress` ao encaixar as 3. Scripts em `Scripts/Minigames/OndeEuVou`.
+- `GameProgress` (`Scripts/Core`, classe estática): todo minigame chama `GameProgress.FinalizarMinigame(nomeDaArea, pontuacao)` ao terminar. Hoje só faz `Debug.Log`; a persistência entra na Sprint 2.
 - Cenas e UI são editadas pelo Editor (unity-mcp), não à mão no YAML do `.unity`.
 
 **Próximos passos sugeridos:**
