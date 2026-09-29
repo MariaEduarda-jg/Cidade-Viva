@@ -8,6 +8,8 @@ public class RunnerJogador : MonoBehaviour
     public int faixaInicial = 1;
     public Color corDaBatida = new Color(1f, 0.3f, 0.3f);
     public float duracaoDaBatida = 0.3f;
+    // Efeito ligado enquanto a proteção está ativa (ex.: um Outline colorido). Opcional.
+    public Behaviour efeitoDeProtecao;
 
     private RectTransform rectTransform;
     private Graphic grafico;
@@ -16,6 +18,7 @@ public class RunnerJogador : MonoBehaviour
     private float fimDaBatida;
 
     public RectTransform RectTransform => rectTransform;
+    public bool Protegido { get; private set; }
 
     private void Awake()
     {
@@ -28,6 +31,7 @@ public class RunnerJogador : MonoBehaviour
 
         faixaAtual = faixaInicial;
         PosicionarNaFaixa();
+        AtualizarEfeitoDeProtecao();
     }
 
     private void Update()
@@ -51,6 +55,33 @@ public class RunnerJogador : MonoBehaviour
     public void MostrarBatida()
     {
         fimDaBatida = Time.time + duracaoDaBatida;
+    }
+
+    public void AtivarProtecao()
+    {
+        Protegido = true;
+        AtualizarEfeitoDeProtecao();
+    }
+
+    // Gasta a proteção, se houver. Retorna true se ela segurou a batida.
+    public bool UsarProtecao()
+    {
+        if (!Protegido)
+        {
+            return false;
+        }
+
+        Protegido = false;
+        AtualizarEfeitoDeProtecao();
+        return true;
+    }
+
+    private void AtualizarEfeitoDeProtecao()
+    {
+        if (efeitoDeProtecao != null)
+        {
+            efeitoDeProtecao.enabled = Protegido;
+        }
     }
 
     private void TrocarDeFaixa(int direcao)

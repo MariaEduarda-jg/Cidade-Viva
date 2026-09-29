@@ -3,10 +3,12 @@ using UnityEngine;
 public enum TipoRunnerObjeto
 {
     Obstaculo,
-    Coletavel
+    Coletavel,
+    Protecao
 }
 
-// Algo que desce pela pista: obstáculo (tira escudo) ou coletável (dá pontos).
+// Algo que desce pela pista: obstáculo (tira escudo), coletável (dá pontos)
+// ou proteção (power-up que segura uma batida).
 // Criado pelo RunnerSpawner, na mesma pista (pai) do jogador.
 public class RunnerObjeto : MonoBehaviour
 {

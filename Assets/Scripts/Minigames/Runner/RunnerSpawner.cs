@@ -10,7 +10,9 @@ public class RunnerSpawner : MonoBehaviour
     public RectTransform pista;
     public RunnerObjeto[] modelosDeObstaculo;
     public RunnerObjeto[] modelosDeColetavel;
+    public RunnerObjeto[] modelosDePowerUp = new RunnerObjeto[0];
     [Range(0f, 1f)] public float chanceDeColetavel = 0.3f;
+    [Range(0f, 1f)] public float chanceDePowerUp = 0.08f;
     public float distanciaEntreObjetos = 400f;
 
     private float distanciaDesdeUltimo;
@@ -32,8 +34,19 @@ public class RunnerSpawner : MonoBehaviour
 
     private void Criar()
     {
-        bool coletavel = modelosDeColetavel.Length > 0 && Random.value < chanceDeColetavel;
-        RunnerObjeto[] modelos = coletavel ? modelosDeColetavel : modelosDeObstaculo;
+        // Sem power-ups na lista, a chance deles não conta (a de coletável fica igual).
+        float limiteDePowerUp = modelosDePowerUp.Length > 0 ? chanceDePowerUp : 0f;
+        float sorteio = Random.value;
+        RunnerObjeto[] modelos = modelosDeObstaculo;
+        if (sorteio < limiteDePowerUp)
+        {
+            modelos = modelosDePowerUp;
+        }
+        else if (modelosDeColetavel.Length > 0 && sorteio < limiteDePowerUp + chanceDeColetavel)
+        {
+            modelos = modelosDeColetavel;
+        }
+
         if (modelos.Length == 0)
         {
             return;

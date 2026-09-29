@@ -72,6 +72,18 @@ public class RunnerManager : MonoBehaviour
             return;
         }
 
+        if (objeto.tipo == TipoRunnerObjeto.Protecao)
+        {
+            jogador.AtivarProtecao();
+            return;
+        }
+
+        // A proteção (ex.: capacete) segura uma batida sem gastar escudo.
+        if (jogador.UsarProtecao())
+        {
+            return;
+        }
+
         escudos.Perder();
         jogador.MostrarBatida();
         if (escudos.Restantes == 0)
