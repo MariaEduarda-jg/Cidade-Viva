@@ -1214,7 +1214,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   areaName: "Sem\xE1foro M\xE1gico"
-  cenaDoMinigame: Minigame_Template
+  cenaDoMinigame: Minigame_SemaforoMagico
 --- !u!1 &700000071
 GameObject:
   m_ObjectHideFlags: 0
