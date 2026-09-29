@@ -1087,7 +1087,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   areaName: Sobe, Sobe!
-  cenaDoMinigame: Minigame_Template
+  cenaDoMinigame: Minigame_SobeSobe
 --- !u!1 &700000061
 GameObject:
   m_ObjectHideFlags: 0

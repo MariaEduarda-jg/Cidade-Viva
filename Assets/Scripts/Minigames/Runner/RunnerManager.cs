@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 // Regras gerais do runner: velocidade que sobe com o tempo, pontuação (tempo + coletáveis),
@@ -20,9 +19,7 @@ public class RunnerManager : MonoBehaviour
     public float pontosPorSegundo = 10f;
     public Text textoPontuacao;
 
-    [Header("Fim de jogo")]
-    public GameObject telaFimDeJogo;
-    public Text textoFimDeJogo;
+    public TelaFimDeJogo telaFimDeJogo;
 
     private float tempo;
     private float pontosDeTempo;
@@ -36,11 +33,7 @@ public class RunnerManager : MonoBehaviour
     {
         Jogando = true;
         Velocidade = velocidadeInicial;
-        if (telaFimDeJogo != null)
-        {
-            telaFimDeJogo.SetActive(false);
-        }
-
+        telaFimDeJogo.gameObject.SetActive(false);
         AtualizarTexto();
     }
 
@@ -92,30 +85,11 @@ public class RunnerManager : MonoBehaviour
         }
     }
 
-    public void TentarDeNovo()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
     private void FimDeJogo()
     {
         Jogando = false;
         jogador.enabled = false;
-
-        int pontuacao = Pontuacao;
-        bool novoRecorde = pontuacao > GameProgress.ObterRecorde(nomeDaArea);
-        GameProgress.FinalizarMinigame(nomeDaArea, pontuacao);
-
-        if (textoFimDeJogo != null)
-        {
-            textoFimDeJogo.text = "Fim de jogo!\nPontuação: " + pontuacao
-                + (novoRecorde ? "\nNovo recorde!" : "\nRecorde: " + GameProgress.ObterRecorde(nomeDaArea));
-        }
-
-        if (telaFimDeJogo != null)
-        {
-            telaFimDeJogo.SetActive(true);
-        }
+        telaFimDeJogo.Mostrar(nomeDaArea, Pontuacao);
     }
 
     private void AtualizarTexto()

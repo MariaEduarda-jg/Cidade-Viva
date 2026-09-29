@@ -26,5 +26,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Minigame_PedalSeguro.unity
     guid: b070c7bb40cf7734ea6b1d17a0e932de
+  - enabled: 1
+    path: Assets/Scenes/Minigame_SobeSobe.unity
+    guid: 8b1e27e4f9b1a8c4a86ade85775571c6
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
