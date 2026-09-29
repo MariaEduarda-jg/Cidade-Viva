@@ -579,7 +579,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   areaName: Travessia Segura
-  cenaDoMinigame: Minigame_Template
+  cenaDoMinigame: Minigame_TravessiaSegura
 --- !u!1 &700000021
 GameObject:
   m_ObjectHideFlags: 0
@@ -706,7 +706,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   areaName: Recicla Comigo!
-  cenaDoMinigame: Minigame_Template
+  cenaDoMinigame: Minigame_ReciclaComigo
 --- !u!1 &700000031
 GameObject:
   m_ObjectHideFlags: 0
