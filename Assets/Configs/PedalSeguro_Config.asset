@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f9f13c7610a3bc42bfb5c9d42417fd2, type: 3}
+  m_Name: PedalSeguro_Config
+  m_EditorClassIdentifier: Assembly-CSharp::RunnerConfig
+  velocidadeInicial: 350
+  aumentoDeVelocidade: 50
+  intervaloDeAumento: 10
+  velocidadeMaxima: 1000
+  pontosPorSegundo: 10
+  objetos:
+  - id: Buraco
+    tipo: 0
+    pontos: 0
+    cor: {r: 0.22, g: 0.16, b: 0.12, a: 1}
+    rotulo: BURACO
+  - id: Moeda
+    tipo: 1
+    pontos: 20
+    cor: {r: 1, g: 0.85, b: 0.1, a: 1}
+    rotulo: 
+  - id: PedestreDistraido
+    tipo: 0
+    pontos: 0
+    cor: {r: 0.6, g: 0.4, b: 0.85, a: 1}
+    rotulo: PEDESTRE
+  - id: Animal
+    tipo: 0
+    pontos: 0
+    cor: {r: 0.85, g: 0.55, b: 0.25, a: 1}
+    rotulo: ANIMAL
+  - id: Capacete
+    tipo: 2
+    pontos: 0
+    cor: {r: 0.15, g: 0.9, b: 0.95, a: 1}
+    rotulo: CAPACETE
+  chanceDeColetavel: 0.3
+  chanceDePowerUp: 0.08
+  distanciaEntreObjetos: 400
+  corDaBatida: {r: 1, g: 0.3, b: 0.3, a: 1}
+  duracaoDaBatida: 0.3
+  formatoPontuacao: 'Pontos: {0}'
+  tituloDoFim: Fim de jogo!

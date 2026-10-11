@@ -6,11 +6,12 @@ public class RunnerJogador : MonoBehaviour
 {
     public RunnerFaixas faixas;
     public int faixaInicial = 1;
-    public Color corDaBatida = new Color(1f, 0.3f, 0.3f);
-    public float duracaoDaBatida = 0.3f;
     // Efeito ligado enquanto a proteção está ativa (ex.: um Outline colorido). Opcional.
     public Behaviour efeitoDeProtecao;
 
+    // Vêm da RunnerConfig, pelo RunnerManager.
+    private Color corDaBatida = new Color(1f, 0.3f, 0.3f);
+    private float duracaoDaBatida = 0.3f;
     private RectTransform rectTransform;
     private Graphic grafico;
     private Color corOriginal;
@@ -49,6 +50,12 @@ public class RunnerJogador : MonoBehaviour
         {
             grafico.color = Time.time < fimDaBatida ? corDaBatida : corOriginal;
         }
+    }
+
+    public void Configurar(Color corAoBater, float duracaoAoBater)
+    {
+        corDaBatida = corAoBater;
+        duracaoDaBatida = duracaoAoBater;
     }
 
     // Feedback visual rápido quando bate num obstáculo.

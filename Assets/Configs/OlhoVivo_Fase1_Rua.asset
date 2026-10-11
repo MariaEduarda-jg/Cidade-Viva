@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 919eca0c5bb30b24a8f4143394d69516, type: 3}
+  m_Name: OlhoVivo_Fase1_Rua
+  m_EditorClassIdentifier: Assembly-CSharp::OlhoVivoFaseConfig
+  pontosDeErro:
+  - id: carro_na_faixa
+    descricao: Carro em cima da faixa
+    posicao: {x: 300, y: -160}
+    tamanho: {x: 320, y: 200}
+    explicacao: "O carro tem que parar antes da faixa.\nA faixa \xE9 do pedestre!"
+  - id: crianca_sem_cinto
+    descricao: "Crian\xE7a sem cinto"
+    posicao: {x: 582, y: -98}
+    tamanho: {x: 110, y: 84}
+    explicacao: "No carro, todo mundo usa cinto de seguran\xE7a!"
+  - id: placa_virada
+    descricao: "Placa de cabe\xE7a para baixo"
+    posicao: {x: 150, y: 165}
+    tamanho: {x: 130, y: 130}
+    explicacao: 'Placa virada confunde todo mundo.
+
+      Ela precisa ficar do jeito certo!'
+  - id: pedestre_no_celular
+    descricao: Pessoa no celular atravessando
+    posicao: {x: 335, y: 30}
+    tamanho: {x: 120, y: 170}
+    explicacao: 'Pra atravessar, guarde o celular
+
+      e olhe para os dois lados!'
+  elementosCertos:
+  - descricao: Motorista de cinto
+    posicao: {x: 650, y: -150}
+    tamanho: {x: 320, y: 210}
+    mensagem: "O motorista est\xE1 de cinto.\nIsso est\xE1 certo!"
+  - descricao: Placa de 40
+    posicao: {x: -560, y: 165}
+    tamanho: {x: 130, y: 130}
+    mensagem: "Essa placa est\xE1 certinha!"
+  - descricao: Lixeira
+    posicao: {x: -250, y: 58}
+    tamanho: {x: 100, y: 110}
+    mensagem: "Lixo \xE9 na lixeira.\nIsso est\xE1 certo!"
+  - descricao: "Crian\xE7a de m\xE3o dada"
+    posicao: {x: 655, y: 105}
+    tamanho: {x: 190, y: 200}
+    mensagem: "Crian\xE7a de m\xE3o dada com o adulto.\nIsso est\xE1 certo!"
+  - descricao: Ciclista de capacete
+    posicao: {x: -450, y: -255}
+    tamanho: {x: 230, y: 200}
+    mensagem: "Ciclista de capacete, na ciclovia.\nIsso est\xE1 certo!"
+  tempoTotal: 30
+  pontosPorErro: 15
+  bonusMaximoDeTempo: 40
+  instrucao: Ache os 4 erros escondidos na rua!
+  corDaExplicacaoDeErro: {r: 0.6, g: 1, b: 0.6, a: 1}
+  corDoRecadoDeCerto: {r: 1, g: 1, b: 1, a: 1}
+  tempoDaExplicacao: 3
+  esperaAntesDoFim: 2
+  formatoTempo: 'Tempo: {0}'
+  formatoEncontrados: 'Erros: {0} / {1}'
+  tituloAoAcharTodos: "Olho vivo! Voc\xEA achou todos os erros!"
+  tituloAoAcabarOTempo: "O tempo acabou!\nVoc\xEA achou {0} de {1} erros"
+  somDeAcerto: {fileID: 0}

@@ -9,8 +9,6 @@ public class AlvoPlaca : MonoBehaviour, IDropHandler
 {
     public string tipoAceito;
     public OndeEuVouManager manager;
-    public Color corAcerto = new Color(0.3f, 0.9f, 0.3f, 1f);
-    public float duracaoPiscada = 0.6f;
 
     private Image imagem;
     private Color corOriginal;
@@ -44,8 +42,8 @@ public class AlvoPlaca : MonoBehaviour, IDropHandler
 
     private IEnumerator PiscarVerde()
     {
-        imagem.color = corAcerto;
-        yield return new WaitForSeconds(duracaoPiscada);
+        imagem.color = manager.config.corAcerto;
+        yield return new WaitForSeconds(manager.config.duracaoPiscada);
         imagem.color = corOriginal;
     }
 }

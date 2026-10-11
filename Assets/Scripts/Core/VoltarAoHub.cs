@@ -9,6 +9,8 @@ public class VoltarAoHub : MonoBehaviour
     public void Voltar()
     {
         voltandoDeMinigame = true;
+        // Sai do nível: na próxima entrada no minigame a seleção de níveis aparece de novo.
+        MinigameBase.EsquecerNivelEscolhido();
         SceneManager.LoadScene("Hub");
     }
 }

@@ -1,0 +1,113 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12ca6f622eff9d347b9d4332e4e2663f, type: 3}
+  m_Name: CorreCorrendo_Config
+  m_EditorClassIdentifier: Assembly-CSharp::CorreConfig
+  larguraDaFaixa: 2.4
+  velocidadeBase: 9
+  distanciaDeSurgimento: 75
+  distanciaLivreNoInicio: 28
+  espacoPadrao: 16
+  espacoDaSequencia: 8.5
+  tempoDeTrocaDeFaixa: 0.12
+  duracaoDoPulo: 0.75
+  alturaDoPulo: 1.6
+  duracaoDoDeslize: 0.8
+  tempoInvencivel: 1.5
+  escudosIniciais: 3
+  escudosMaximos: 3
+  tipos:
+  - id: buraco
+    regra: 
+    pulavel: 1
+    deslizavel: 0
+    meioComprimento: 0.55
+    peso: 1
+    aviso: "Buraco! Pule para n\xE3o cair."
+  - id: cones
+    regra: 
+    pulavel: 0
+    deslizavel: 0
+    meioComprimento: 0.4
+    peso: 1
+    aviso: 'Cones: tem obra. Desvie!'
+  - id: poca
+    regra: pocas
+    pulavel: 1
+    deslizavel: 0
+    meioComprimento: 0.6
+    peso: 1
+    aviso: "Po\xE7a escorrega! Pule ou desvie."
+  - id: carro
+    regra: carros
+    pulavel: 0
+    deslizavel: 0
+    meioComprimento: 1.9
+    peso: 0.8
+    aviso: Carro parado! Passe pelo lado.
+  - id: barreira
+    regra: barreiras
+    pulavel: 0
+    deslizavel: 0
+    meioComprimento: 0.45
+    peso: 0.7
+    aviso: 'Barreira: rua em obra. Desvie!'
+  - id: galho
+    regra: galhos
+    pulavel: 0
+    deslizavel: 1
+    meioComprimento: 0.4
+    peso: 1.1
+    aviso: Galho baixo! Deslize por baixo.
+  - id: carro_em_movimento
+    regra: carros_em_movimento
+    pulavel: 0
+    deslizavel: 0
+    meioComprimento: 1.9
+    peso: 1
+    aviso: Carro vindo! Saia da frente.
+  distanciaDoAviso: 26
+  avisosPorTipo: 2
+  velocidadeDoCarroEmMovimento: 2.5
+  moedasPorFila: 4
+  espacoEntreMoedas: 2.2
+  chanceDeFilaDeMoedas: 0.8
+  chanceDeMoedasNoPulo: 0.4
+  fracaoDeMoedasParaEstrela: 0.6
+  distanciaEntreEscudos: 90
+  pontosPorConcluir: 100
+  pontosPorMoeda: 10
+  pontosPorEscudo: 30
+  tituloDoFim: "Voc\xEA chegou!"
+  dicaInicial: Desvie, pule e deslize. Pegue as moedas!
+  formatoDaBatida: Opa! {0}
+  dicaEscudo: Escudo extra!
+  dicaChegada: "A chegada est\xE1 perto!"
+  dicaChuva: "Est\xE1 chovendo: a pista est\xE1 molhada."
+  formatoDaDistancia: '{0} m de {1} m'
+  musica: {fileID: 8300000, guid: aa49d0af4d1ff21499b0a2dcdee9cd27, type: 3}
+  passos:
+  - {fileID: 8300000, guid: cf25a4829ed471f47bb90c0de8837e12, type: 3}
+  - {fileID: 8300000, guid: ae6219d5a2a65d345862e709520425c5, type: 3}
+  - {fileID: 8300000, guid: d37c8f74f957d0c478881d3cc9dd425b, type: 3}
+  pulo: {fileID: 8300000, guid: aebb2da1c6240854da9c71511451f400, type: 3}
+  deslizar: {fileID: 8300000, guid: fc6a09ba22e6f024885dd09cadd018ae, type: 3}
+  moeda: {fileID: 8300000, guid: 059aa93cf2d41c843ac9e02e8387796f, type: 3}
+  escudo: {fileID: 8300000, guid: b64e11d0e7942054b86186a98c34f1d2, type: 3}
+  batida:
+  - {fileID: 8300000, guid: dff13025b66a1004a8d1f88ad90182cc, type: 3}
+  - {fileID: 8300000, guid: 5db41330ce73b454684effa9fe5698d8, type: 3}
+  - {fileID: 8300000, guid: 38567caec89ca614f826f9ebb83159e6, type: 3}
+  tropeco: {fileID: 8300000, guid: 85709d7ca20676e41a90262ac70b4ddd, type: 3}
+  buzina: {fileID: 8300000, guid: 16b753b4b2626b44aa980f63611b57df, type: 3}
+  acerto: {fileID: 8300000, guid: b6105524ee9596f4cbdfd16b2831d6dd, type: 3}
+  erro: {fileID: 8300000, guid: 4a7623e25a4916744855ab9c8fb23632, type: 3}

@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51f0002191d5f544aa2bd2ef7b7c0661, type: 3}
+  m_Name: Niveis_SemaforoMagico
+  m_EditorClassIdentifier: Assembly-CSharp::LevelConfig
+  niveis:
+  - objetivo: 'Verde: siga. Vermelho: pare.'
+    velocidade: 0.8
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 0
+    quantidadeDeItens: 8
+    errosPermitidos: 3
+    regrasExtras: []
+    extras:
+    - nome: janelaDeReacao
+      valor: 2.5
+    estrelas:
+      medida: 0
+      para2Estrelas: 60
+      para3Estrelas: 90
+  - objetivo: "Mais sem\xE1foros pelo caminho."
+    velocidade: 1
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 0
+    quantidadeDeItens: 10
+    errosPermitidos: 3
+    regrasExtras: []
+    extras:
+    - nome: janelaDeReacao
+      valor: 2.2
+    estrelas:
+      medida: 0
+      para2Estrelas: 80
+      para3Estrelas: 110
+  - objetivo: "Agora tem amarelo: n\xE3o aperte nada."
+    velocidade: 1.1
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 0
+    quantidadeDeItens: 12
+    errosPermitidos: 3
+    regrasExtras:
+    - amarelo
+    extras:
+    - nome: janelaDeReacao
+      valor: 1.9
+    estrelas:
+      medida: 0
+      para2Estrelas: 100
+      para3Estrelas: 140
+  - objetivo: O sinal pode mudar no caminho.
+    velocidade: 1.25
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 0
+    quantidadeDeItens: 15
+    errosPermitidos: 3
+    regrasExtras:
+    - amarelo
+    - sinal_muda
+    extras:
+    - nome: janelaDeReacao
+      valor: 1.6
+    estrelas:
+      medida: 0
+      para2Estrelas: 120
+      para3Estrelas: 170
+  - objetivo: "R\xE1pido, e com pedestre na faixa. S\xF3 2 vidas!"
+    velocidade: 1.4
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 0
+    quantidadeDeItens: 18
+    errosPermitidos: 2
+    regrasExtras:
+    - amarelo
+    - sinal_muda
+    - pedestre_na_faixa
+    extras:
+    - nome: janelaDeReacao
+      valor: 1.3
+    estrelas:
+      medida: 0
+      para2Estrelas: 150
+      para3Estrelas: 200

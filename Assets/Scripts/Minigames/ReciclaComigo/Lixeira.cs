@@ -1,11 +1,29 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 // Lixeira que aceita um tipo de resíduo (PAPEL, PLASTICO, VIDRO, ORGANICO).
+// Cores e rótulo vêm da ReciclaConfig (aplicados pelo ReciclaManager).
 public class Lixeira : MonoBehaviour, IDropHandler
 {
     public string tipoAceito;
     public ReciclaManager manager;
+    public Graphic tampa;
+    public Text rotulo;
+
+    public void Aplicar(LixeiraConfig aparencia)
+    {
+        GetComponent<Graphic>().color = aparencia.cor;
+        if (tampa != null)
+        {
+            tampa.color = aparencia.corDaTampa;
+        }
+
+        if (rotulo != null)
+        {
+            rotulo.text = aparencia.rotulo;
+        }
+    }
 
     public void OnDrop(PointerEventData eventData)
     {

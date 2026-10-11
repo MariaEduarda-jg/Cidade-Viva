@@ -1,22 +1,23 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 // Conta acertos e erros do "Onde Eu Vou?" e finaliza o minigame quando todas as placas estão no lugar.
-public class OndeEuVouManager : MonoBehaviour
+public class OndeEuVouManager : MinigameBase
 {
-    public int totalDePlacas = 3;
-    public int pontuacaoMaxima = 100;
-    public int penalidadePorErro = 10;
-    public Text textoFinal;
+    public OndeEuVouConfig config;
+    public PlacaArrastavel[] placas;
 
     private int acertos;
     private int erros;
 
     private void Start()
     {
-        if (textoFinal != null)
+        foreach (PlacaArrastavel placa in placas)
         {
-            textoFinal.gameObject.SetActive(false);
+            PlacaConfig aparencia = config.BuscarPlaca(placa.tipo);
+            if (aparencia != null)
+            {
+                placa.Aplicar(aparencia);
+            }
         }
     }
 
@@ -28,18 +29,12 @@ public class OndeEuVouManager : MonoBehaviour
     public void RegistrarAcerto()
     {
         acertos++;
-        if (acertos < totalDePlacas)
+        if (acertos < placas.Length)
         {
             return;
         }
 
-        int pontuacao = Mathf.Max(0, pontuacaoMaxima - erros * penalidadePorErro);
-        GameProgress.FinalizarMinigame("Onde Eu Vou?", pontuacao);
-
-        if (textoFinal != null)
-        {
-            textoFinal.text = "Muito bem! Pontuação: " + pontuacao;
-            textoFinal.gameObject.SetActive(true);
-        }
+        int pontuacao = Mathf.Max(0, config.pontuacaoMaxima - erros * config.penalidadePorErro);
+        FinalizarJogo(pontuacao, config.tituloDoFim);
     }
 }

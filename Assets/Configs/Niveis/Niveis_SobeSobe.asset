@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51f0002191d5f544aa2bd2ef7b7c0661, type: 3}
+  m_Name: Niveis_SobeSobe
+  m_EditorClassIdentifier: Assembly-CSharp::LevelConfig
+  niveis:
+  - objetivo: "Pule de plataforma em plataforma e fuja da \xE1gua."
+    velocidade: 0.8
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 0
+    quantidadeDeItens: 15
+    errosPermitidos: 0
+    regrasExtras: []
+    extras: []
+    estrelas:
+      medida: 0
+      para2Estrelas: 300
+      para3Estrelas: 600
+  - objetivo: "A \xE1gua sobe mais r\xE1pido."
+    velocidade: 1
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 0
+    quantidadeDeItens: 20
+    errosPermitidos: 0
+    regrasExtras: []
+    extras: []
+    estrelas:
+      medida: 0
+      para2Estrelas: 350
+      para3Estrelas: 700
+  - objetivo: As plataformas ficaram menores.
+    velocidade: 1.15
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 0
+    quantidadeDeItens: 25
+    errosPermitidos: 0
+    regrasExtras:
+    - plataformas_estreitas
+    extras: []
+    estrelas:
+      medida: 0
+      para2Estrelas: 400
+      para3Estrelas: 800
+  - objetivo: Algumas plataformas se mexem.
+    velocidade: 1.3
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 0
+    quantidadeDeItens: 30
+    errosPermitidos: 0
+    regrasExtras:
+    - plataformas_estreitas
+    - plataformas_moveis
+    extras: []
+    estrelas:
+      medida: 0
+      para2Estrelas: 450
+      para3Estrelas: 900
+  - objetivo: Plataformas que se mexem e que somem!
+    velocidade: 1.45
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 0
+    quantidadeDeItens: 35
+    errosPermitidos: 0
+    regrasExtras:
+    - plataformas_estreitas
+    - plataformas_moveis
+    - plataformas_que_somem
+    extras: []
+    estrelas:
+      medida: 0
+      para2Estrelas: 500
+      para3Estrelas: 1000

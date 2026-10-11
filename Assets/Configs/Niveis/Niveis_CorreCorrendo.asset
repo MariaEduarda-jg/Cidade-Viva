@@ -1,0 +1,117 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51f0002191d5f544aa2bd2ef7b7c0661, type: 3}
+  m_Name: Niveis_CorreCorrendo
+  m_EditorClassIdentifier: Assembly-CSharp::LevelConfig
+  niveis:
+  - objetivo: 'Rua tranquila: desvie dos cones e pule os buracos.'
+    velocidade: 0.8
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 0
+    quantidadeDeItens: 0
+    errosPermitidos: 3
+    regrasExtras: []
+    extras:
+    - nome: metaDeDistancia
+      valor: 150
+    - nome: espacoEntreObstaculos
+      valor: 19
+    estrelas:
+      medida: 4
+      para2Estrelas: 1
+      para3Estrelas: 1
+  - objetivo: "Agora tem po\xE7a d'\xE1gua e carro parado."
+    velocidade: 0.9
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 0
+    quantidadeDeItens: 0
+    errosPermitidos: 3
+    regrasExtras:
+    - pocas
+    - carros
+    extras:
+    - nome: metaDeDistancia
+      valor: 200
+    - nome: espacoEntreObstaculos
+      valor: 18
+    estrelas:
+      medida: 4
+      para2Estrelas: 1
+      para3Estrelas: 1
+  - objetivo: "Mais r\xE1pido! Deslize por baixo dos galhos."
+    velocidade: 1.05
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 0
+    quantidadeDeItens: 0
+    errosPermitidos: 3
+    regrasExtras:
+    - pocas
+    - carros
+    - barreiras
+    - galhos
+    - duas_faixas
+    extras:
+    - nome: metaDeDistancia
+      valor: 250
+    - nome: espacoEntreObstaculos
+      valor: 17
+    estrelas:
+      medida: 4
+      para2Estrelas: 1
+      para3Estrelas: 1
+  - objetivo: "Est\xE1 chovendo e a pista est\xE1 molhada. Aten\xE7\xE3o!"
+    velocidade: 1.15
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 0
+    quantidadeDeItens: 0
+    errosPermitidos: 3
+    regrasExtras:
+    - pocas
+    - carros
+    - barreiras
+    - galhos
+    - duas_faixas
+    - fileira_cheia
+    - chuva
+    extras:
+    - nome: metaDeDistancia
+      valor: 300
+    - nome: espacoEntreObstaculos
+      valor: 16
+    estrelas:
+      medida: 4
+      para2Estrelas: 1
+      para3Estrelas: 1
+  - objetivo: 'Hora do rush: tudo junto e carros em movimento!'
+    velocidade: 1.3
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 0
+    quantidadeDeItens: 0
+    errosPermitidos: 3
+    regrasExtras:
+    - pocas
+    - carros
+    - barreiras
+    - galhos
+    - duas_faixas
+    - fileira_cheia
+    - sequencias
+    - carros_em_movimento
+    extras:
+    - nome: metaDeDistancia
+      valor: 350
+    - nome: espacoEntreObstaculos
+      valor: 16
+    estrelas:
+      medida: 4
+      para2Estrelas: 1
+      para3Estrelas: 1

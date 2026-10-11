@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46f6efa58f738c34a9f828f5dca60a68, type: 3}
+  m_Name: SobeSobe_Config
+  m_EditorClassIdentifier: Assembly-CSharp::SobeSobeConfig
+  larguraDaArea: 1000
+  intervaloDeNivel: 15
+  nivelMaximo: 6
+  velocidadeHorizontal: 650
+  forcaDoPulo: 1150
+  gravidade: 2000
+  larguraInicialDaPlataforma: 240
+  reducaoDeLarguraPorNivel: 15
+  distanciaMinima: 160
+  distanciaMaxima: 220
+  aumentoDeDistanciaPorNivel: 10
+  deslocamentoMaximoX: 420
+  chanceDeMoeda: 0.3
+  pontosPorMoeda: 20
+  alturaDaMoedaSobreAPlataforma: 60
+  velocidadeInicialDaAgua: 80
+  aumentoDaAguaPorNivel: 12
+  alturaInicialDaAgua: -700
+  distanciaMaximaDaAgua: 300
+  alturaDoJogadorNaTela: 150
+  pixelsPorPonto: 10
+  corDoJogador: {r: 1, g: 0.6, b: 0.15, a: 1}
+  corDaPlataforma: {r: 0.55, g: 0.38, b: 0.25, a: 1}
+  corDaMoeda: {r: 1, g: 0.85, b: 0.1, a: 1}
+  corDaAgua: {r: 0.2, g: 0.5, b: 1, a: 0.55}
+  formatoPontos: 'Pontos: {0}'
+  tituloAoCair: "Voc\xEA caiu!"
+  tituloAoSerAlcancado: "A \xE1gua te alcan\xE7ou!"

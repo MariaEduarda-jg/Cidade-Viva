@@ -15,6 +15,21 @@ public class AreaTrigger : MonoBehaviour
     // Usa MaterialPropertyBlock para não alterar o material compartilhado (asset).
     private void AtualizarCor()
     {
+        // Bagunça da enchente: some quando o minigame da área é completado.
+        CaosDaArea caos = GetComponent<CaosDaArea>();
+        if (caos != null)
+        {
+            caos.Aplicar(GameProgress.FoiCompletado(areaName));
+        }
+
+        // Área com visual montado (prefabs): quem cuida do cinza/colorido é o SaturacaoDaArea.
+        SaturacaoDaArea saturacao = GetComponent<SaturacaoDaArea>();
+        if (saturacao != null)
+        {
+            saturacao.Aplicar(GameProgress.FoiCompletado(areaName) ? 1f : saturacao.saturacaoSemCompletar);
+            return;
+        }
+
         Renderer rend = GetComponent<Renderer>();
         if (rend == null)
         {
@@ -39,6 +54,7 @@ public class AreaTrigger : MonoBehaviour
         }
 
         Debug.Log("Entrou na área: " + areaName);
+        MinigameBase.EsquecerNivelEscolhido();
         SceneManager.LoadScene(cenaDoMinigame);
     }
 }

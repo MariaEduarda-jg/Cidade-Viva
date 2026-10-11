@@ -1,0 +1,11 @@
+Model Information:
+* title:	Palácio do Planalto - Oscar Niemeyer
+* source:	https://sketchfab.com/3d-models/palacio-do-planalto-oscar-niemeyer-1240d2a091c84ea0bc4c96ad9be6eb4b
+* author:	vanrosaa (https://sketchfab.com/vanrosaa)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Palácio do Planalto - Oscar Niemeyer" (https://sketchfab.com/3d-models/palacio-do-planalto-oscar-niemeyer-1240d2a091c84ea0bc4c96ad9be6eb4b) by vanrosaa (https://sketchfab.com/vanrosaa) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e107aa4a48d34fe42a50c6d73610d644, type: 3}
+  m_Name: ReciclaComigo_Config
+  m_EditorClassIdentifier: Assembly-CSharp::ReciclaConfig
+  totalDeItens: 10
+  intervaloEntreItens: 0.4
+  itens:
+  - nome: jornal
+    tipo: PAPEL
+    cor: {r: 0.9, g: 0.9, b: 0.88, a: 1}
+  - nome: "caixa de papel\xE3o"
+    tipo: PAPEL
+    cor: {r: 0.82, g: 0.68, b: 0.48, a: 1}
+  - nome: caderno velho
+    tipo: PAPEL
+    cor: {r: 0.95, g: 0.85, b: 0.6, a: 1}
+  - nome: garrafa PET
+    tipo: PLASTICO
+    cor: {r: 0.75, g: 0.9, b: 0.95, a: 1}
+  - nome: "copo pl\xE1stico"
+    tipo: PLASTICO
+    cor: {r: 0.95, g: 0.95, b: 1, a: 1}
+  - nome: sacolinha
+    tipo: PLASTICO
+    cor: {r: 1, g: 0.95, b: 0.8, a: 1}
+  - nome: pote de vidro
+    tipo: VIDRO
+    cor: {r: 0.85, g: 0.95, b: 0.9, a: 1}
+  - nome: garrafa de vidro
+    tipo: VIDRO
+    cor: {r: 0.7, g: 0.85, b: 0.75, a: 1}
+  - nome: casca de banana
+    tipo: ORGANICO
+    cor: {r: 1, g: 0.9, b: 0.35, a: 1}
+  - nome: "resto de ma\xE7\xE3"
+    tipo: ORGANICO
+    cor: {r: 1, g: 0.75, b: 0.7, a: 1}
+  - nome: casca de ovo
+    tipo: ORGANICO
+    cor: {r: 0.98, g: 0.94, b: 0.86, a: 1}
+  lixeiras:
+  - tipo: PAPEL
+    rotulo: PAPEL
+    cor: {r: 0.15, g: 0.4, b: 0.85, a: 1}
+    corDaTampa: {r: 0.120000005, g: 0.32000002, b: 0.68, a: 1}
+  - tipo: PLASTICO
+    rotulo: "PL\xC1STICO"
+    cor: {r: 0.85, g: 0.2, b: 0.2, a: 1}
+    corDaTampa: {r: 0.68, g: 0.16000001, b: 0.16000001, a: 1}
+  - tipo: VIDRO
+    rotulo: VIDRO
+    cor: {r: 0.2, g: 0.65, b: 0.3, a: 1}
+    corDaTampa: {r: 0.16000001, g: 0.52, b: 0.24000001, a: 1}
+  - tipo: ORGANICO
+    rotulo: "ORG\xC2NICO"
+    cor: {r: 0.5, g: 0.33, b: 0.2, a: 1}
+    corDaTampa: {r: 0.4, g: 0.26400003, b: 0.16000001, a: 1}
+  xMaximo: 650
+  ySurgimento: 280
+  formatoProgresso: 'Lixo separado: {0}/{1}'
+  tituloDoFim: Cidade mais limpa!

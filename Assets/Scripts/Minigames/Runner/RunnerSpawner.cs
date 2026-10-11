@@ -1,21 +1,41 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-// Cria obstáculos e coletáveis no topo da pista, em faixas aleatórias, copiando modelos
-// inativos da cena. O espaçamento é por distância percorrida, então os objetos continuam
-// igualmente espaçados quando a velocidade sobe.
+// Cria obstáculos, coletáveis e power-ups no topo da pista, em faixas aleatórias, copiando
+// modelos inativos da cena. O tipo, a cor e o rótulo de cada modelo vêm da RunnerConfig (pelo id).
+// O espaçamento é por distância percorrida, então os objetos continuam igualmente espaçados
+// quando a velocidade sobe.
 public class RunnerSpawner : MonoBehaviour
 {
     public RunnerManager manager;
     public RunnerFaixas faixas;
     public RectTransform pista;
-    public RunnerObjeto[] modelosDeObstaculo;
-    public RunnerObjeto[] modelosDeColetavel;
-    public RunnerObjeto[] modelosDePowerUp = new RunnerObjeto[0];
-    [Range(0f, 1f)] public float chanceDeColetavel = 0.3f;
-    [Range(0f, 1f)] public float chanceDePowerUp = 0.08f;
-    public float distanciaEntreObjetos = 400f;
+    public RunnerObjeto[] modelos;
 
+    private readonly List<RunnerObjeto> obstaculos = new List<RunnerObjeto>();
+    private readonly List<RunnerObjeto> coletaveis = new List<RunnerObjeto>();
+    private readonly List<RunnerObjeto> powerUps = new List<RunnerObjeto>();
     private float distanciaDesdeUltimo;
+
+    private void Start()
+    {
+        foreach (RunnerObjeto modelo in modelos)
+        {
+            modelo.Aplicar(manager.config.Buscar(modelo.id));
+            switch (modelo.Tipo)
+            {
+                case TipoRunnerObjeto.Coletavel:
+                    coletaveis.Add(modelo);
+                    break;
+                case TipoRunnerObjeto.Protecao:
+                    powerUps.Add(modelo);
+                    break;
+                default:
+                    obstaculos.Add(modelo);
+                    break;
+            }
+        }
+    }
 
     private void Update()
     {
@@ -25,9 +45,9 @@ public class RunnerSpawner : MonoBehaviour
         }
 
         distanciaDesdeUltimo += manager.Velocidade * Time.deltaTime;
-        if (distanciaDesdeUltimo >= distanciaEntreObjetos)
+        if (distanciaDesdeUltimo >= manager.config.distanciaEntreObjetos)
         {
-            distanciaDesdeUltimo -= distanciaEntreObjetos;
+            distanciaDesdeUltimo -= manager.config.distanciaEntreObjetos;
             Criar();
         }
     }
@@ -35,26 +55,27 @@ public class RunnerSpawner : MonoBehaviour
     private void Criar()
     {
         // Sem power-ups na lista, a chance deles não conta (a de coletável fica igual).
-        float limiteDePowerUp = modelosDePowerUp.Length > 0 ? chanceDePowerUp : 0f;
+        float limiteDePowerUp = powerUps.Count > 0 ? manager.config.chanceDePowerUp : 0f;
         float sorteio = Random.value;
-        RunnerObjeto[] modelos = modelosDeObstaculo;
+        List<RunnerObjeto> opcoes = obstaculos;
         if (sorteio < limiteDePowerUp)
         {
-            modelos = modelosDePowerUp;
+            opcoes = powerUps;
         }
-        else if (modelosDeColetavel.Length > 0 && sorteio < limiteDePowerUp + chanceDeColetavel)
+        else if (coletaveis.Count > 0 && sorteio < limiteDePowerUp + manager.config.chanceDeColetavel)
         {
-            modelos = modelosDeColetavel;
+            opcoes = coletaveis;
         }
 
-        if (modelos.Length == 0)
+        if (opcoes.Count == 0)
         {
             return;
         }
 
-        RunnerObjeto modelo = modelos[Random.Range(0, modelos.Length)];
+        RunnerObjeto modelo = opcoes[Random.Range(0, opcoes.Count)];
         RunnerObjeto objeto = Instantiate(modelo, pista);
         objeto.manager = manager;
+        objeto.Aplicar(manager.config.Buscar(modelo.id));
         objeto.gameObject.SetActive(true);
 
         RectTransform rt = (RectTransform)objeto.transform;

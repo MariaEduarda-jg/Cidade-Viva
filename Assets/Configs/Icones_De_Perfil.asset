@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bcdaf1438d99a64db8e6379ba9693d2, type: 3}
+  m_Name: Icones_De_Perfil
+  m_EditorClassIdentifier: Assembly-CSharp::IconesDePerfil
+  avatares:
+  - {fileID: 21300000, guid: 02f067c2f3799b648843336e9e2dd911, type: 3}
+  - {fileID: 21300000, guid: a50adf90fda9abb4cb3b087d07c6150f, type: 3}
+  - {fileID: 21300000, guid: d1257263dc55d3646aac8ef13be5c43d, type: 3}
+  - {fileID: 21300000, guid: 07b2ab2055735584b868a7b34db30e88, type: 3}
+  - {fileID: 21300000, guid: 9ca636adbbc122c4d8433f49e79ec5f1, type: 3}
+  - {fileID: 21300000, guid: cf377dd80f5e2d143ac03df4960918ed, type: 3}
+  - {fileID: 21300000, guid: 9da2e3bb4412ccc42ab5c3e2e9c56d35, type: 3}
+  - {fileID: 21300000, guid: c2e5891c07bef6041b3a03602e7ebc24, type: 3}
+  figuras:
+  - {fileID: 21300000, guid: f5932c0850717b14a81bf5e40bcf2513, type: 3}
+  - {fileID: 21300000, guid: 10d39931f59cf7e4e8686a38288947b1, type: 3}
+  - {fileID: 21300000, guid: 1d8a1500bf7bd9642a255e46529c9c5d, type: 3}
+  - {fileID: 21300000, guid: abfb33308993e7b458cc3e4226638055, type: 3}
+  - {fileID: 21300000, guid: 9eff8deabec145c41a92f73cf540a52c, type: 3}
+  - {fileID: 21300000, guid: d5dca21b49818ad4c84f4610bb4c3414, type: 3}
+  avatarDoVisitante: {fileID: 21300000, guid: 1d8a1500bf7bd9642a255e46529c9c5d, type: 3}

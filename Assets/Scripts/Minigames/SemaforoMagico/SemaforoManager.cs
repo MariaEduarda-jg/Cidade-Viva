@@ -15,7 +15,7 @@ public enum CorDoSemaforo
 // vermelho = parar (espaço ou botão; o carro freia até a faixa, espera abrir e segue).
 // Tecla errada ou sem reação tira 1 vida; no vermelho o carro sempre para (nunca fura o sinal).
 // A cada semáforo o carro fica mais rápido e o tempo de reação diminui.
-public class SemaforoManager : MonoBehaviour
+public class SemaforoManager : MinigameBase
 {
     private enum Estado
     {
@@ -26,7 +26,7 @@ public class SemaforoManager : MonoBehaviour
         Passando
     }
 
-    public string nomeDaArea = "Semáforo Mágico";
+    public SemaforoConfig config;
 
     [Header("Cena")]
     public RectTransform carro;
@@ -35,22 +35,6 @@ public class SemaforoManager : MonoBehaviour
     public float espacamentoDasFaixas = 240f;
     public float larguraDaTela = 1920f;
 
-    [Header("Ritmo")]
-    public float velocidadeInicial = 320f;
-    public float aumentoDeVelocidadePorSemaforo = 12f;
-    public float velocidadeMaxima = 600f;
-    // Tempo pra reagir = tempo do carro chegar à faixa depois que o sinal acende.
-    public float janelaInicial = 2.5f;
-    public float reducaoDaJanelaPorSemaforo = 0.08f;
-    public float janelaMinima = 1f;
-    public float fatorDevagarNoAmarelo = 0.45f;
-    public float tempoParadoNoVermelho = 1.5f;
-    public int semaforosParaVencer = 20;
-
-    [Header("Pontuação")]
-    public int pontosPorAcerto = 10;
-    public int pontosPorComboMaximo = 5;
-
     [Header("Interface")]
     public RunnerEscudos vidas;
     public Text textoFeedback;
@@ -58,7 +42,6 @@ public class SemaforoManager : MonoBehaviour
     public Text textoCombo;
     public Text textoSemaforos;
     public RectTransform barraDeTempo;
-    public TelaFimDeJogo telaFimDeJogo;
 
     // Os 3 primeiros semáforos mostram cada cor em ordem, com dica (tutorial).
     private static readonly CorDoSemaforo[] Tutorial = { CorDoSemaforo.Verde, CorDoSemaforo.Amarelo, CorDoSemaforo.Vermelho };
@@ -82,7 +65,7 @@ public class SemaforoManager : MonoBehaviour
     public bool Jogando { get; private set; }
     public bool AguardandoReacao => Jogando && estado == Estado.Decidindo && !respondeu;
     public CorDoSemaforo Cor => cor;
-    public int Pontuacao => acertos * pontosPorAcerto + comboMaximo * pontosPorComboMaximo;
+    public int Pontuacao => acertos * config.pontosPorAcerto + comboMaximo * config.pontosPorComboMaximo;
 
     private float FrenteDoCarro => carro.anchoredPosition.x + carro.rect.width / 2f;
     // Distância da frente do carro até a faixa de parada (o pivô do semáforo fica na faixa).
@@ -91,14 +74,13 @@ public class SemaforoManager : MonoBehaviour
     private void Start()
     {
         larguraDaBarra = barraDeTempo.sizeDelta.x;
-        telaFimDeJogo.gameObject.SetActive(false);
 
-        velocidadeBase = velocidadeInicial;
+        velocidadeBase = config.velocidadeInicial;
         velocidade = velocidadeBase;
-        janela = janelaInicial;
+        janela = config.janelaInicial;
         Jogando = true;
         PosicionarProximoSemaforo();
-        MostrarFeedback("Vamos lá!", Color.white);
+        MostrarFeedback(config.textoDeInicio, config.corNeutra);
         AtualizarTextos();
     }
 
@@ -135,7 +117,7 @@ public class SemaforoManager : MonoBehaviour
             case Estado.Decidindo:
                 if (cor == CorDoSemaforo.Amarelo)
                 {
-                    velocidade = Mathf.MoveTowards(velocidade, velocidadeBase * fatorDevagarNoAmarelo, velocidadeBase * dt);
+                    velocidade = Mathf.MoveTowards(velocidade, velocidadeBase * config.fatorDevagarNoAmarelo, velocidadeBase * dt);
                 }
 
                 if (DistanciaAteAFaixa <= 0f)
@@ -156,7 +138,7 @@ public class SemaforoManager : MonoBehaviour
 
             case Estado.Parado:
                 velocidade = 0f;
-                if (tempoNoEstado >= tempoParadoNoVermelho)
+                if (tempoNoEstado >= config.tempoParadoNoVermelho)
                 {
                     semaforo.Acender(CorDoSemaforo.Verde);
                     MudarEstado(Estado.Passando);
@@ -165,7 +147,7 @@ public class SemaforoManager : MonoBehaviour
                 break;
 
             case Estado.Passando:
-                float alvo = cor == CorDoSemaforo.Amarelo ? velocidadeBase * fatorDevagarNoAmarelo : velocidadeBase;
+                float alvo = cor == CorDoSemaforo.Amarelo ? velocidadeBase * config.fatorDevagarNoAmarelo : velocidadeBase;
                 velocidade = Mathf.MoveTowards(velocidade, alvo, velocidadeBase * dt);
                 if (DistanciaAteAFaixa < -carro.rect.width - 150f)
                 {
@@ -213,7 +195,7 @@ public class SemaforoManager : MonoBehaviour
         }
         else
         {
-            Erro("Ops!");
+            Erro(config.textoTeclaErrada);
         }
 
         if (!Jogando)
@@ -240,7 +222,7 @@ public class SemaforoManager : MonoBehaviour
         semaforo.Acender(cor);
         respondeu = false;
         distanciaAoAcender = Mathf.Max(1f, DistanciaAteAFaixa);
-        MostrarFeedback(semaforosPassados < Tutorial.Length ? Dica(cor) : "", Color.white);
+        MostrarFeedback(semaforosPassados < Tutorial.Length ? config.Dica(cor) : "", config.corNeutra);
         MudarEstado(Estado.Decidindo);
     }
 
@@ -254,7 +236,7 @@ public class SemaforoManager : MonoBehaviour
             return;
         }
 
-        Erro("Muito devagar!");
+        Erro(config.textoSemReacao);
         if (!Jogando)
         {
             return;
@@ -282,14 +264,14 @@ public class SemaforoManager : MonoBehaviour
     {
         semaforosPassados++;
         AtualizarTextos();
-        if (semaforosPassados >= semaforosParaVencer)
+        if (semaforosPassados >= config.semaforosParaVencer)
         {
-            FimDeJogo("Parabéns! Você passou por " + semaforosParaVencer + " semáforos!");
+            FimDeJogo(string.Format(config.tituloAoVencer, config.semaforosParaVencer));
             return;
         }
 
-        velocidadeBase = Mathf.Min(velocidadeMaxima, velocidadeBase + aumentoDeVelocidadePorSemaforo);
-        janela = Mathf.Max(janelaMinima, janela - reducaoDaJanelaPorSemaforo);
+        velocidadeBase = Mathf.Min(config.velocidadeMaxima, velocidadeBase + config.aumentoDeVelocidadePorSemaforo);
+        janela = Mathf.Max(config.janelaMinima, janela - config.reducaoDaJanelaPorSemaforo);
         PosicionarProximoSemaforo();
     }
 
@@ -327,7 +309,7 @@ public class SemaforoManager : MonoBehaviour
         acertos++;
         combo++;
         comboMaximo = Mathf.Max(comboMaximo, combo);
-        MostrarFeedback(Parabens(cor), new Color(0.55f, 1f, 0.55f));
+        MostrarFeedback(config.Parabens(cor), config.corDoAcerto);
         AtualizarTextos();
     }
 
@@ -335,11 +317,11 @@ public class SemaforoManager : MonoBehaviour
     {
         combo = 0;
         vidas.Perder();
-        MostrarFeedback(mensagem + "\n" + Dica(cor), new Color(1f, 0.6f, 0.55f));
+        MostrarFeedback(mensagem + "\n" + config.Dica(cor), config.corDoErro);
         AtualizarTextos();
         if (vidas.Restantes == 0)
         {
-            FimDeJogo("Fim de jogo!");
+            FimDeJogo(config.tituloAoPerder);
         }
     }
 
@@ -347,33 +329,7 @@ public class SemaforoManager : MonoBehaviour
     {
         Jogando = false;
         AtualizarBarra();
-        telaFimDeJogo.Mostrar(nomeDaArea, Pontuacao, titulo);
-    }
-
-    private static string Dica(CorDoSemaforo c)
-    {
-        switch (c)
-        {
-            case CorDoSemaforo.Verde:
-                return "Verde: aperte ↑ e siga!";
-            case CorDoSemaforo.Amarelo:
-                return "Amarelo: não aperte nada, vá devagar";
-            default:
-                return "Vermelho: aperte ESPAÇO e pare!";
-        }
-    }
-
-    private static string Parabens(CorDoSemaforo c)
-    {
-        switch (c)
-        {
-            case CorDoSemaforo.Verde:
-                return "Isso! Verde = siga!";
-            case CorDoSemaforo.Amarelo:
-                return "Isso! Amarelo = devagar";
-            default:
-                return "Isso! Vermelho = pare!";
-        }
+        FinalizarJogo(Pontuacao, titulo);
     }
 
     private void AtualizarBarra()
@@ -390,8 +346,8 @@ public class SemaforoManager : MonoBehaviour
 
     private void AtualizarTextos()
     {
-        textoPontos.text = "Pontos: " + Pontuacao;
-        textoCombo.text = "Combo: " + combo + "  (máx. " + comboMaximo + ")";
-        textoSemaforos.text = "Semáforo: " + Mathf.Min(semaforosPassados + 1, semaforosParaVencer) + " / " + semaforosParaVencer;
+        textoPontos.text = string.Format(config.formatoPontos, Pontuacao);
+        textoCombo.text = string.Format(config.formatoCombo, combo, comboMaximo);
+        textoSemaforos.text = string.Format(config.formatoSemaforos, Mathf.Min(semaforosPassados + 1, config.semaforosParaVencer), config.semaforosParaVencer);
     }
 }

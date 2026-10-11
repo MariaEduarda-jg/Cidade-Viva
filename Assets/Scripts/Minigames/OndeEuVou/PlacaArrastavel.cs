@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 // Placa de trânsito que o jogador arrasta até o alvo certo na rua.
 [RequireComponent(typeof(CanvasGroup))]
@@ -20,6 +21,17 @@ public class PlacaArrastavel : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         canvasGroup = GetComponent<CanvasGroup>();
         canvas = GetComponentInParent<Canvas>();
         posicaoInicial = rectTransform.anchoredPosition;
+    }
+
+    // Cor e texto vêm da config do minigame.
+    public void Aplicar(PlacaConfig aparencia)
+    {
+        GetComponent<Graphic>().color = aparencia.cor;
+        Text rotulo = GetComponentInChildren<Text>();
+        if (rotulo != null)
+        {
+            rotulo.text = aparencia.rotulo;
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)

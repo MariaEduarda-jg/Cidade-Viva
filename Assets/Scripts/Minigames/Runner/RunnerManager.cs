@@ -2,24 +2,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 // Regras gerais do runner: velocidade que sobe com o tempo, pontuação (tempo + coletáveis),
-// escudos e fim de jogo. Reaproveitável: cada minigame muda nomeDaArea e os números no Inspector.
-public class RunnerManager : MonoBehaviour
+// escudos e fim de jogo. Reaproveitável: cada minigame muda nomeDaArea e a RunnerConfig.
+public class RunnerManager : MinigameBase
 {
-    public string nomeDaArea = "Corre, Correndo!";
+    public RunnerConfig config;
     public RunnerJogador jogador;
     public RunnerEscudos escudos;
-
-    [Header("Velocidade")]
-    public float velocidadeInicial = 350f;
-    public float aumentoDeVelocidade = 50f;
-    public float intervaloDeAumento = 10f;
-    public float velocidadeMaxima = 1000f;
-
-    [Header("Pontuação")]
-    public float pontosPorSegundo = 10f;
     public Text textoPontuacao;
-
-    public TelaFimDeJogo telaFimDeJogo;
 
     private float tempo;
     private float pontosDeTempo;
@@ -32,8 +21,8 @@ public class RunnerManager : MonoBehaviour
     private void Start()
     {
         Jogando = true;
-        Velocidade = velocidadeInicial;
-        telaFimDeJogo.gameObject.SetActive(false);
+        Velocidade = config.velocidadeInicial;
+        jogador.Configurar(config.corDaBatida, config.duracaoDaBatida);
         AtualizarTexto();
     }
 
@@ -45,9 +34,9 @@ public class RunnerManager : MonoBehaviour
         }
 
         tempo += Time.deltaTime;
-        pontosDeTempo += pontosPorSegundo * Time.deltaTime;
-        int aumentos = Mathf.FloorToInt(tempo / intervaloDeAumento);
-        Velocidade = Mathf.Min(velocidadeMaxima, velocidadeInicial + aumentos * aumentoDeVelocidade);
+        pontosDeTempo += config.pontosPorSegundo * Time.deltaTime;
+        int aumentos = Mathf.FloorToInt(tempo / config.intervaloDeAumento);
+        Velocidade = Mathf.Min(config.velocidadeMaxima, config.velocidadeInicial + aumentos * config.aumentoDeVelocidade);
         AtualizarTexto();
     }
 
@@ -58,14 +47,14 @@ public class RunnerManager : MonoBehaviour
         objeto.gameObject.SetActive(false);
         Destroy(objeto.gameObject);
 
-        if (objeto.tipo == TipoRunnerObjeto.Coletavel)
+        if (objeto.Tipo == TipoRunnerObjeto.Coletavel)
         {
-            pontosDeColetaveis += objeto.pontos;
+            pontosDeColetaveis += objeto.Pontos;
             AtualizarTexto();
             return;
         }
 
-        if (objeto.tipo == TipoRunnerObjeto.Protecao)
+        if (objeto.Tipo == TipoRunnerObjeto.Protecao)
         {
             jogador.AtivarProtecao();
             return;
@@ -89,14 +78,14 @@ public class RunnerManager : MonoBehaviour
     {
         Jogando = false;
         jogador.enabled = false;
-        telaFimDeJogo.Mostrar(nomeDaArea, Pontuacao);
+        FinalizarJogo(Pontuacao, config.tituloDoFim);
     }
 
     private void AtualizarTexto()
     {
         if (textoPontuacao != null)
         {
-            textoPontuacao.text = "Pontos: " + Pontuacao;
+            textoPontuacao.text = string.Format(config.formatoPontuacao, Pontuacao);
         }
     }
 }

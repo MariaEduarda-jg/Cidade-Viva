@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b2f2dbaf82e4364395f03307488ba6a, type: 3}
+  m_Name: SemaforoMagico_Config
+  m_EditorClassIdentifier: Assembly-CSharp::SemaforoConfig
+  velocidadeInicial: 320
+  aumentoDeVelocidadePorSemaforo: 12
+  velocidadeMaxima: 600
+  janelaInicial: 2.5
+  reducaoDaJanelaPorSemaforo: 0.08
+  janelaMinima: 1
+  fatorDevagarNoAmarelo: 0.45
+  tempoParadoNoVermelho: 1.5
+  semaforosParaVencer: 20
+  pontosPorAcerto: 10
+  pontosPorComboMaximo: 5
+  textoDeInicio: "Vamos l\xE1!"
+  dicaVerde: "Verde: aperte \u2191 e siga!"
+  dicaAmarelo: "Amarelo: n\xE3o aperte nada, v\xE1 devagar"
+  dicaVermelho: "Vermelho: aperte ESPA\xC7O e pare!"
+  parabensVerde: Isso! Verde = siga!
+  parabensAmarelo: Isso! Amarelo = devagar
+  parabensVermelho: Isso! Vermelho = pare!
+  textoTeclaErrada: Ops!
+  textoSemReacao: Muito devagar!
+  formatoPontos: 'Pontos: {0}'
+  formatoCombo: "Combo: {0}  (m\xE1x. {1})"
+  formatoSemaforos: "Sem\xE1foro: {0} / {1}"
+  tituloAoVencer: "Parab\xE9ns! Voc\xEA passou por {0} sem\xE1foros!"
+  tituloAoPerder: Fim de jogo!
+  corNeutra: {r: 1, g: 1, b: 1, a: 1}
+  corDoAcerto: {r: 0.55, g: 1, b: 0.55, a: 1}
+  corDoErro: {r: 1, g: 0.6, b: 0.55, a: 1}

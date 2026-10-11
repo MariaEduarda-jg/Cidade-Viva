@@ -5,9 +5,6 @@ using UnityEngine;
 public class SobeJogador : MonoBehaviour
 {
     public SobeSobeManager manager;
-    public float velocidadeHorizontal = 650f;
-    public float forcaDoPulo = 1150f;
-    public float gravidade = 2000f;
 
     private RectTransform rectTransform;
     private float velocidadeVertical;
@@ -30,11 +27,11 @@ public class SobeJogador : MonoBehaviour
         Vector2 tamanho = rectTransform.rect.size;
         Vector2 pos = rectTransform.anchoredPosition;
 
-        float limiteX = manager.larguraDaArea / 2f - tamanho.x / 2f;
-        pos.x = Mathf.Clamp(pos.x + Input.GetAxisRaw("Horizontal") * velocidadeHorizontal * dt, -limiteX, limiteX);
+        float limiteX = manager.config.larguraDaArea / 2f - tamanho.x / 2f;
+        pos.x = Mathf.Clamp(pos.x + Input.GetAxisRaw("Horizontal") * manager.config.velocidadeHorizontal * dt, -limiteX, limiteX);
 
         float peAntes = pos.y - tamanho.y / 2f;
-        velocidadeVertical -= gravidade * dt;
+        velocidadeVertical -= manager.config.gravidade * dt;
         pos.y += velocidadeVertical * dt;
 
         // Só quica descendo, pra atravessar as plataformas por baixo ao subir.
@@ -44,7 +41,7 @@ public class SobeJogador : MonoBehaviour
             if (plataforma != null)
             {
                 pos.y = plataforma.anchoredPosition.y + plataforma.rect.height / 2f + tamanho.y / 2f;
-                velocidadeVertical = forcaDoPulo;
+                velocidadeVertical = manager.config.forcaDoPulo;
             }
         }
 

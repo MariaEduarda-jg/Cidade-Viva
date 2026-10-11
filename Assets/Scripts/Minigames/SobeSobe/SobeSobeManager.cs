@@ -7,48 +7,16 @@ using UnityEngine.UI;
 // A dificuldade aumenta por nível (a cada intervaloDeNivel segundos): água mais rápida,
 // plataformas mais estreitas e mais espaçadas.
 // Plataformas, moedas, jogador e água ficam dentro de "mundo", que desce conforme a câmera sobe.
-public class SobeSobeManager : MonoBehaviour
+public class SobeSobeManager : MinigameBase
 {
-    public string nomeDaArea = "Sobe, Sobe!";
+    public SobeSobeConfig config;
     public SobeJogador jogador;
     public RectTransform mundo;
     public RectTransform agua;
     public RectTransform plataformaInicial;
     public RectTransform modeloDePlataforma;
     public RectTransform modeloDeMoeda;
-    public float larguraDaArea = 1000f;
-
-    [Header("Dificuldade")]
-    public float intervaloDeNivel = 15f;
-    public int nivelMaximo = 6;
-
-    [Header("Plataformas")]
-    public float larguraInicialDaPlataforma = 240f;
-    public float reducaoDeLarguraPorNivel = 15f;
-    public float distanciaMinima = 160f;
-    public float distanciaMaxima = 220f;
-    public float aumentoDeDistanciaPorNivel = 10f;
-    public float deslocamentoMaximoX = 420f;
-
-    [Header("Moedas")]
-    [Range(0f, 1f)] public float chanceDeMoeda = 0.3f;
-    public int pontosPorMoeda = 20;
-    public float alturaDaMoedaSobreAPlataforma = 60f;
-
-    [Header("Água")]
-    public float velocidadeInicialDaAgua = 80f;
-    public float aumentoDaAguaPorNivel = 12f;
-    public float alturaInicialDaAgua = -700f;
-    // A água nunca fica mais longe que isso abaixo da plataforma mais alta em que o jogador pisou,
-    // pra continuar aparecendo no pé da tela enquanto ele sobe.
-    public float distanciaMaximaDaAgua = 300f;
-
-    [Header("Câmera e pontuação")]
-    // Altura na tela (a partir do centro) acima da qual a câmera acompanha o jogador.
-    public float alturaDoJogadorNaTela = 150f;
-    public float pixelsPorPonto = 10f;
     public Text textoPontos;
-    public TelaFimDeJogo telaFimDeJogo;
 
     private readonly List<RectTransform> plataformas = new List<RectTransform>();
     private readonly List<RectTransform> moedas = new List<RectTransform>();
@@ -63,19 +31,23 @@ public class SobeSobeManager : MonoBehaviour
     private Vector2 ultimaPlataforma;
 
     public bool Jogando { get; private set; }
-    public int Nivel => Mathf.Min(nivelMaximo, Mathf.FloorToInt(tempo / intervaloDeNivel));
-    public int Pontuacao => Mathf.FloorToInt(alturaMaxima / pixelsPorPonto) + pontosDeMoedas;
+    public int Nivel => Mathf.Min(config.nivelMaximo, Mathf.FloorToInt(tempo / config.intervaloDeNivel));
+    public int Pontuacao => Mathf.FloorToInt(alturaMaxima / config.pixelsPorPonto) + pontosDeMoedas;
 
     private void Start()
     {
         tela = (RectTransform)mundo.parent;
-        telaFimDeJogo.gameObject.SetActive(false);
+        Pintar(jogador.RectTransform, config.corDoJogador);
+        Pintar(plataformaInicial, config.corDaPlataforma);
+        Pintar(modeloDePlataforma, config.corDaPlataforma);
+        Pintar(modeloDeMoeda, config.corDaMoeda);
+        Pintar(agua, config.corDaAgua);
 
         plataformas.Add(plataformaInicial);
         ultimaPlataforma = new Vector2(0f, plataformaInicial.anchoredPosition.y);
         topoDoUltimoPouso = Topo(plataformaInicial);
         alturaInicial = jogador.RectTransform.anchoredPosition.y;
-        aguaY = alturaInicialDaAgua;
+        aguaY = config.alturaInicialDaAgua;
         Jogando = true;
 
         Atualizar();
@@ -89,8 +61,8 @@ public class SobeSobeManager : MonoBehaviour
         }
 
         tempo += Time.deltaTime;
-        aguaY += (velocidadeInicialDaAgua + Nivel * aumentoDaAguaPorNivel) * Time.deltaTime;
-        aguaY = Mathf.Max(aguaY, topoDoUltimoPouso - distanciaMaximaDaAgua);
+        aguaY += (config.velocidadeInicialDaAgua + Nivel * config.aumentoDaAguaPorNivel) * Time.deltaTime;
+        aguaY = Mathf.Max(aguaY, topoDoUltimoPouso - config.distanciaMaximaDaAgua);
         Atualizar();
         ColetarMoedas();
 
@@ -98,11 +70,11 @@ public class SobeSobeManager : MonoBehaviour
         float meiaAlturaJogador = jogador.RectTransform.rect.height / 2f;
         if (jogadorY + meiaAlturaJogador < cameraY - tela.rect.height / 2f)
         {
-            FimDeJogo("Você caiu!");
+            FimDeJogo(config.tituloAoCair);
         }
         else if (jogadorY < aguaY)
         {
-            FimDeJogo("A água te alcançou!");
+            FimDeJogo(config.tituloAoSerAlcancado);
         }
     }
 
@@ -126,7 +98,7 @@ public class SobeSobeManager : MonoBehaviour
     private void Atualizar()
     {
         float jogadorY = jogador.RectTransform.anchoredPosition.y;
-        cameraY = Mathf.Max(cameraY, jogadorY - alturaDoJogadorNaTela);
+        cameraY = Mathf.Max(cameraY, jogadorY - config.alturaDoJogadorNaTela);
         mundo.anchoredPosition = new Vector2(0f, -cameraY);
         agua.anchoredPosition = new Vector2(0f, aguaY - agua.rect.height / 2f);
 
@@ -141,23 +113,23 @@ public class SobeSobeManager : MonoBehaviour
     private void GerarPlataformas()
     {
         float topoDaTela = cameraY + tela.rect.height / 2f;
-        while (ultimaPlataforma.y < topoDaTela + distanciaMaxima)
+        while (ultimaPlataforma.y < topoDaTela + config.distanciaMaxima)
         {
             int nivel = Nivel;
-            float largura = larguraInicialDaPlataforma - nivel * reducaoDeLarguraPorNivel;
-            float aumento = nivel * aumentoDeDistanciaPorNivel;
-            float limiteX = larguraDaArea / 2f - largura / 2f;
-            float y = ultimaPlataforma.y + Random.Range(distanciaMinima + aumento, distanciaMaxima + aumento);
-            float x = Mathf.Clamp(ultimaPlataforma.x + Random.Range(-deslocamentoMaximoX, deslocamentoMaximoX), -limiteX, limiteX);
+            float largura = config.larguraInicialDaPlataforma - nivel * config.reducaoDeLarguraPorNivel;
+            float aumento = nivel * config.aumentoDeDistanciaPorNivel;
+            float limiteX = config.larguraDaArea / 2f - largura / 2f;
+            float y = ultimaPlataforma.y + Random.Range(config.distanciaMinima + aumento, config.distanciaMaxima + aumento);
+            float x = Mathf.Clamp(ultimaPlataforma.x + Random.Range(-config.deslocamentoMaximoX, config.deslocamentoMaximoX), -limiteX, limiteX);
 
             RectTransform plataforma = Criar(modeloDePlataforma, new Vector2(x, y));
             plataforma.sizeDelta = new Vector2(largura, plataforma.sizeDelta.y);
             plataformas.Add(plataforma);
             ultimaPlataforma = new Vector2(x, y);
 
-            if (modeloDeMoeda != null && Random.value < chanceDeMoeda)
+            if (modeloDeMoeda != null && Random.value < config.chanceDeMoeda)
             {
-                moedas.Add(Criar(modeloDeMoeda, new Vector2(x, Topo(plataforma) + alturaDaMoedaSobreAPlataforma)));
+                moedas.Add(Criar(modeloDeMoeda, new Vector2(x, Topo(plataforma) + config.alturaDaMoedaSobreAPlataforma)));
             }
         }
     }
@@ -179,7 +151,7 @@ public class SobeSobeManager : MonoBehaviour
         {
             if (areaDoJogador.Overlaps(RectNoMundo(moedas[i])))
             {
-                pontosDeMoedas += pontosPorMoeda;
+                pontosDeMoedas += config.pontosPorMoeda;
                 Destroy(moedas[i].gameObject);
                 moedas.RemoveAt(i);
             }
@@ -203,14 +175,23 @@ public class SobeSobeManager : MonoBehaviour
     {
         if (textoPontos != null)
         {
-            textoPontos.text = "Pontos: " + Pontuacao;
+            textoPontos.text = string.Format(config.formatoPontos, Pontuacao);
         }
     }
 
     private void FimDeJogo(string motivo)
     {
         Jogando = false;
-        telaFimDeJogo.Mostrar(nomeDaArea, Pontuacao, motivo);
+        FinalizarJogo(Pontuacao, motivo);
+    }
+
+    private static void Pintar(RectTransform objeto, Color cor)
+    {
+        Graphic grafico = objeto != null ? objeto.GetComponent<Graphic>() : null;
+        if (grafico != null)
+        {
+            grafico.color = cor;
+        }
     }
 
     private static float Topo(RectTransform plataforma)
