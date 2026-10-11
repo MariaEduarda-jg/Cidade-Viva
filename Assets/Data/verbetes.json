@@ -1,0 +1,349 @@
+{
+  "fonte": "https://glotransito.com",
+  "extraidoEm": "2026-10-11",
+  "aviso": "Definições copiadas do glossário Glotrânsito, sem alteração. Não reescrever.",
+  "verbetes": [
+    {
+      "id": "ambulancia",
+      "palavra": "ambulância",
+      "definicao": "Veículo que tem sirene barulhenta, transporta pessoas doentes ou machucadas, cuida delas e as leva para o hospital. ",
+      "grupo": "Veiculos",
+      "urlDaIlustracao": "https://media.base44.com/images/public/68fbc460d6abe1f1a7afda6c/5c5b5bae0_ambulancia.png",
+      "arquivoDaIlustracao": "ambulancia.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "automovel",
+      "palavra": "automóvel",
+      "definicao": "Veículo com motor, com quatro ou mais rodas, usado para locomoção e transporte de pessoas ou cargas.",
+      "grupo": "Veiculos",
+      "urlDaIlustracao": "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/user_68fbbf96eb981248fa65aee4/6a70e34a4_automovel.png",
+      "arquivoDaIlustracao": "automovel.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "bicicleta",
+      "palavra": "bicicleta",
+      "definicao": "Veículo que se move quando a pessoa pedala, possui duas rodas.",
+      "grupo": "Veiculos",
+      "urlDaIlustracao": "https://media.base44.com/images/public/68fbc460d6abe1f1a7afda6c/dc6ab59ff_bicicleta.png",
+      "arquivoDaIlustracao": "bicicleta.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "bicicleta_eletrica",
+      "palavra": "bicicleta elétrica",
+      "definicao": "Bicicleta com motor, menos potente que a moto, serve para se mover de um lugar para outro.",
+      "grupo": "Veiculos",
+      "urlDaIlustracao": "https://base44.app/api/apps/68fbc460d6abe1f1a7afda6c/files/public/68fbc460d6abe1f1a7afda6c/05c9d1e91_biciletaeletrica.png",
+      "arquivoDaIlustracao": "bicicleta_eletrica.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "bonde",
+      "palavra": "bonde",
+      "definicao": "É um veículo com motor elétrico que anda por trilhos para transportar pessoas.",
+      "grupo": "Veiculos",
+      "urlDaIlustracao": "https://media.base44.com/images/public/68fbc460d6abe1f1a7afda6c/84cd41248_bonde.jpg",
+      "arquivoDaIlustracao": "bonde.jpg",
+      "semIlustracao": false
+    },
+    {
+      "id": "caminhao_de_bombeiro",
+      "palavra": "caminhão de bombeiro",
+      "definicao": "Veículo vermelho grande e veloz que leva os bombeiros e os equipamentos para apagar os incêndios e salvar as pessoas.",
+      "grupo": "Veiculos",
+      "urlDaIlustracao": "https://media.base44.com/images/public/68fbc460d6abe1f1a7afda6c/bf5f105d1_caminhodebombeiro.png",
+      "arquivoDaIlustracao": "caminhao_de_bombeiro.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "caminhao_trator",
+      "palavra": "caminhão trator",
+      "definicao": "Caminhão que serve para puxar carretas.",
+      "grupo": "Veiculos",
+      "urlDaIlustracao": "https://media.base44.com/images/public/68fbc460d6abe1f1a7afda6c/c7580aa05_caminhotrator.png",
+      "arquivoDaIlustracao": "caminhao_trator.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "micro_onibus",
+      "palavra": "micro-ônibus",
+      "definicao": "Veículo com motor, com quatro rodas, para transporte de passageiros e parece um ônibus menor.",
+      "grupo": "Veiculos",
+      "urlDaIlustracao": "https://media.base44.com/images/public/68fbc460d6abe1f1a7afda6c/126bd0a3d_micro-nibus.png",
+      "arquivoDaIlustracao": "micro_onibus.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "motocicleta",
+      "palavra": "motocicleta",
+      "definicao": "Veículo com motor e duas rodas, para transporte do motoqueiro e mais uma pessoa, muito utilizado para entrega de coisas. Ver moto.",
+      "grupo": "Veiculos",
+      "urlDaIlustracao": "https://base44.app/api/apps/68fbc460d6abe1f1a7afda6c/files/public/68fbc460d6abe1f1a7afda6c/e7d657377_motocicleta.png",
+      "arquivoDaIlustracao": "motocicleta.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "motoneta",
+      "palavra": "motoneta",
+      "definicao": "Tipo de moto, mais leve e mais devagar, em que o motorista fica com as pernas juntas.",
+      "grupo": "Veiculos",
+      "urlDaIlustracao": "https://media.base44.com/images/public/68fbc460d6abe1f1a7afda6c/bda37a198_motoneta.png",
+      "arquivoDaIlustracao": "motoneta.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "onibus",
+      "palavra": "ônibus",
+      "definicao": "Veículo com motor, com quatro ou seis rodas, para transportar muitas pessoas.",
+      "grupo": "Veiculos",
+      "urlDaIlustracao": "https://media.base44.com/images/public/68fbc460d6abe1f1a7afda6c/bcaa0d867_nibus.png",
+      "arquivoDaIlustracao": "onibus.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "quadriciclo",
+      "palavra": "quadriciclo",
+      "definicao": "É um veículo que tem quatro rodas e um motor. Pode ter ou não uma parte de cima para cobrir. Serve para levar pessoas ou coisas.",
+      "grupo": "Veiculos",
+      "urlDaIlustracao": "https://base44.app/api/apps/68fbc460d6abe1f1a7afda6c/files/public/68fbc460d6abe1f1a7afda6c/bd6196961_quadriciclo.png",
+      "arquivoDaIlustracao": "quadriciclo.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "reboque",
+      "palavra": "reboque",
+      "definicao": "Veículo sem motor, com duas rodas, movimentado quando arrastado por outro veículo com motor.",
+      "grupo": "Veiculos",
+      "urlDaIlustracao": "https://base44.app/api/apps/68fbc460d6abe1f1a7afda6c/files/public/68fbc460d6abe1f1a7afda6c/eacc338cc_reboque.png",
+      "arquivoDaIlustracao": "reboque.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "viatura",
+      "palavra": "viatura",
+      "definicao": "Veículo com motor e quatro rodas, que faz um barulho, tem luzes que acendem e apagam, é usado por bombeiros e policiais para patrulhar e transportar pessoas e coisas.",
+      "grupo": "Veiculos",
+      "urlDaIlustracao": "https://base44.app/api/apps/68fbc460d6abe1f1a7afda6c/files/public/68fbc460d6abe1f1a7afda6c/7fc67f5cc_viatura1.png",
+      "arquivoDaIlustracao": "viatura.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "via",
+      "palavra": "via",
+      "definicao": "Lugar por onde veículos, pessoas e animais passam para se movimentarem de um lugar para o outro.",
+      "grupo": "ViasEEstruturas",
+      "urlDaIlustracao": "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/user_68fbbf96eb981248fa65aee4/3cd6c8055_desenho-1-cachorro-bege1.png",
+      "arquivoDaIlustracao": "via.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "via_rural",
+      "palavra": "via rural",
+      "definicao": "Via que liga propriedades rurais às cidades.",
+      "grupo": "ViasEEstruturas",
+      "urlDaIlustracao": "https://base44.app/api/apps/68fbc460d6abe1f1a7afda6c/files/public/68fbc460d6abe1f1a7afda6c/eff1916a7_viarural.png",
+      "arquivoDaIlustracao": "via_rural.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "via_urbana",
+      "palavra": "via urbana",
+      "definicao": "Via dentro da cidade, que fica próxima a casas, prédios e lojas.",
+      "grupo": "ViasEEstruturas",
+      "urlDaIlustracao": "https://media.base44.com/images/public/68fbc460d6abe1f1a7afda6c/91747132e_viaurbana.png",
+      "arquivoDaIlustracao": "via_urbana.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "calcada",
+      "palavra": "calçada",
+      "definicao": "Parte de uma rua destinada para a passagem de pedestres ou animais.",
+      "grupo": "ViasEEstruturas",
+      "urlDaIlustracao": "https://base44.app/api/apps/68fbc460d6abe1f1a7afda6c/files/public/68fbc460d6abe1f1a7afda6c/24a439db5_calcada.png",
+      "arquivoDaIlustracao": "calcada.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "faixa_de_pedestre",
+      "palavra": "faixa de pedestre",
+      "definicao": "Parte da via pintada com listras brancas para o pedestre atravessar com segurança quando o veículo para.",
+      "grupo": "ViasEEstruturas",
+      "urlDaIlustracao": "https://base44.app/api/apps/68fbc460d6abe1f1a7afda6c/files/public/68fbc460d6abe1f1a7afda6c/e587f3042_faixadepedestre.png",
+      "arquivoDaIlustracao": "faixa_de_pedestre.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "ciclovia",
+      "palavra": "ciclovia",
+      "definicao": "Via para circulação exclusiva para ciclista andar de bicicleta, está em via separada do trânsito dos veículos.",
+      "grupo": "ViasEEstruturas",
+      "urlDaIlustracao": "",
+      "arquivoDaIlustracao": "",
+      "semIlustracao": true
+    },
+    {
+      "id": "ciclofaixa",
+      "palavra": "ciclofaixa",
+      "definicao": "Parte da via para circulação exclusiva de bicicletas, está ao lado da via dos outros veículos e pode estar pintada de vermelho.",
+      "grupo": "ViasEEstruturas",
+      "urlDaIlustracao": "https://media.base44.com/images/public/68fbc460d6abe1f1a7afda6c/5f58d9b09_ciclofaixapng.png",
+      "arquivoDaIlustracao": "ciclofaixa.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "ponte",
+      "palavra": "ponte",
+      "definicao": "Construção suspensa que permite que veículos, pedestres e animais atravessem sobre água, como de rios ou lagos.",
+      "grupo": "ViasEEstruturas",
+      "urlDaIlustracao": "https://base44.app/api/apps/68fbc460d6abe1f1a7afda6c/files/public/68fbc460d6abe1f1a7afda6c/5f34ac772_ponte.png",
+      "arquivoDaIlustracao": "ponte.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "tunel",
+      "palavra": "túnel",
+      "definicao": "Passagem subterrânea para o transporte de veículos ou pessoas através de outras vias, morros e montanhas.",
+      "grupo": "ViasEEstruturas",
+      "urlDaIlustracao": "https://base44.app/api/apps/68fbc460d6abe1f1a7afda6c/files/public/68fbc460d6abe1f1a7afda6c/adaf3c9e2_tunel.png",
+      "arquivoDaIlustracao": "tunel.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "viaduto",
+      "palavra": "viaduto",
+      "definicao": "Via elevada para veículos passarem por cima de outras vias.",
+      "grupo": "ViasEEstruturas",
+      "urlDaIlustracao": "https://base44.app/api/apps/68fbc460d6abe1f1a7afda6c/files/public/68fbc460d6abe1f1a7afda6c/93c19f6de_viaduto.png",
+      "arquivoDaIlustracao": "viaduto.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "passarela",
+      "palavra": "passarela",
+      "definicao": "Local construído para travessia de pedestres sobre vias.",
+      "grupo": "ViasEEstruturas",
+      "urlDaIlustracao": "https://base44.app/api/apps/68fbc460d6abe1f1a7afda6c/files/public/68fbc460d6abe1f1a7afda6c/bf85e8d36_passarela.png",
+      "arquivoDaIlustracao": "passarela.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "passagem_subterranea",
+      "palavra": "passagem subterrânea",
+      "definicao": "Caminho abaixo da via para pedestre, ou animal atravessar de um lado para o outro.",
+      "grupo": "ViasEEstruturas",
+      "urlDaIlustracao": "https://media.base44.com/images/public/68fbc460d6abe1f1a7afda6c/4fb9a7c90_passagemsubternea.png",
+      "arquivoDaIlustracao": "passagem_subterranea.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "retorno",
+      "palavra": "retorno",
+      "definicao": "Parte da via que permite o veículo mudar o lado e passar para se mover na via de sentido contrário ao que estava.",
+      "grupo": "ViasEEstruturas",
+      "urlDaIlustracao": "https://base44.app/api/apps/68fbc460d6abe1f1a7afda6c/files/public/68fbc460d6abe1f1a7afda6c/414a90463_retorno.png",
+      "arquivoDaIlustracao": "retorno.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "estacionamento",
+      "palavra": "estacionamento",
+      "definicao": "Local para guardar veículos temporariamente, de forma organizada.",
+      "grupo": "ViasEEstruturas",
+      "urlDaIlustracao": "https://media.base44.com/images/public/68fbc460d6abe1f1a7afda6c/09aa66c81_estacionamento11.png",
+      "arquivoDaIlustracao": "estacionamento.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "semaforo",
+      "palavra": "semáforo",
+      "definicao": "Aparelho com luzes vermelha, amarela e verde que acendem e apagam para organizar a passagem de carros e pessoas nas ruas.",
+      "grupo": "Sinais",
+      "urlDaIlustracao": "https://base44.app/api/apps/68fbc460d6abe1f1a7afda6c/files/public/68fbc460d6abe1f1a7afda6c/b098d3e51_semaforo.png",
+      "arquivoDaIlustracao": "semaforo.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "semaforo_de_pedestre",
+      "palavra": "semáforo de pedestre",
+      "definicao": "Aparelho com luzes vermelha e verde que acendem e apagam para organizar a passagem de pedestres na via.",
+      "grupo": "Sinais",
+      "urlDaIlustracao": "https://media.base44.com/images/public/68fbc460d6abe1f1a7afda6c/1ddaf452f_1.png",
+      "arquivoDaIlustracao": "semaforo_de_pedestre.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "sinal_verde",
+      "palavra": "sinal verde",
+      "definicao": "Luz verde do semáforo que, quando acende indica que os veículos ou os pedestres podem continuar andando.",
+      "grupo": "Sinais",
+      "urlDaIlustracao": "https://base44.app/api/apps/68fbc460d6abe1f1a7afda6c/files/public/68fbc460d6abe1f1a7afda6c/b53896f84_sinalverde.png",
+      "arquivoDaIlustracao": "sinal_verde.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "sinal_amarelo",
+      "palavra": "sinal amarelo",
+      "definicao": "Luz amarela do semáforo que acende para indicar que o motorista deve diminuir a velocidade.",
+      "grupo": "Sinais",
+      "urlDaIlustracao": "https://base44.app/api/apps/68fbc460d6abe1f1a7afda6c/files/public/68fbc460d6abe1f1a7afda6c/acc9470aa_sinalamarelo.png",
+      "arquivoDaIlustracao": "sinal_amarelo.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "sinal_vermelho",
+      "palavra": "sinal vermelho",
+      "definicao": "Luz vermelha do semáforo que, quando acende, indica que os veículos ou os pedestres devem parar.",
+      "grupo": "Sinais",
+      "urlDaIlustracao": "https://media.base44.com/images/public/68fbc460d6abe1f1a7afda6c/9b69c1276_sinalvermelho1.png",
+      "arquivoDaIlustracao": "sinal_vermelho.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "ciclista",
+      "palavra": "ciclista",
+      "definicao": "Pessoa que conduz uma bicicleta. É um participante vulnerável do trânsito e deve usar equipamentos de segurança, como capacete, e respeitar as regras de circulação, incluindo o uso de ciclovia ou ciclofaixa quando disponíveis.",
+      "grupo": "PessoasESeguranca",
+      "urlDaIlustracao": "https://media.base44.com/images/public/68fbc460d6abe1f1a7afda6c/0946d4565_ciclista1.png",
+      "arquivoDaIlustracao": "ciclista.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "passageiro",
+      "palavra": "passageiro",
+      "definicao": "Pessoa que está dentro de um carro, metrô ou outro veículo, mas não o conduz. Ele acompanha o motorista.",
+      "grupo": "PessoasESeguranca",
+      "urlDaIlustracao": "",
+      "arquivoDaIlustracao": "",
+      "semIlustracao": true
+    },
+    {
+      "id": "cinto_de_seguranca",
+      "palavra": "cinto de segurança",
+      "definicao": "Cinto de proteção que a gente deve prender ao nosso corpo e ao assento com a fivela e o fecho quando entramos no carro ou no avião para evitar machucar em freada ou acidente.",
+      "grupo": "PessoasESeguranca",
+      "urlDaIlustracao": "https://base44.app/api/apps/68fbc460d6abe1f1a7afda6c/files/public/68fbc460d6abe1f1a7afda6c/9a5e867c2_cintodeseguranca.png",
+      "arquivoDaIlustracao": "cinto_de_seguranca.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "buzina",
+      "palavra": "buzina",
+      "definicao": "Botão do veículo que, quando alguém apertado, faz barulho para chamar atenção no trânsito.",
+      "grupo": "PessoasESeguranca",
+      "urlDaIlustracao": "https://media.base44.com/images/public/68fbc460d6abe1f1a7afda6c/b9d106a18_buzina.png",
+      "arquivoDaIlustracao": "buzina.png",
+      "semIlustracao": false
+    },
+    {
+      "id": "engarrafamento",
+      "palavra": "engarrafamento",
+      "definicao": "Quando tem muitos veículos acumulados na via e atrapalha a passagem de outros veículos.",
+      "grupo": "Situacao",
+      "urlDaIlustracao": "https://media.base44.com/images/public/68fbc460d6abe1f1a7afda6c/f58718650_engarrafamento.png",
+      "arquivoDaIlustracao": "engarrafamento.png",
+      "semIlustracao": false
+    }
+  ]
+}

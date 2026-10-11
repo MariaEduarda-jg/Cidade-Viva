@@ -12,6 +12,9 @@ public class Perfil
     // Código secreto: 3 índices de IconesDePerfil.figuras, na ordem escolhida.
     public int[] codigo = new int[0];
     public List<ProgressoDoMinigame> minigames = new List<ProgressoDoMinigame>();
+    // Álbum Glotrânsito: só entram aqui os verbetes em que a criança já mexeu.
+    // Perfil gravado antes de existirem verbetes não tem este campo no arquivo e carrega com a lista vazia.
+    public List<ProgressoDoVerbete> verbetes = new List<ProgressoDoVerbete>();
 
     // Perfil "Visitante": só existe na memória, nunca vira arquivo.
     [NonSerialized] public bool visitante;
@@ -35,6 +38,40 @@ public class Perfil
         minigames.Add(novo);
         return novo;
     }
+
+    public ProgressoDoVerbete EstadoDoVerbete(string idDoVerbete, bool criarSeFaltar)
+    {
+        if (verbetes == null)
+        {
+            verbetes = new List<ProgressoDoVerbete>();
+        }
+
+        foreach (ProgressoDoVerbete v in verbetes)
+        {
+            if (v.id == idDoVerbete)
+            {
+                return v;
+            }
+        }
+
+        if (!criarSeFaltar)
+        {
+            return null;
+        }
+
+        var novo = new ProgressoDoVerbete { id = idDoVerbete };
+        verbetes.Add(novo);
+        return novo;
+    }
+}
+
+[Serializable]
+public class ProgressoDoVerbete
+{
+    // Id do verbete em verbetes.json (ex.: "faixa_de_pedestre").
+    public string id;
+    // A figurinha deste verbete já está no álbum da criança.
+    public bool desbloqueado;
 }
 
 [Serializable]

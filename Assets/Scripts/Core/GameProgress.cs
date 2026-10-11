@@ -97,6 +97,42 @@ public static class GameProgress
         return ObterNiveisConcluidos(nomeDaArea) > 0;
     }
 
+    // ---- Álbum Glotrânsito: verbetes desbloqueados no perfil ativo (id = Verbete.id) ----
+
+    // Põe a figurinha do verbete no álbum. Devolve true se era nova (pra tela poder comemorar).
+    public static bool DesbloquearVerbete(string idDoVerbete)
+    {
+        ProgressoDoVerbete v = Perfis.Ativo.EstadoDoVerbete(idDoVerbete, true);
+        if (v.desbloqueado)
+        {
+            return false;
+        }
+
+        v.desbloqueado = true;
+        Perfis.SalvarAtivo();
+        Debug.Log("Verbete desbloqueado por " + Perfis.Ativo.nome + ": " + idDoVerbete);
+        return true;
+    }
+
+    public static bool VerbeteDesbloqueado(string idDoVerbete)
+    {
+        ProgressoDoVerbete v = Perfis.Ativo.EstadoDoVerbete(idDoVerbete, false);
+        return v != null && v.desbloqueado;
+    }
+
+    public static int ContarVerbetesDesbloqueados()
+    {
+        int total = 0;
+        foreach (Verbete v in VerbeteDatabase.Instancia.Todos)
+        {
+            if (VerbeteDesbloqueado(v.id))
+            {
+                total++;
+            }
+        }
+        return total;
+    }
+
     static ProgressoDoMinigame Ler(string nomeDaArea)
     {
         ProgressoDoMinigame m = Perfis.Ativo.Progresso(IdDaArea(nomeDaArea), false);

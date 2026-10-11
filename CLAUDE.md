@@ -2,13 +2,49 @@
 
 Jogo educativo 3D para crianças de 6 a 9 anos, parte do projeto de extensão Glotec (UnB) — linha Glotrânsito.
 
+## Nova direção (2026-10-11): o jogo ensina os verbetes do Glotrânsito
+
+**Prazo final: 30/11/2026.** Ponto de retorno antes da mudança: tag git `antes-do-glotransito` (commit `48521db`).
+
+O jogo passa a ensinar os **38 verbetes do glossário Glotrânsito** (<https://glotransito.com>). A enchente levou embora o trânsito de Brasília, e **cada verbete é uma peça a reconstruir**: ao reconstruir a peça, a criança aprende a palavra e a definição dela. Público: crianças de 6 a 9 anos.
+
+**Regra que não tem exceção: a definição de um verbete é sempre copiada do glossário, nunca reescrita.** Nada de resumir, simplificar, corrigir, "melhorar" ou completar uma definição, nem em tela, nem em fala, nem em dica, nem no JSON. O texto vem de `Verbete.definicao` exatamente como está em `Assets/Data/verbetes.json` (inclusive pontuação e espaços). Se a definição precisar mudar, quem muda é o glossário; aqui só se extrai de novo.
+
+**Grupos de verbetes** (`GrupoDeVerbete`):
+- `Veiculos` (14): ambulância, automóvel, bicicleta, bicicleta elétrica, bonde, caminhão de bombeiro, caminhão trator, micro-ônibus, motocicleta, motoneta, ônibus, quadriciclo, reboque, viatura.
+- `ViasEEstruturas` (14): via, via rural, via urbana, calçada, faixa de pedestre, ciclovia, ciclofaixa, ponte, túnel, viaduto, passarela, passagem subterrânea, retorno, estacionamento.
+- `Sinais` (5): semáforo, semáforo de pedestre, sinal verde, sinal amarelo, sinal vermelho.
+- `PessoasESeguranca` (4): ciclista, passageiro, cinto de segurança, buzina.
+- `Situacao` (1): engarrafamento.
+
+**4 mecânicas planejadas** (nenhuma feita ainda):
+1. **Oficina de Veículos** — montar o veículo seguindo a definição (grupo `Veiculos`).
+2. **Obras da Cidade** — escolher a estrutura certa para ligar dois pontos (grupo `ViasEEstruturas`).
+3. **Central de Sinais** — controlar semáforos de veículos e de pedestres (grupo `Sinais`).
+4. **Rua Viva** — passageiro, ciclista, buzina e engarrafamento (grupos `PessoasESeguranca` e `Situacao`).
+
+**Progresso: Álbum Glotrânsito** — uma figurinha por verbete, com a definição e a ilustração do glossário. Ainda não tem tela; o que existe é o dado no perfil (abaixo).
+
+**Situação dos minigames antigos** (nenhum foi apagado nem alterado nesta etapa):
+- **Concluídos, a reaproveitar:** Corre, Correndo! e Travessia Segura.
+- **A substituir:** Onde Eu Vou?, Recicla Comigo!, Pedal Seguro, Sobe, Sobe!, Semáforo Mágico, Olho Vivo! e o Guarda o Sinal (que nunca chegou a ser criado).
+
+**O que já existe da nova direção:**
+- `Assets/Data/verbetes.json`: os 38 verbetes extraídos do site em 2026-10-11 (`id` sem acento, `palavra`, `definicao`, `grupo`, `urlDaIlustracao`, `arquivoDaIlustracao`, `semIlustracao`). O site é uma aplicação que carrega os dados depois de abrir; a lista veio da mesma consulta pública que a página inicial faz (`https://glotransito.com/api/apps/68fbc460d6abe1f1a7afda6c/entities/Entry`).
+- `Assets/Art/Verbetes/`: 36 ilustrações do glossário, com o `id` como nome (35 `.png` e `bonde.jpg`), importadas como sprite em 1024 px. **Sem ilustração no site: `ciclovia` e `passageiro`** (`semIlustracao: true`); não inventar imagem pra eles sem combinar com a equipe.
+- `Verbete` e `VerbeteDatabase` (`Scripts/Core`): `VerbeteDatabase.Instancia` (asset `Assets/Resources/VerbeteDatabase.asset`, com o JSON e os sprites) dá `Todos`, `Buscar(palavraOuId)` (ignora maiúsculas, acentos e separadores) e `ListarPorGrupo(grupo)`; `verbete.ilustracao` é o sprite (nulo se não houver).
+- Perfil: `Perfil.verbetes` (lista de `ProgressoDoVerbete { id, desbloqueado }`) vai no `perfil_<id>.json`; perfis antigos, sem o campo, carregam com a lista vazia. O jogo usa `GameProgress.DesbloquearVerbete(id)`, `VerbeteDesbloqueado(id)` e `ContarVerbetesDesbloqueados()`.
+- Menu **Cidade Viva > Verbetes > Atualizar banco de verbetes** (`VerbetesConstrutor.cs`): refaz o asset depois de trocar o JSON ou as imagens.
+
+O que está descrito daqui pra baixo é o jogo como foi construído até 2026-10-11 (hub, perfis, níveis, arte, os 8 minigames). Continua valendo como descrição do que existe no projeto; onde conflitar com esta seção, vale esta.
+
 ## Enredo
 Uma tempestade alaga Brasília e leva embora toda a sinalização de trânsito. Uma família (pai, mãe, filho mais velho, filha, filho mais novo) se divide para ajudar a reconstruir a cidade.
 
 ## Estrutura do jogo
 Hub central navegável (mapa estilizado de Brasília) com áreas representando minigames. Cada área começa "cinza/danificada" e fica colorida quando o minigame correspondente é completado.
 
-## Minigames planejados
+## Minigames planejados (direção antiga; ver a situação de cada um em "Nova direção")
 1. Onde Eu Vou? — drag-and-drop de placas de trânsito pro lugar certo
 2. Travessia Segura — atravessar a rua com timing, estilo Frogger simplificado
 3. Recicla Comigo! — separar lixo em lixeiras corretas (orgânico, plástico, papel, vidro)
@@ -59,9 +95,11 @@ Unity 6 (6000.6.0f1), C#, plataforma-alvo Web (WebGL) e Desktop. Render pipeline
 2. Sprint 2 — progresso e recordes: estado salvo localmente (minigames jogados + recorde), `FinalizarMinigame(pontuacao)` padrão, áreas cinza→coloridas no Hub com recorde exibido, uma cena por minigame.
 3. Sprint 3 — "Corre, Correndo!" (runner 3 faixas com escudos, base para "Pedal Seguro"); depois "Olho Vivo!" (hotspots, base para "Onde Eu Vou?").
 
-**Falta criar:** o 9º minigame, "Guarda o Sinal" (`Area_GuardaOSinal` ainda aponta pro `Minigame_Template`).
+**Com a nova direção (Glotrânsito), as duas listas abaixo deixam de ser tarefas:** o "Guarda o Sinal" não será criado como estava planejado (o tema dele vai pra Central de Sinais) e os seis minigames antigos serão substituídos, não refeitos. As mecânicas novas seguem o `Assets/Scripts/PADRAO_MINIGAME.md`.
 
-**Falta refazer no padrão novo** (`Assets/Scripts/PADRAO_MINIGAME.md`): Onde Eu Vou?, Recicla Comigo!, Pedal Seguro, Sobe, Sobe!, Semáforo Mágico e Olho Vivo!. Feitos: Travessia Segura e Corre, Correndo!.
+~~**Falta criar:** o 9º minigame, "Guarda o Sinal"~~ (`Area_GuardaOSinal` ainda aponta pro `Minigame_Template`).
+
+~~**Falta refazer no padrão novo:** Onde Eu Vou?, Recicla Comigo!, Pedal Seguro, Sobe, Sobe!, Semáforo Mágico e Olho Vivo!.~~ Feitos e a reaproveitar: Travessia Segura e Corre, Correndo!.
 
 **Em aberto com a equipe:** GDD diz 10 minigames mas lista 9 (+ variante Reciclomania); GDD sugere hub por toque/clique, o atual é personagem andando com setas.
 
