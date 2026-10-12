@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18b31ebee526ac64dbe24dee30dca563, type: 3}
+  m_Name: Problema_r2_rua_vovo
+  m_EditorClassIdentifier: Assembly-CSharp::ObraProblema
+  modo: 1
+  nivel: 2
+  ordem: 1
+  enunciado: "A vov\xF3 vai a p\xE9 por esta rua, fora do caminho dos carros."
+  obstaculo: 6
+  ruaComum: 0
+  quemPassa: 1
+  nomeDeQuemPassa: "A vov\xF3"
+  modeloDeQuemPassa: {fileID: 5893933730049702463, guid: 44b969300232346449bba11b043f925e, type: 3}
+  opcoes:
+  - calcada
+  - ciclofaixa
+  - estacionamento
+  correta: calcada
+  trechoDaDefinicao: destinada para a passagem de pedestres ou animais
+  rotaDaAmbulancia: 0
+  observacao: "\"Parte de uma rua\" / \"ao lado da via dos outros ve\xEDculos\" foi encenado como a beira de uma rua com carros passando."

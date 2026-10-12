@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18b31ebee526ac64dbe24dee30dca563, type: 3}
+  m_Name: Problema_n2_avenida_menina
+  m_EditorClassIdentifier: Assembly-CSharp::ObraProblema
+  nivel: 2
+  ordem: 1
+  obstaculo: 2
+  ruaComum: 0
+  quemPassa: 1
+  nomeDeQuemPassa: A menina
+  modeloDeQuemPassa: {fileID: 8763192138644075224, guid: dcfd16fece6f11d4f9d7e39677a6572d, type: 3}
+  opcoes:
+  - viaduto
+  - passarela
+  correta: passarela
+  trechoDaDefinicao: travessia de pedestres sobre vias
+  rotaDaAmbulancia: 0
+  observacao: "Gerado pelo ObrasConstrutor a partir das defini\xE7\xF5es do gloss\xE1rio; pendente de revis\xE3o da coordena\xE7\xE3o."

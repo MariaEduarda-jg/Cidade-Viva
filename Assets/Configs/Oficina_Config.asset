@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a5d5d53cf8143d47aea889b136c1143, type: 3}
+  m_Name: Oficina_Config
+  m_EditorClassIdentifier: Assembly-CSharp::OficinaConfig
+  nomesDasPecas:
+  - roda
+  - pedal
+  - motor
+  - "motor el\xE9trico"
+  - trilho
+  - sirene
+  - luzes
+  - carroceria
+  - engate
+  - assento
+  - asa
+  - "h\xE9lice"
+  - "\xE2ncora"
+  - vela de barco
+  - remo
+  - cobertura
+  ordemDasPecasErradas: 0a000000040000000b0000000c0000000d0000000e000000050000000100000002000000i
+  formatoDoNivel: "N\xEDvel {0}  \xB7  Ve\xEDculo {1} de {2}"
+  recadoInicial: "Leia a defini\xE7\xE3o e arraste as pe\xE7as para a bancada."
+  recadoDeAcerto: Isso! Encaixou.
+  recadoDeVeiculoPronto: Pronto! Agora vamos testar.
+  recadoDeTempoEsgotado: O tempo acabou. Termine com calma!
+  formatoDaDica: "Pe\xE7as: {0}"
+  formatoDeItemDaDica: "{0} \xD7 {1}"
+  sufixoOuMais: ' (ou mais)'
+  balaoForaDaDefinicao: "{1} n\xE3o tem {0}. Tente outra pe\xE7a!"
+  recadoDeExtra: "Encaixou! A defini\xE7\xE3o n\xE3o fala de {0}, mas pode ter."
+  balaoDeExtraRepetido: "Essa pe\xE7a j\xE1 est\xE1 no ve\xEDculo."
+  balaoDeProibida: "A defini\xE7\xE3o diz: \"{0}\". Essa pe\xE7a n\xE3o serve."
+  balaoDeBaseCompleta: "J\xE1 tem todas as pe\xE7as desse tipo!"
+  balaoJaCompleto: "A defini\xE7\xE3o diz: \"{0}\". J\xE1 est\xE1 completo!"
+  balaoJaCompletoDeOutroVerbete: "A defini\xE7\xE3o de {0} diz: \"{1}\". J\xE1 est\xE1 completo!"
+  rotulosDosCriterios:
+  - Sem erro
+  - No tempo
+  - Sem dica
+  recadoDoTeste: Dirija com as setas e pegue as 3 moedas!
+  recadoDoFimDoTeste: "Funcionou! Veja o que voc\xEA montou."
+  recadoDoTesteNosTrilhos: Acelere pelos trilhos e pegue as 3 moedas!
+  recadoDeEngatar: "Sem motor ele n\xE3o anda. Aperte Engatar!"
+  recadoDeEngatado: Engatou! Agora dirija e pegue as 3 moedas!
+  tempoDoBalao: 4
+  tempoDeVooDaPeca: 0.28
+  comprimentoDoVeiculoNaBancada: 2.1
+  pontosPorVeiculo: 100
+  descontoPorErro: 10
+  minimoPorVeiculo: 40
+  velocidadeMaxima: 4.5
+  aceleracao: 6
+  giroEmGrausPorSegundo: 150
+  distanciaPraPegarMoeda: 2
+  tempoMaximoDoTeste: 40
+  escalaDoVeiculoNaPista: 1.6
+  somDePegar: {fileID: 8300000, guid: 4a632fed2d2437c4986c7339972ed971, type: 3}
+  somDeEncaixe: {fileID: 8300000, guid: 2d94a86b1c552224aaf6d1ad88ac8445, type: 3}
+  somDeErro: {fileID: 8300000, guid: 4a7623e25a4916744855ab9c8fb23632, type: 3}
+  somDeAcerto: {fileID: 8300000, guid: b6105524ee9596f4cbdfd16b2831d6dd, type: 3}
+  somDeDica: {fileID: 8300000, guid: c59878a07e356d9469621080e77decf1, type: 3}
+  somDeMotorLigando: {fileID: 8300000, guid: 5c274b58157239044aed353b0e4359f8, type: 3}
+  somDeCampainha: {fileID: 8300000, guid: aa9c638a0f56b974e8eeb09fbac37286, type: 3}
+  somDeMoeda: {fileID: 8300000, guid: 059aa93cf2d41c843ac9e02e8387796f, type: 3}
+  somDeEngate: {fileID: 8300000, guid: ef0039df72879d54997f8cffb0eddbc2, type: 3}

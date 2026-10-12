@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18b31ebee526ac64dbe24dee30dca563, type: 3}
+  m_Name: Problema_n4_rio_moca
+  m_EditorClassIdentifier: Assembly-CSharp::ObraProblema
+  nivel: 4
+  ordem: 0
+  obstaculo: 0
+  ruaComum: 0
+  quemPassa: 1
+  nomeDeQuemPassa: "A mo\xE7a"
+  modeloDeQuemPassa: {fileID: 2028901319107582401, guid: 171e468289a5ee04a9a8541a2f0605af, type: 3}
+  opcoes:
+  - ponte
+  - passarela
+  - passagem_subterranea
+  - faixa_de_pedestre
+  correta: ponte
+  trechoDaDefinicao: "ve\xEDculos, pedestres e animais atravessem sobre \xE1gua"
+  rotaDaAmbulancia: 0
+  observacao: "Gerado pelo ObrasConstrutor a partir das defini\xE7\xF5es do gloss\xE1rio; pendente de revis\xE3o da coordena\xE7\xE3o."

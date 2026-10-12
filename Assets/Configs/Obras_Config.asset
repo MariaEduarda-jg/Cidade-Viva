@@ -1,0 +1,166 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 585f2e79bb1e83840929db6647ba5e61, type: 3}
+  m_Name: Obras_Config
+  m_EditorClassIdentifier: Assembly-CSharp::ObrasConfig
+  regras:
+  - idDoVerbete: ponte
+    obstaculos: 00000000i
+    trechoDoObstaculo: "sobre \xE1gua, como de rios ou lagos"
+    quemPassa: 000000000100000002000000i
+    trechoDeQuemPassa: "ve\xEDculos, pedestres e animais"
+    verbeteDoTrechoDeQuem: 
+  - idDoVerbete: tunel
+    obstaculos: 0200000001000000i
+    trechoDoObstaculo: "atrav\xE9s de outras vias, morros e montanhas"
+    quemPassa: 0000000001000000i
+    trechoDeQuemPassa: "ve\xEDculos ou pessoas"
+    verbeteDoTrechoDeQuem: 
+  - idDoVerbete: viaduto
+    obstaculos: 02000000i
+    trechoDoObstaculo: por cima de outras vias
+    quemPassa: 00000000i
+    trechoDeQuemPassa: "para ve\xEDculos"
+    verbeteDoTrechoDeQuem: 
+  - idDoVerbete: passarela
+    obstaculos: 02000000i
+    trechoDoObstaculo: sobre vias
+    quemPassa: 01000000i
+    trechoDeQuemPassa: travessia de pedestres
+    verbeteDoTrechoDeQuem: 
+  - idDoVerbete: passagem_subterranea
+    obstaculos: 02000000i
+    trechoDoObstaculo: abaixo da via
+    quemPassa: 0100000002000000i
+    trechoDeQuemPassa: para pedestre, ou animal
+    verbeteDoTrechoDeQuem: 
+  - idDoVerbete: faixa_de_pedestre
+    obstaculos: 02000000i
+    trechoDoObstaculo: Parte da via pintada com listras brancas
+    quemPassa: 01000000i
+    trechoDeQuemPassa: para o pedestre atravessar
+    verbeteDoTrechoDeQuem: 
+  - idDoVerbete: via
+    obstaculos: 030000000400000005000000i
+    trechoDoObstaculo: para se movimentarem de um lugar para o outro
+    quemPassa: 00000000010000000200000003000000i
+    trechoDeQuemPassa: "ve\xEDculos, pessoas e animais"
+    verbeteDoTrechoDeQuem: 
+  - idDoVerbete: via_rural
+    obstaculos: 03000000i
+    trechoDoObstaculo: "liga propriedades rurais \xE0s cidades"
+    quemPassa: 00000000010000000200000003000000i
+    trechoDeQuemPassa: "ve\xEDculos, pessoas e animais"
+    verbeteDoTrechoDeQuem: via
+  - idDoVerbete: via_urbana
+    obstaculos: 04000000i
+    trechoDoObstaculo: "dentro da cidade, que fica pr\xF3xima a casas, pr\xE9dios e lojas"
+    quemPassa: 00000000010000000200000003000000i
+    trechoDeQuemPassa: "ve\xEDculos, pessoas e animais"
+    verbeteDoTrechoDeQuem: via
+  - idDoVerbete: calcada
+    obstaculos: 06000000i
+    trechoDoObstaculo: Parte de uma rua
+    quemPassa: 0100000002000000i
+    trechoDeQuemPassa: pedestres ou animais
+    verbeteDoTrechoDeQuem: 
+  - idDoVerbete: ciclovia
+    obstaculos: 07000000i
+    trechoDoObstaculo: "est\xE1 em via separada do tr\xE2nsito dos ve\xEDculos"
+    quemPassa: 03000000i
+    trechoDeQuemPassa: "circula\xE7\xE3o exclusiva para ciclista"
+    verbeteDoTrechoDeQuem: 
+  - idDoVerbete: ciclofaixa
+    obstaculos: 06000000i
+    trechoDoObstaculo: "est\xE1 ao lado da via dos outros ve\xEDculos"
+    quemPassa: 03000000i
+    trechoDeQuemPassa: "circula\xE7\xE3o exclusiva de bicicletas"
+    verbeteDoTrechoDeQuem: 
+  - idDoVerbete: retorno
+    obstaculos: 08000000i
+    trechoDoObstaculo: "passar para se mover na via de sentido contr\xE1rio ao que estava"
+    quemPassa: 00000000i
+    trechoDeQuemPassa: "permite o ve\xEDculo mudar o lado"
+    verbeteDoTrechoDeQuem: 
+  - idDoVerbete: estacionamento
+    obstaculos: 09000000i
+    trechoDoObstaculo: "Local para guardar ve\xEDculos temporariamente, de forma organizada"
+    quemPassa: 00000000i
+    trechoDeQuemPassa: "guardar ve\xEDculos"
+    verbeteDoTrechoDeQuem: 
+  larguraDoLote: 20
+  comprimentoDoLote: 26
+  zDaEspera: -12.2
+  zDaParada: -10.6
+  zDaChegada: 12.2
+  xDaBeira: 3.25
+  xDaPistaDeIda: 2.9
+  tempoDaObra: 1.1
+  tempoDeDesmontar: 0.5
+  tempoDoBalao: 4.5
+  velocidadeAPe: 3.2
+  velocidadeDeVeiculo: 6
+  velocidadeDeBicicleta: 4.5
+  pausaAntesDoFim: 1.2
+  distanciaDaCamera: 44
+  inclinacaoDaCamera: 50
+  limitesDaInclinacao: {x: 32, y: 65}
+  giroMaximoDaCamera: 40
+  sensibilidadeDoGiro: 0.2
+  deslocamentoDoFoco: {x: 0, y: 0, z: -4.5}
+  pontosPorProblema: 100
+  descontoPorErro: 10
+  minimoPorProblema: 40
+  textoDoNivel: "N\xEDvel {0}"
+  textoDoContador: Obra {0} de {1}
+  enunciado: '{0} precisa atravessar {1}.'
+  nomeDoRio: o rio
+  nomeDoMorro: o morro
+  nomeDaAvenida: a avenida
+  nomeDaRua: a rua
+  recadoDeEscolher: "Toque numa estrutura e leia a defini\xE7\xE3o."
+  recadoDeConstruir: "Agora toque no lugar que est\xE1 brilhando!"
+  recadoSemEstrutura: Primeiro escolha uma estrutura!
+  recadoDaObra: Construindo...
+  recadoDeAcerto: Isso! {0} atravessou.
+  recadoDaAmbulanciaAntes: "Primeiro ajude a ambul\xE2ncia no trecho de antes!"
+  recadoDoHospital: "A ambul\xE2ncia chegou ao hospital!"
+  recadoDeTempoEsgotado: O tempo acabou, mas pode terminar com calma.
+  balaoDeObstaculoErrado: "A defini\xE7\xE3o de {0} diz: \"{1}\".\n{2}"
+  balaoDeQuemErrado: "A defini\xE7\xE3o de {0} diz: \"{1}\".\nQuem passa aqui \xE9 {2}!"
+  aquiRio: "Aqui \xE9 um rio!"
+  aquiMorro: "Aqui \xE9 um morro!"
+  aquiVia: "Aqui \xE9 uma via!"
+  aquiCampoECidade: "Aqui o caminho liga a fazenda \xE0 cidade!"
+  aquiDentroDaCidade: "Aqui \xE9 dentro da cidade!"
+  aquiLugarQualquer: "Aqui n\xE3o \xE9 cidade nem fazenda!"
+  aquiBeiraDaRua: "Aqui \xE9 a beira de uma rua com carros!"
+  aquiSeparadoDoTransito: Aqui o caminho fica longe dos carros!
+  aquiMudarDeSentido: "Aqui o ve\xEDculo precisa voltar!"
+  aquiGuardarVeiculos: "Aqui \xE9 preciso guardar os ve\xEDculos!"
+  umVeiculo: "um ve\xEDculo"
+  umPedestre: um pedestre
+  umAnimal: um animal
+  umCiclista: um ciclista
+  dica: "Procure a defini\xE7\xE3o que diz: \"{0}\""
+  rotulosDosCriterios:
+  - sem erros
+  - no tempo
+  - sem dica
+  somDeEscolher: {fileID: 8300000, guid: 4a632fed2d2437c4986c7339972ed971, type: 3}
+  somDeObra: {fileID: 8300000, guid: 433ab5f150af4a840ba3094fbbb322db, type: 3}
+  somDeAcerto: {fileID: 8300000, guid: b6105524ee9596f4cbdfd16b2831d6dd, type: 3}
+  somDeErro: {fileID: 8300000, guid: 4a7623e25a4916744855ab9c8fb23632, type: 3}
+  somDeComemoracao: {fileID: 8300000, guid: b64e11d0e7942054b86186a98c34f1d2, type: 3}
+  somDeDica: {fileID: 8300000, guid: c59878a07e356d9469621080e77decf1, type: 3}
+  somDeBloqueio: {fileID: 8300000, guid: 0048380875b385343903d1cd255a3db5, type: 3}
+  somDaSirene: {fileID: 8300000, guid: 283093c94a61ba947a2c1092f6271d10, type: 3}

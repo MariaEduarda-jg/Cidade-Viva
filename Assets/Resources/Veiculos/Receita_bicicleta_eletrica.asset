@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 523fd1b478bd4eb4b9085f9389689697, type: 3}
+  m_Name: Receita_bicicleta_eletrica
+  m_EditorClassIdentifier: Assembly-CSharp::VeiculoReceita
+  idDoVerbete: bicicleta_eletrica
+  nivel: 5
+  ordem: 0
+  chassi: DuasRodas
+  itens:
+  - peca: 0
+    tambemAceita: 
+    quantidade: 2
+    ouMais: 0
+    trechoDaDefinicao: possui duas rodas
+    verbeteDoTrecho: bicicleta
+    comoEhCitado: 
+    basePadrao: 0
+    opcional: 0
+  - peca: 1
+    tambemAceita: 
+    quantidade: 1
+    ouMais: 0
+    trechoDaDefinicao: se move quando a pessoa pedala
+    verbeteDoTrecho: bicicleta
+    comoEhCitado: 
+    basePadrao: 0
+    opcional: 0
+  - peca: 2
+    tambemAceita: 03000000i
+    quantidade: 1
+    ouMais: 0
+    trechoDaDefinicao: com motor
+    verbeteDoTrecho: 
+    comoEhCitado: 
+    basePadrao: 0
+    opcional: 0
+  proibidas: []
+  extrasAceitos: 09000000i
+  andaEmTrilhos: 0
+  puxadoPor: 
+  velocidadeNaPista: 1
+  variante: 
+  modeloPronto: {fileID: 3351184577976853827, guid: e321f1c6c729d0c43bb4273dd46cf8e2, type: 3}
+  escalaDoModeloPronto: 0.9
+  giroDoModeloPronto: 180
+  observacao: "A defini\xE7\xE3o come\xE7a com \"Bicicleta\": as duas rodas e o pedal v\xEAm da defini\xE7\xE3o do verbete bicicleta. A defini\xE7\xE3o diz s\xF3 \"motor\", sem dizer de que tipo: por isso o encaixe aceita o motor comum e o motor el\xE9trico. \"menos potente que a moto\" e \"serve para se mover de um lugar para outro\" n\xE3o viram pe\xE7a."

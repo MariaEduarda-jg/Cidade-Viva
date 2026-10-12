@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18b31ebee526ac64dbe24dee30dca563, type: 3}
+  m_Name: Problema_r1_cidade_carro
+  m_EditorClassIdentifier: Assembly-CSharp::ObraProblema
+  modo: 1
+  nivel: 1
+  ordem: 1
+  enunciado: "O carro vai da casa at\xE9 a loja, dentro da cidade."
+  obstaculo: 4
+  ruaComum: 0
+  quemPassa: 0
+  nomeDeQuemPassa: O carro
+  modeloDeQuemPassa: {fileID: 7231712432178689618, guid: b12e4c00d58e0824f89f7fd46355235c, type: 3}
+  opcoes:
+  - via_urbana
+  - via_rural
+  correta: via_urbana
+  trechoDaDefinicao: "dentro da cidade, que fica pr\xF3xima a casas, pr\xE9dios e lojas"
+  rotaDaAmbulancia: 0
+  observacao: "A defini\xE7\xE3o de via rural/via urbana n\xE3o diz quem passa: isso vem da defini\xE7\xE3o de via. A via (pe\xE7a geral) tamb\xE9m serviria aqui, por isso n\xE3o \xE9 oferecida."

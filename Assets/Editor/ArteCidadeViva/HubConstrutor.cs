@@ -41,6 +41,7 @@ namespace CidadeViva.EditorArte
 
             Chao(cidade);
             Ruas(cidade);
+            BairrosNovos(cidade);
             Vizinhanca(cidade);
             Limites(cidade);
 
@@ -59,6 +60,8 @@ namespace CidadeViva.EditorArte
                 MontarArea(area, par.Value, n, coresDoMarcador[n % coresDoMarcador.Length], texturasCinza);
                 n++;
             }
+
+            foreach (var area in AreasDeVerbetes) MontarAreaDeVerbetes(area, texturasCinza);
 
             Jogador();
             MenuConstrutor.PainelDoHub();
@@ -96,6 +99,7 @@ namespace CidadeViva.EditorArte
             F.Caixa(chao, "Calcada_Sul", "Cinza_Claro", 0, 0, -35.5f, 74f, .08f, 3f);
             F.Caixa(chao, "Calcada_Leste", "Cinza_Claro", 35.5f, 0, 0, 3f, .08f, 68f);
             F.Caixa(chao, "Calcada_Oeste", "Cinza_Claro", -35.5f, 0, 0, 3f, .08f, 68f);
+            ChaoDosBairrosNovos(chao);
             foreach (var r in chao.GetComponentsInChildren<MeshRenderer>())
                 r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         }
@@ -148,18 +152,15 @@ namespace CidadeViva.EditorArte
             var v = F.Grupo("Vizinhanca", cidade).transform;
 
             // Fundo modernista (norte): o Congresso no fim do "eixo", catedral e museu dos lados.
-            P(v, "Predios/Brasilia_Congresso", F.V(0, 0, 66f), 180);
-            P(v, "Predios/Brasilia_Catedral", F.V(-36f, 0, 52f));
-            P(v, "Predios/Brasilia_Museu_Cupula", F.V(40f, 0, 56f), 180);
-            P(v, "Predios/Brasilia_Palacio_Arcos", F.V(-78f, 0, 70f), 150);
-            P(v, "Predios/Brasilia_Bloco_Superquadra", F.V(-64f, 0, 22f), 90);
-            P(v, "Predios/Brasilia_Bloco_Superquadra", F.V(66f, 0, 26f), -90);
-            P(v, "Predios/Arranha_Ceu_A", F.V(-24f, 0, 84f), 180);
-            P(v, "Predios/Arranha_Ceu_D", F.V(26f, 0, 88f), 180);
-            P(v, "Predios/Predio_Comercial_Torre", F.V(70f, 0, 70f), 180);
-            foreach (float x in new[] { -9f, 9f })
-                foreach (float z in new[] { 39.5f, 45f })
-                    P(v, "Natureza/Palmeira_1", F.V(x, 0, z), x > 0 ? 40 : 200);
+            // A catedral e os blocos de superquadra ficam nos bairros novos (ver BairrosNovos).
+            P(v, "Predios/Brasilia_Congresso", F.V(0, 0, 112f), 180);
+            P(v, "Predios/Brasilia_Museu_Cupula", F.V(82f, 0, 50f), 180);
+            P(v, "Predios/Brasilia_Palacio_Arcos", F.V(-112f, 0, 44f), 90);
+            P(v, "Predios/Brasilia_Bloco_Superquadra", F.V(-64f, 0, 14f), 90);
+            P(v, "Predios/Brasilia_Bloco_Superquadra", F.V(66f, 0, 22f), -90);
+            P(v, "Predios/Arranha_Ceu_A", F.V(-74f, 0, 112f), 180);
+            P(v, "Predios/Arranha_Ceu_D", F.V(-96f, 0, 96f), 180);
+            P(v, "Predios/Predio_Comercial_Torre", F.V(100f, 0, 30f), 180);
 
             // Lado oeste: escola e casas. Lado leste: padaria e comércio. Todos virados pra cidade.
             P(v, "Predios/Escola", F.V(-46f, 0, -18f), 90);
@@ -189,7 +190,12 @@ namespace CidadeViva.EditorArte
                 if (lado == 0 && Mathf.Abs(ao_longo) < 12f) ao_longo = 14f * Mathf.Sign(ao_longo + .01f) + ao_longo * .5f;
                 Vector3 pos = lado == 0 ? F.V(ao_longo, 0, faixa) : lado == 1 ? F.V(ao_longo, 0, -faixa)
                     : lado == 2 ? F.V(faixa, 0, ao_longo) : F.V(-faixa, 0, ao_longo);
-                P(v, "Natureza/" + arvores[sorteio.Next(arvores.Length)], pos, sorteio.Next(360), .75f + (float)sorteio.NextDouble() * .35f);
+                string arvore = arvores[sorteio.Next(arvores.Length)];
+                int giro = sorteio.Next(360);
+                float escala = .75f + (float)sorteio.NextDouble() * .35f;
+                // Nada em cima das ruas novas nem tapando a câmera nelas.
+                if (NosBairrosNovos(pos, 7f)) continue;
+                P(v, "Natureza/" + arvore, pos, giro, escala);
             }
 
             // As plantas dos cantos de cada quarteirão ficam na própria área (CantosDoQuarteirao):
@@ -204,19 +210,55 @@ namespace CidadeViva.EditorArte
             P(v, "Natureza/Cachorro_Husky", F.V(28.2f, .08f, 35.2f), 220);
         }
 
-        // Paredes invisíveis pro jogador não sair da cidade.
+        // Paredes invisíveis em volta de tudo que é caminhável (a união dos retângulos de Caminhavel) e um chão
+        // por retângulo, porque o Terreno só vai até ±50.
         static void Limites(Transform cidade)
         {
             var limites = F.Grupo("Limites", cidade).transform;
-            foreach (var (pos, tam) in new[]
-                     {
-                         (F.V(0, 2, 37.5f), F.V(76, 4, 1)), (F.V(0, 2, -37.5f), F.V(76, 4, 1)),
-                         (F.V(37.5f, 2, 0), F.V(1, 4, 76)), (F.V(-37.5f, 2, 0), F.V(1, 4, 76)),
-                     })
+            const float c = .5f, x0 = -100f, z0 = -50f;
+            const int nx = 400, nz = 300;
+            var livre = new bool[nx, nz];
+            foreach (var r in Caminhavel)
             {
-                var go = F.Grupo("Parede", limites, pos);
-                go.AddComponent<BoxCollider>().size = tam;
+                for (int i = Mathf.RoundToInt((r.xMin - x0) / c); i < Mathf.RoundToInt((r.xMax - x0) / c); i++)
+                    for (int j = Mathf.RoundToInt((r.yMin - z0) / c); j < Mathf.RoundToInt((r.yMax - z0) / c); j++)
+                        livre[i, j] = true;
+                Parede(limites, F.V(r.center.x, -.5f, r.center.y), F.V(r.width + 1f, 1f, r.height + 1f));
             }
+
+            // Parede em cada trecho de fronteira entre o que é caminhável e o que não é.
+            for (int i = 1; i < nx; i++)
+            {
+                int inicio = -1;
+                for (int j = 0; j <= nz; j++)
+                {
+                    bool borda = j < nz && livre[i - 1, j] != livre[i, j];
+                    if (borda && inicio < 0) inicio = j;
+                    if (borda || inicio < 0) continue;
+                    float a = z0 + inicio * c, b = z0 + j * c;
+                    Parede(limites, F.V(x0 + i * c, 2f, (a + b) / 2f), F.V(1f, 4f, b - a + 1f));
+                    inicio = -1;
+                }
+            }
+            for (int j = 1; j < nz; j++)
+            {
+                int inicio = -1;
+                for (int i = 0; i <= nx; i++)
+                {
+                    bool borda = i < nx && livre[i, j - 1] != livre[i, j];
+                    if (borda && inicio < 0) inicio = i;
+                    if (borda || inicio < 0) continue;
+                    float a = x0 + inicio * c, b = x0 + i * c;
+                    Parede(limites, F.V((a + b) / 2f, 2f, z0 + j * c), F.V(b - a + 1f, 4f, 1f));
+                    inicio = -1;
+                }
+            }
+        }
+
+        static void Parede(Transform limites, Vector3 pos, Vector3 tam)
+        {
+            var go = F.Grupo("Parede", limites, pos);
+            go.AddComponent<BoxCollider>().size = tam;
         }
 
         // ------------------------------------------------------------------ áreas dos minigames
@@ -315,7 +357,20 @@ namespace CidadeViva.EditorArte
         // Placa com o nome e o recorde. Fica fora do "Visual": sempre colorida, pra criança achar a área.
         static void Letreiro(GameObject area)
         {
-            var raiz = F.Grupo("Letreiro", area.transform, F.V(0, -.5f, 6.15f)).transform;
+            var raiz = PlacaDoLetreiro(area.transform, 6.15f, out Text titulo, out Text recorde);
+            titulo.text = area.GetComponent<AreaTrigger>().areaName;
+            recorde.text = "Venha jogar!";
+
+            var letreiro = raiz.gameObject.AddComponent<LetreiroDaArea>();
+            letreiro.area = area.GetComponent<AreaTrigger>();
+            letreiro.textoDoNome = titulo;
+            letreiro.textoDoRecorde = recorde;
+        }
+
+        // Dois postes, a placa e as duas linhas de texto (nome em cima, linha menor embaixo).
+        static Transform PlacaDoLetreiro(Transform area, float z, out Text titulo, out Text linha)
+        {
+            var raiz = F.Grupo("Letreiro", area, F.V(0, -.5f, z)).transform;
             foreach (float x in new[] { -1.9f, 1.9f })
                 F.Cilindro(raiz, "Poste", "Cinza_Escuro", F.V(x, 1.6f, 0), F.V(.14f, 3.2f, .14f));
             F.Cubo(raiz, "Placa", "Petroleo", F.V(0, 3.05f, 0), F.V(4.6f, 1.4f, .12f));
@@ -349,16 +404,9 @@ namespace CidadeViva.EditorArte
                 t.raycastTarget = false;
                 return t;
             }
-            var nomeDaArea = area.GetComponent<AreaTrigger>().areaName;
-            var titulo = NovoTexto("Nome", 46, ArtePaleta.Cor("Branco"), .42f, 1f, FontStyle.Bold);
-            titulo.text = nomeDaArea;
-            var recorde = NovoTexto("Recorde", 24, ArtePaleta.Cor("Mostarda_Clara"), .04f, .44f, FontStyle.Normal);
-            recorde.text = "Venha jogar!";
-
-            var letreiro = raiz.gameObject.AddComponent<LetreiroDaArea>();
-            letreiro.area = area.GetComponent<AreaTrigger>();
-            letreiro.textoDoNome = titulo;
-            letreiro.textoDoRecorde = recorde;
+            titulo = NovoTexto("Nome", 46, ArtePaleta.Cor("Branco"), .42f, 1f, FontStyle.Bold);
+            linha = NovoTexto("Recorde", 24, ArtePaleta.Cor("Mostarda_Clara"), .04f, .44f, FontStyle.Normal);
+            return raiz;
         }
 
         // Nas funções abaixo: v = Visual (sempre), c = Caos (até completar), a = Arrumado (depois de completar).
@@ -555,6 +603,501 @@ namespace CidadeViva.EditorArte
             P(v, "Natureza/Cachorro_Caramelo", F.V(2.9f, .1f, 2.1f), 200);
             P(v, "Props/Lixeira_De_Rua", F.V(-5.2f, .1f, 4.4f), 180);
             P(v, "Personagens/Mini_Mulher_2", F.V(-4.6f, .1f, 2.2f), 150, .9f);
+        }
+
+        // ------------------------------------------------------------------ bairros novos (ao norte da cidade)
+
+        // Por onde o jogador anda: o centro antigo e, ao norte, o Eixo, a Avenida e os lugares das áreas dos
+        // verbetes. Os lados são o meio das paredes invisíveis (múltiplos de 0,5 m). As paredes e o chão
+        // saem daqui (ver Limites), então pra abrir um caminho novo basta acrescentar um retângulo.
+        static readonly Rect[] Caminhavel =
+        {
+            Rect.MinMaxRect(-37.5f, -37.5f, 37.5f, 37.5f),   // centro (os 9 quarteirões)
+            Rect.MinMaxRect(-12.5f, 37.5f, 12.5f, 66.5f),    // Eixo, até o cruzamento com a Avenida
+            Rect.MinMaxRect(-88.5f, 51f, 60.5f, 66.5f),      // Avenida, com a ciclovia do lado sul
+            Rect.MinMaxRect(-54.5f, 41.5f, -35.5f, 51f),     // pracinha da Rua Viva
+            Rect.MinMaxRect(38.5f, 66.5f, 53.5f, 75.5f),     // rua que acaba no rio (Obras da Cidade)
+            Rect.MinMaxRect(-88.5f, 66.5f, -63.5f, 77f),     // pátio da Oficina
+        };
+
+        static bool NosBairrosNovos(Vector3 pos, float margem)
+        {
+            for (int i = 1; i < Caminhavel.Length; i++)
+            {
+                Rect r = Caminhavel[i];
+                if (pos.x > r.xMin - margem && pos.x < r.xMax + margem && pos.z > r.yMin - margem && pos.z < r.yMax + margem) return true;
+            }
+            return false;
+        }
+
+        // Chão dos bairros novos: o Eixo (duas pistas com calçadão no meio, do centro até o Congresso),
+        // a Avenida que cruza o Eixo, a ciclovia, a pracinha, o pátio da oficina e a rua que acaba no rio.
+        static void ChaoDosBairrosNovos(Transform chao)
+        {
+            // Eixo: pistas em x = ±7, calçadão de 8 m no meio, calçadas por fora.
+            foreach (float lado in new[] { -1f, 1f })
+            {
+                F.Caixa(chao, "Eixo_Pista", "Asfalto", lado * 7f, -.03f, 63.5f, 6f, .04f, 53f);
+                // A pista passa por cima da calçada norte do centro pra encontrar a rua de lá.
+                F.Caixa(chao, "Eixo_Ligacao", "Asfalto", lado * 7f, 0, 35.5f, 6f, .085f, 3.2f);
+                F.Caixa(chao, "Eixo_Calcada", "Cinza_Claro", lado * 11f, 0, 45.5f, 2f, .08f, 17f);
+                F.Caixa(chao, "Eixo_Calcada", "Cinza_Claro", lado * 11f, 0, 78f, 2f, .08f, 24f);
+            }
+            foreach (var (z, comprimento) in new[] { (46.5f, 19f), (77f, 26f) })
+            {
+                F.Caixa(chao, "Eixo_Calcadao", "Cinza_Claro", 0, 0, z, 8f, .08f, comprimento);
+                F.Caixa(chao, "Eixo_Calcadao_Piso", "Areia", 0, 0, z, 6.6f, .1f, comprimento - .7f);
+            }
+
+            // Avenida: de oeste (oficina) a leste, cruzando o Eixo em z = 60.
+            F.Caixa(chao, "Avenida", "Asfalto", -14f, -.03f, 60f, 149f, .04f, 8f);
+            foreach (float z in new[] { 55f, 65f })
+            {
+                F.Caixa(chao, "Avenida_Calcada", "Cinza_Claro", -50.25f, 0, z, 76.5f, .08f, 2f);
+                F.Caixa(chao, "Avenida_Calcada", "Cinza_Claro", 36.25f, 0, z, 48.5f, .08f, 2f);
+            }
+
+            // Ciclovia ao sul da Avenida, do Eixo até o fim (lado oeste).
+            F.Caixa(chao, "Ciclovia", "Terracota", -50.5f, 0, 52.8f, 75f, .06f, 2.2f);
+            for (float x = -87f; x < -13.5f; x += 1.75f)
+                F.Cubo(chao, "Ciclovia_Tracejado", "Branco", F.V(x, .066f, 52.8f), F.V(.9f, .01f, .1f));
+
+            // Pracinha da Rua Viva.
+            F.Caixa(chao, "Praca_Rua_Viva", "Cinza_Claro", -45f, 0, 46.8f, 18f, .08f, 9.8f);
+            F.Caixa(chao, "Praca_Rua_Viva_Piso", "Areia", -45f, 0, 46.6f, 16.6f, .1f, 8.6f);
+
+            // Pátio da oficina.
+            F.Caixa(chao, "Patio_Da_Oficina", "Cinza_Claro", -76f, 0, 75.6f, 24.6f, .08f, 19.2f);
+            F.Caixa(chao, "Patio_Da_Oficina_Piso", "Cinza", -76f, 0, 75.6f, 23.4f, .1f, 18f);
+
+            // Rua que sai da Avenida e acaba no rio; do outro lado ela continua até o túnel do morro.
+            F.Caixa(chao, "Rua_Do_Rio", "Asfalto", 46f, -.03f, 70.3f, 7f, .04f, 10.6f);
+            F.Caixa(chao, "Rua_Do_Rio_Outra_Margem", "Asfalto", 46f, -.03f, 90.5f, 7f, .04f, 12f);
+            foreach (float x in new[] { 41.75f, 50.25f })
+            {
+                F.Caixa(chao, "Rua_Do_Rio_Calcada", "Cinza_Claro", x, 0, 70.5f, 1.5f, .08f, 9f);
+                F.Caixa(chao, "Rua_Do_Rio_Calcada", "Cinza_Claro", x, 0, 90.5f, 1.5f, .08f, 12f);
+            }
+
+            // Rio: nasce num laguinho perto do Eixo e corre pro leste.
+            F.Caixa(chao, "Rio", "Agua", 66f, -.02f, 80f, 88f, .04f, 8f);
+            F.Cilindro(chao, "Rio_Laguinho", "Agua", F.V(22f, 0, 80f), F.V(13f, .04f, 11f));
+            foreach (float z in new[] { 75.4f, 84.6f })
+                F.Caixa(chao, "Rio_Margem", "Areia", 66f, -.02f, z, 88f, .035f, 1.3f);
+        }
+
+        // Pintura das ruas novas e o que há em volta delas (prédios, árvores, postes).
+        static void BairrosNovos(Transform cidade)
+        {
+            var pintura = F.Grupo("Pintura_Dos_Bairros_Novos", cidade).transform;
+            for (float z = 39f; z <= 89f; z += 3f)
+            {
+                if (z > 51f && z < 69f) continue;
+                F.Cubo(pintura, "Traco", "Branco", F.V(-7f, .016f, z), F.V(.16f, .012f, 1.4f));
+                F.Cubo(pintura, "Traco", "Branco", F.V(7f, .016f, z), F.V(.16f, .012f, 1.4f));
+            }
+            for (float x = -87f; x <= 59f; x += 3f)
+            {
+                if (Mathf.Abs(x) < 15f) continue;
+                F.Cubo(pintura, "Traco", "Branco", F.V(x, .016f, 60f), F.V(1.4f, .012f, .16f));
+            }
+            // Faixas de pedestre do cruzamento: no calçadão (atravessando a Avenida) e nas duas pistas do Eixo.
+            for (int i = 0; i < 8; i++)
+                F.Cubo(pintura, "Listra", "Branco", F.V(0, .018f, 56.85f + i * .9f), F.V(6.4f, .014f, .45f));
+            foreach (float z in new[] { 53.2f, 66.8f })
+                foreach (float lado in new[] { -1f, 1f })
+                    for (int i = 0; i < 6; i++)
+                        F.Cubo(pintura, "Listra", "Branco", F.V(lado * (4.75f + i * .9f), .018f, z), F.V(.45f, .014f, 2.2f));
+            // Linha de parada antes de cada faixa.
+            F.Cubo(pintura, "Parada", "Branco", F.V(7f, .018f, 51.4f), F.V(5.6f, .014f, .3f));
+            F.Cubo(pintura, "Parada", "Branco", F.V(-7f, .018f, 68.6f), F.V(5.6f, .014f, .3f));
+            F.Cubo(pintura, "Parada", "Branco", F.V(-11.6f, .018f, 58f), F.V(.3f, .014f, 3.6f));
+            F.Cubo(pintura, "Parada", "Branco", F.V(11.6f, .018f, 62f), F.V(.3f, .014f, 3.6f));
+            foreach (var r in pintura.GetComponentsInChildren<MeshRenderer>())
+                r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+
+            var v = F.Grupo("Bairros_Novos", cidade).transform;
+
+            // Eixo: palmeiras nas calçadas de fora e postes no calçadão.
+            foreach (float lado in new[] { -1f, 1f })
+            {
+                foreach (float z in new[] { 40f, 47f, 72f, 79f, 86f })
+                    P(v, "Natureza/Palmeira_1", F.V(lado * 11.2f, .08f, z), lado > 0 ? 40 : 200);
+                P(v, "Props/PosteKK", F.V(lado * 3.6f, .1f, 44f), lado > 0 ? 180 : 0);
+                P(v, "Props/PosteKK", F.V(lado * 3.6f, .1f, 74f), lado > 0 ? 180 : 0);
+            }
+            P(v, "Props/Banco_De_Praca", F.V(-3f, .1f, 40.5f), 90);
+            P(v, "Props/Banco_De_Praca", F.V(3f, .1f, 40.5f), -90);
+
+            // Esplanada (gramado entre o centro e a Avenida). Nada alto a menos de 6 m ao sul da Avenida,
+            // porque a câmera fica atrás do jogador.
+            P(v, "Natureza/Lago", F.V(34f, .02f, 44.5f), 0, 1.5f);
+            P(v, "Natureza/Arvore_Comum_1", F.V(20f, 0, 43f), 30, .9f);
+            P(v, "Natureza/Arvore_Salgueiro", F.V(48f, 0, 42.5f), 120, .9f);
+            P(v, "Natureza/Arvore_Comum_3", F.V(56f, 0, 44f), 200, .9f);
+            P(v, "Natureza/Arvore_Comum_2", F.V(-20f, 0, 43f), 80, .9f);
+            P(v, "Natureza/Arvore_Betula", F.V(-29f, 0, 44f), 10, .9f);
+            P(v, "Natureza/Flores", F.V(26f, 0, 48.5f), 0, 1.5f);
+            P(v, "Natureza/Flores", F.V(-24f, 0, 48.5f), 0, 1.5f);
+
+            // Avenida: postes na calçada do norte, casas depois da pracinha, superquadra e catedral ao fundo.
+            for (float x = -80f; x <= 56f; x += 17f)
+                if (Mathf.Abs(x) > 14f && !NosBairrosNovos(F.V(x, 0, 70f), 1f)) P(v, "Props/PosteKK", F.V(x, .08f, 65.6f), 180);
+            P(v, "Predios/Casa_01", F.V(-64f, 0, 40f));
+            P(v, "Predios/Casa_03", F.V(-74f, 0, 40f));
+            P(v, "Predios/Casa_04", F.V(-84f, 0, 40f));
+            P(v, "Predios/Brasilia_Bloco_Superquadra", F.V(-47f, 0, 80f), 180);
+            P(v, "Predios/Brasilia_Bloco_Superquadra", F.V(-40f, 0, 100f), 180);
+            P(v, "Natureza/Arvore_Comum_2", F.V(-60f, 0, 70f), 0, .9f);
+            P(v, "Natureza/Arvore_Comum_1", F.V(-34f, 0, 70.5f), 140, .9f);
+            P(v, "Predios/Brasilia_Catedral", F.V(-22f, 0, 80f));
+            P(v, "Natureza/Arvore_Comum_3", F.V(16f, 0, 70f), 60, .9f);
+            P(v, "Natureza/Arvore_Betula", F.V(31f, 0, 70.5f), 0, .9f);
+            P(v, "Natureza/Arvore_Salgueiro", F.V(60f, 0, 71f), 200, .9f);
+            P(v, "Natureza/Arvore_Pinheiro", F.V(74f, 0, 70f), 0, 1f);
+            P(v, "Natureza/Arvore_Pinheiro", F.V(66f, 0, 90f), 90, 1f);
+            P(v, "Natureza/Arvore_Comum_1", F.V(24f, 0, 90f), 0, .9f);
+        }
+
+        // ------------------------------------------------------------------ áreas dos verbetes do Glotrânsito
+
+        // Quatro áreas ligadas a um grupo de verbetes, cada uma no lugar da cidade que combina com a mecânica:
+        // o Cruzamento Central num cruzamento de verdade (Eixo x Avenida), a Rua Viva numa rua com ciclovia,
+        // ponto de ônibus e engarrafamento, a Oficina num galpão com pátio no fim da Avenida e as Obras da
+        // Cidade onde uma rua acaba no rio, com o morro e o túnel do outro lado.
+        // O caos delas não depende de minigame: melhora por faixas conforme os verbetes do grupo são
+        // desbloqueados (ChaosController). Só a Oficina tem cena; as outras mostram "em breve".
+        class AreaDeVerbetes
+        {
+            public string objeto, nome, areaName, cena, marcador;
+            public bool emBreve;
+            public GrupoDeVerbete[] grupos;
+            public Vector3 centro, luz;
+            public float zDoLetreiro;
+            public System.Action<Transform, Transform[], Transform[]> montar;
+        }
+
+        static readonly AreaDeVerbetes[] AreasDeVerbetes =
+        {
+            new AreaDeVerbetes { objeto = "Area_Oficina", nome = "Oficina", areaName = "Oficina de Veículos", cena = "Minigame_Oficina",
+                grupos = new[] { GrupoDeVerbete.Veiculos }, centro = new Vector3(-76f, .5f, 70f), marcador = "Laranja",
+                zDoLetreiro = 6.4f, luz = new Vector3(0, 6f, 5f), montar = Oficina },
+            new AreaDeVerbetes { objeto = "Area_ObrasDaCidade", nome = "Obras da Cidade", areaName = ObrasConstrutor.NomeDaArea, cena = ObrasConstrutor.NomeDaCena,
+                grupos = new[] { GrupoDeVerbete.ViasEEstruturas }, centro = new Vector3(46f, .5f, 69f), marcador = "Mostarda",
+                zDoLetreiro = 4.4f, luz = new Vector3(0, 7f, 9f), montar = ObrasDaCidade },
+            new AreaDeVerbetes { objeto = "Area_CruzamentoCentral", nome = "Cruzamento Central", areaName = "Cruzamento Central", cena = "", emBreve = true,
+                grupos = new[] { GrupoDeVerbete.Sinais }, centro = new Vector3(0f, .5f, 50f), marcador = "Vermelho",
+                zDoLetreiro = 4.4f, luz = new Vector3(0, 7f, 9f), montar = CruzamentoCentral },
+            new AreaDeVerbetes { objeto = "Area_RuaViva", nome = "Rua Viva", areaName = "Rua Viva", cena = "", emBreve = true,
+                grupos = new[] { GrupoDeVerbete.PessoasESeguranca, GrupoDeVerbete.Situacao }, centro = new Vector3(-45f, .5f, 48f), marcador = "Rosa",
+                zDoLetreiro = 3f, luz = new Vector3(0, 6f, 7f), montar = RuaViva },
+        };
+
+        static void MontarAreaDeVerbetes(AreaDeVerbetes b, SaturacaoDaArea.ParDeTextura[] texturasCinza)
+        {
+            var velha = GameObject.Find(b.objeto);
+            if (velha != null) Object.DestroyImmediate(velha);
+
+            var area = F.Grupo(b.objeto, null, b.centro);
+            var gatilho = area.AddComponent<BoxCollider>();
+            gatilho.isTrigger = true;
+            gatilho.size = new Vector3(2.6f, 2f, 2.6f);
+            var entrada = area.AddComponent<AreaTrigger>();
+            entrada.areaName = b.areaName;
+            entrada.cenaDoMinigame = b.cena;
+            entrada.emBreve = b.emBreve;
+
+            // O pivô fica 0,5 m acima do chão, como nas outras áreas; os grupos descem pra y = 0.
+            var visual = F.Grupo("Visual", area.transform, F.V(0, -.5f, 0)).transform;
+            F.Cilindro(visual, "Marcador_Borda", "Branco", F.V(0, .12f, 0), F.V(3.1f, .04f, 3.1f));
+            F.Cilindro(visual, "Marcador", b.marcador, F.V(0, .13f, 0), F.V(2.6f, .05f, 2.6f));
+            var caos = new Transform[4];
+            var ordem = new Transform[4];
+            string[] oQueSome = { "Lixo", "Lama_E_Secas", "Tombados", "Entulho" };
+            string[] oQueEntra = { "Flores", "Arvores", "No_Lugar", "Passaros" };
+            for (int i = 0; i < 4; i++)
+            {
+                caos[i] = F.Grupo($"Caos_{i + 1}_{oQueSome[i]}", area.transform, F.V(0, -.5f, 0)).transform;
+                ordem[i] = F.Grupo($"Ordem_{i + 1}_{oQueEntra[i]}", area.transform, F.V(0, -.5f, 0)).transform;
+            }
+            b.montar(visual, caos, ordem);
+
+            var saturacao = area.AddComponent<SaturacaoDaArea>();
+            saturacao.raiz = visual;
+            saturacao.saturacaoSemCompletar = 0f;
+            saturacao.texturasCinza = texturasCinza;
+
+            // Luz só da área: apagada com 0% e cheia com 100%.
+            var luz = F.Grupo("Luz", area.transform, b.luz).AddComponent<Light>();
+            luz.type = LightType.Point;
+            luz.range = 20f;
+            luz.color = new Color(1f, .93f, .75f);
+            luz.shadows = LightShadows.None;
+            luz.intensity = 0f;
+
+            var controle = area.AddComponent<ChaosController>();
+            controle.nomeDaArea = b.nome;
+            controle.grupos = b.grupos;
+            controle.caosPorFaixa = System.Array.ConvertAll(caos, t => t.gameObject);
+            controle.ordemPorFaixa = System.Array.ConvertAll(ordem, t => t.gameObject);
+            controle.saturacao = saturacao;
+            controle.luzDaArea = luz;
+            controle.intensidadeDaLuzCheia = 2.5f;
+            // Na cena salva a área fica no estado inicial do jogo: tudo bagunçado.
+            foreach (var t in ordem) t.gameObject.SetActive(false);
+
+            var raiz = PlacaDoLetreiro(area.transform, b.zDoLetreiro, out Text titulo, out Text linha);
+            // Placa maior que a dos minigames, com a contagem de verbetes bem legível.
+            raiz.localScale = Vector3.one * 1.25f;
+            linha.fontSize = 34;
+            linha.resizeTextForBestFit = true; linha.resizeTextMinSize = 22; linha.resizeTextMaxSize = 34;
+            linha.horizontalOverflow = HorizontalWrapMode.Wrap;
+            titulo.text = b.nome;
+            titulo.resizeTextForBestFit = true; titulo.resizeTextMinSize = 30; titulo.resizeTextMaxSize = 46;
+            titulo.horizontalOverflow = HorizontalWrapMode.Wrap;
+            var letreiro = raiz.gameObject.AddComponent<LetreiroDeVerbetes>();
+            letreiro.controle = controle;
+            letreiro.textoDoNome = titulo;
+            letreiro.textoDoProgresso = linha;
+            if (b.emBreve) letreiro.formato = "{0} de {1} verbetes - em breve";
+            linha.text = string.Format(letreiro.formato, 0, 0);
+            EditorUtility.SetDirty(area);
+        }
+
+        // Veículo virado de lado (a enchente arrastou).
+        static GameObject Virar(GameObject go, float graus = 96f)
+        {
+            go.transform.Rotate(0, 0, graus, Space.Self);
+            return go;
+        }
+
+        // Nas funções abaixo: v = Visual (sempre; cinza -> colorido), c[0..3] = caos que some a cada faixa,
+        // o[0..3] = ordem que entra no lugar. Em todas: 1 = lixo -> flores; 2 = lama e plantas secas -> árvores;
+        // 3 = veículos virados e placas caídas -> tudo no lugar; 4 = entulho -> pássaros e o toque final.
+        // As posições são a partir do marcador da área; a câmera olha pra +Z, então o cenário fica em z > 0.
+
+        // Galpão de oficina no fundo do pátio (chão do pátio em y = 0,1), com duas vagas abertas pra frente.
+        static void Oficina(Transform v, Transform[] c, Transform[] o)
+        {
+            // Não há prefab de galpão: paredes, teto e faixa da fachada são formas da paleta.
+            F.Cubo(v, "Galpao_Fundo", "Branco_Concreto", F.V(0, 2.4f, 14.6f), F.V(14.9f, 4.8f, .3f));
+            foreach (float x in new[] { -7.3f, 7.3f })
+                F.Cubo(v, "Galpao_Lado", "Branco_Concreto", F.V(x, 2.4f, 11.1f), F.V(.3f, 4.8f, 7.3f));
+            F.Cubo(v, "Galpao_Teto", "Petroleo", F.V(0, 4.95f, 10.9f), F.V(15.8f, .3f, 8.2f));
+            F.Cubo(v, "Galpao_Faixa", "Laranja", F.V(0, 4.3f, 7.4f), F.V(14.9f, 1f, .3f));
+            F.Cubo(v, "Galpao_Pilar", "Branco_Concreto", F.V(0, 1.9f, 7.4f), F.V(.4f, 3.8f, .4f));
+            F.Cubo(v, "Galpao_Piso", "Cinza_Escuro", F.V(0, .12f, 11f), F.V(14.3f, .04f, 7f));
+            P(v, "Oficina/Bancada", F.V(-2.7f, .14f, 13.4f), 180);
+            P(v, "Oficina/Prateleira", F.V(-5.8f, .14f, 14f), 180);
+            P(v, "Oficina/Prateleira", F.V(5.8f, .14f, 14f), 180);
+            P(v, "Oficina/Pronto_Caminhao_Trator", F.V(3.4f, .14f, 11.2f), 180);
+            P(v, "Props/Barril", F.V(6.4f, .14f, 8.6f));
+            P(v, "Props/Caixa_Papelao", F.V(-.9f, .14f, 13.6f), 15);
+            for (int i = 0; i < 3; i++)
+                F.Cilindro(v, "Pneu_" + (i + 1), "Grafite", F.V(-6.3f, .28f + i * .3f, 8.8f), F.V(1f, .28f, 1f));
+            P(v, "Personagens/Trabalhador", F.V(1.7f, .1f, 6.3f), 190);
+            P(v, "Props/Cacamba_De_Lixo", F.V(10.3f, .1f, 5.6f), 180);
+
+            P(c[0], "Enchente/Papeis_Espalhados", F.V(-1.5f, .11f, 3f), 30, 1.3f);
+            P(c[0], "Lixo_Reciclagem/Pilha_De_Lixo", F.V(8f, .1f, 2f), 200);
+            P(c[0], "Lixo_Reciclagem/Saco_De_Lixo_Preto_1", F.V(-5f, .1f, 1.2f));
+            P(c[0], "Lixo_Reciclagem/Lata_Amassada", F.V(2.5f, .1f, 1.5f), 40, 2.4f);
+            P(c[0], "Lixo_Reciclagem/Garrafa_Pet_Amassada", F.V(-8f, .1f, -1f), 100, 2.2f);
+
+            P(c[1], "Enchente/Chao_De_Lama", F.V(5f, .11f, 4f), 20, .8f);
+            P(c[1], "Enchente/Chao_De_Lama", F.V(-6f, .11f, -1.5f), 70, .6f);
+            P(c[1], "Enchente/Arvore_Seca_1", F.V(-10.6f, .1f, 5f), 40, .9f);
+            P(c[1], "Enchente/Arbusto_Seco", F.V(10.6f, .1f, -2f), 0, .8f);
+
+            Virar(P(c[2], "Carros/Carro_Hatch", F.V(-7f, 1.05f, 4.5f), 60));
+            Virar(P(c[2], "Carros/Moto", F.V(-3f, .47f, 9.6f), 110), 84);
+            Virar(P(c[2], "Carros/Bicicleta_Q1", F.V(6f, .3f, 6f), 30), 82);
+            P(c[2], "Props/Cone_Caido", F.V(0, .1f, 5f), 70);
+
+            P(c[3], "Enchente/Entulho_De_Concreto", F.V(9.6f, .1f, -1.5f), 30, .45f);
+            P(c[3], "Enchente/Cavalete_Medio_1", F.V(-2.4f, .1f, 6.6f), 200);
+            P(c[3], "Enchente/Cone_Quebrado_2", F.V(-9f, .1f, 2f), 50);
+            P(c[3], "Enchente/Bloco_Concreto_Lascado_1", F.V(3.4f, .1f, 6.6f), 20);
+
+            P(o[0], "Natureza/Flores", F.V(-5f, .1f, 1.2f), 0, 1.4f);
+            P(o[0], "Props/Vaso_De_Folhagem", F.V(8f, .1f, 2f), 180);
+            P(o[1], "Natureza/Arvore_Simples_Grande", F.V(-10.6f, .1f, 5f), 0, 1.05f);
+            P(o[1], "Natureza/Arbusto_2", F.V(10.6f, .1f, -2f), 0, .8f);
+            P(o[2], "Oficina/Pronto_Quadriciclo", F.V(-7f, .1f, 4.5f), 160);
+            P(o[2], "Oficina/Pronto_Motoneta", F.V(-3f, .14f, 9.6f), 180);
+            P(o[2], "Carros/Bicicleta_Q1", F.V(6f, .1f, 5.6f), 180);
+            P(o[2], "Carros/Carro_Hatch", F.V(9.8f, .1f, 9.4f), 180);
+            P(o[3], "Natureza/Passaro", F.V(-4f, 5.1f, 7.2f), 200, 1.6f);
+            P(o[3], "Natureza/Passaro", F.V(5f, 5.1f, 7.2f), 150, 1.6f);
+            P(o[3], "Props/Cone", F.V(-9f, .1f, 2f));
+            P(o[3], "Props/Cone", F.V(9.6f, .1f, -1.5f));
+        }
+
+        // A rua acaba no rio (z de 7 a 15); do outro lado ela segue até o túnel do morro.
+        // No começo não há como atravessar; com tudo arrumado, a ponte volta e o túnel fica livre.
+        static void ObrasDaCidade(Transform v, Transform[] c, Transform[] o)
+        {
+            // Não há prefab de morro nem de túnel: são formas da paleta.
+            F.Esfera(v, "Morro_Grande", "Verde_Escuro", F.V(2f, 0, 40f), F.V(48f, 26f, 24f));
+            F.Esfera(v, "Morro_Esquerdo", "Verde", F.V(-16f, 0, 36f), F.V(16f, 10f, 12f));
+            F.Esfera(v, "Morro_Direito", "Verde_Musgo", F.V(27f, 0, 39f), F.V(30f, 18f, 18f));
+            F.Cubo(v, "Tunel_Portal", "Branco_Concreto", F.V(0, 2.7f, 27.6f), F.V(8.4f, 5.4f, 1.2f));
+            F.Cubo(v, "Tunel_Boca", "Grafite", F.V(0, 2.1f, 27.3f), F.V(6f, 4.2f, 1f));
+            P(v, "Natureza/Pedra_1", F.V(-6f, .03f, 6.2f), 20, 1.8f);
+            P(v, "Natureza/Pedra_Musgo", F.V(7f, .03f, 6.1f), 80, 1.6f);
+            P(v, "Natureza/Pedra_3", F.V(-8f, .03f, 15.9f), 140, 1.6f);
+            P(v, "Natureza/Pedra_2", F.V(6.5f, .03f, 16f), 30, 1.8f);
+            P(v, "Personagens/Trabalhadora", F.V(4.2f, .08f, 3.4f), 200);
+
+            P(c[0], "Lixo_Reciclagem/Garrafa_Pet", F.V(-3f, .06f, 10f), 40, 2.4f).transform.Rotate(85, 0, 0);
+            P(c[0], "Lixo_Reciclagem/Saco_De_Lixo_Verde", F.V(2f, .03f, 12.5f), 30);
+            P(c[0], "Props/Caixa_Papelao", F.V(5f, .06f, 9.5f), 20, .8f).transform.Rotate(10, 0, -8);
+            P(c[0], "Enchente/Papeis_Espalhados", F.V(-6f, .05f, 11.5f), 60, 1.2f);
+            P(c[0], "Lixo_Reciclagem/Pilha_De_Lixo", F.V(6.6f, .03f, 2f), 160);
+
+            P(c[1], "Enchente/Chao_De_Lama", F.V(0, .03f, 2.6f), 15, .7f);
+            P(c[1], "Enchente/Chao_De_Lama", F.V(-6f, .03f, 3.5f), 80, .6f);
+            P(c[1], "Enchente/Arvore_Seca_2", F.V(-9.5f, .02f, 5f), 20, .9f);
+            P(c[1], "Enchente/Arvore_Seca_Grande", F.V(10.5f, .02f, 4f), 0, .7f);
+
+            Tombar(P(c[2], "Props/Sinalizador_Obra", F.V(2.6f, .2f, 4.6f), 220));
+            P(c[2], "Enchente/Cavalete_Grande_1", F.V(-3f, .02f, 3.9f), 30).transform.Rotate(0, 0, 80);
+            P(c[2], "Props/Cone_Caido", F.V(1f, .02f, 1.6f), 100);
+            Virar(P(c[2], "Carros/Carro_Picape", F.V(-8f, .98f, 1.5f), 20));
+
+            // Pedaços da ponte dentro do rio e o túnel entupido.
+            P(c[3], "Enchente/Pedacos_De_Rua", F.V(0, .1f, 11f), 90, .9f);
+            P(c[3], "Props/Barreira_Obra", F.V(-1.8f, .02f, 5.6f));
+            P(c[3], "Props/Barreira_Obra", F.V(1.8f, .02f, 5.6f));
+            P(c[3], "Enchente/Entulho_De_Concreto", F.V(0, .02f, 25.4f), 10, .8f);
+            P(c[3], "Enchente/Bloco_Concreto", F.V(-2f, .02f, 16.8f), 30, .8f);
+            P(c[3], "Enchente/Barricada_De_Entulho", F.V(1f, .02f, 18f), 185);
+            P(c[3], "Enchente/Asfalto_Quebrado", F.V(0, .03f, 21f), 90, .7f);
+
+            P(o[0], "Natureza/Flores", F.V(6.6f, .03f, 2f), 0, 1.4f);
+            P(o[0], "Natureza/Vitoria_Regia", F.V(-5f, .05f, 11f), 30, 1.5f);
+            P(o[0], "Natureza/Vitoria_Regia", F.V(6f, .05f, 12.6f), 120, 1.3f);
+            P(o[1], "Natureza/Arvore_Comum_2", F.V(-9.5f, .02f, 5f), 0, .8f);
+            P(o[1], "Natureza/Arvore_Simples_Pequena", F.V(10.5f, .02f, 4f), 0, 1.2f);
+            P(o[1], "Natureza/Grama_Alta", F.V(-6f, .03f, 3.5f), 0, 1.3f);
+            P(o[2], "Props/Sinalizador_Obra", F.V(4.3f, .08f, 5.2f), 180);
+            P(o[2], "Props/Cone", F.V(-4.3f, .08f, 5.2f));
+            P(o[2], "Carros/Carro_Picape", F.V(-8f, .02f, 1.5f));
+            // A Ponte JK (a mesma do minigame, gerada pelo ObrasConstrutor), ligando as duas margens.
+            P(o[3], "Obras/Ponte_JK", F.V(0, .02f, 11f), 0, 1.05f);
+            P(o[3], "Carros/Carro_Sedan", F.V(1.75f, .02f, 21f));
+            P(o[3], "Natureza/Passaro", F.V(-6f, 1.65f, 6.2f), 160, 1.6f);
+            P(o[3], "Natureza/Passaro", F.V(7f, 1.6f, 6.1f), 220, 1.6f);
+        }
+
+        // O marcador fica no calçadão do Eixo; o cruzamento com a Avenida fica logo à frente (z de 6 a 14).
+        // No começo não há nenhum sinal de pé; com tudo arrumado, cada pista ganha o seu semáforo.
+        static void CruzamentoCentral(Transform v, Transform[] c, Transform[] o)
+        {
+            P(v, "Props/Caixa_De_Energia", F.V(3f, .1f, 3.2f), 180, 1.6f);
+            P(v, "Personagens/Trabalhadora", F.V(2.1f, .1f, 2.6f), 200);
+            P(v, "Carros/Carro_Taxi", F.V(7f, .02f, -1.5f));
+            P(v, "Carros/Carro_Van", F.V(-7f, .02f, 21.5f), 180);
+            P(v, "Carros/Onibus", F.V(-17.5f, .02f, 8f), 90);
+            P(v, "Carros/Carro_Sedan", F.V(15.5f, .02f, 12f), -90);
+            P(v, "Personagens/Mini_Mulher_3", F.V(-2.4f, .1f, 4.8f), 10, .9f);
+            P(v, "Personagens/Mini_Homem_2", F.V(2.6f, .1f, 15.6f), 180, .9f);
+
+            P(c[0], "Enchente/Papeis_Espalhados", F.V(0, .11f, 2.4f), 50, 1.3f);
+            P(c[0], "Lixo_Reciclagem/Saco_De_Lixo_Laranja", F.V(-3.2f, .1f, 1.4f), 40);
+            P(c[0], "Lixo_Reciclagem/Saco_De_Lixo_Preto_2", F.V(-2.6f, .1f, -2.2f));
+            P(c[0], "Lixo_Reciclagem/Lata_Refrigerante", F.V(1f, .1f, -2f), 0, 2.4f);
+            P(c[0], "Lixo_Reciclagem/Pilha_De_Lixo", F.V(3f, .1f, -4f), 100);
+
+            P(c[1], "Enchente/Chao_De_Lama", F.V(-1f, .03f, 10f), 35, 1.2f);
+            P(c[1], "Enchente/Chao_De_Lama", F.V(7f, .03f, 5f), 10, .6f);
+            P(c[1], "Enchente/Arvore_Seca_1", F.V(-3.2f, .1f, -5.5f), 0, .9f);
+            P(c[1], "Enchente/Arvore_Seca_2", F.V(3.2f, .1f, -9f), 60, .9f);
+
+            Tombar(P(c[2], "Props/Semaforo_Carros", F.V(-4.6f, .3f, 4.8f), 110));
+            Tombar(P(c[2], "Props/Semaforo_Carros", F.V(4.8f, .3f, 15.2f), 250));
+            Tombar(P(c[2], "Props/Semaforo_Pedestres", F.V(2.8f, .28f, 5.2f), 240));
+            P(c[2], "Props/Placa_FaixaDePedestre", F.V(-3.6f, .1f, 4.6f), 180, 1.15f).transform.Rotate(0, 0, 26);
+            Virar(P(c[2], "Carros/Carro_Hatch", F.V(2f, 1.05f, 10.5f), 40));
+
+            P(c[3], "Enchente/Barricada_De_Entulho", F.V(0, .02f, 7.2f), 175);
+            P(c[3], "Enchente/Cone_Quebrado_3", F.V(-2.6f, .02f, 8.6f), 20);
+            P(c[3], "Enchente/Bloco_Concreto", F.V(-6f, .02f, 12f), 60, .8f);
+            P(c[3], "Enchente/Cavalete_Medio_2", F.V(7f, .02f, 13f), 100);
+            P(c[3], "Enchente/Entulho_De_Concreto", F.V(-7.4f, .02f, 6.6f), 30, .45f);
+
+            P(o[0], "Natureza/Flores", F.V(-3.2f, .1f, 1.4f), 0, 1.4f);
+            P(o[0], "Natureza/Flores", F.V(3.2f, .1f, -2f), 0, 1.4f);
+            P(o[0], "Props/Vaso_De_Laranjeira", F.V(3f, .1f, -4f));
+            P(o[1], "Natureza/Arvore_Simples_Grande", F.V(-3.2f, .1f, -5.5f), 0, .9f);
+            P(o[1], "Natureza/Arvore_Simples_Pequena", F.V(3.2f, .1f, -9f), 0, 1.1f);
+            // Um semáforo virado pra cada pista que chega, e os de pedestre nas pontas da faixa do calçadão.
+            P(o[2], "Props/Semaforo_Carros", F.V(10.6f, .08f, 1.2f), 180);
+            P(o[2], "Props/Semaforo_Carros", F.V(-10.6f, .08f, 18.8f), 0);
+            P(o[2], "Props/Semaforo_Carros", F.V(-12f, .08f, 5.4f), -90);
+            P(o[2], "Props/Semaforo_Carros", F.V(12f, .08f, 14.6f), 90);
+            P(o[2], "Props/Semaforo_Pedestres", F.V(-3.5f, .1f, 5.3f), 180);
+            P(o[2], "Props/Semaforo_Pedestres", F.V(3.5f, .1f, 14.7f), 0);
+            P(o[3], "Props/Placa_FaixaDePedestre", F.V(3.6f, .1f, 4.6f), 180, 1.15f);
+            P(o[3], "Natureza/Passaro", F.V(3f, 2.2f, 3.2f), 200, 1.6f);
+            P(o[3], "Natureza/Passaro", F.V(-1.6f, .1f, -3f), 40, 1.6f);
+        }
+
+        // Da pracinha (y = 0,1) se vê, de perto pra longe: a ciclovia com a família (z de 3,7 a 5,9), a calçada,
+        // a Avenida engarrafada (pista de cá em z = 10, de lá em z = 14) e o ponto de ônibus com passageiros.
+        static void RuaViva(Transform v, Transform[] c, Transform[] o)
+        {
+            P(v, "Personagens/Familia_Pai_Animado", F.V(-3.4f, .06f, 4.8f), 90);
+            P(v, "Carros/Bicicleta_Q1", F.V(-2.3f, .06f, 4.8f), -90);
+            P(v, "Personagens/Familia_Mae_Animado", F.V(-5f, .06f, 4.6f), 90);
+            P(v, "Personagens/Familia_Filha_Animado", F.V(3f, .1f, 2.2f), 200);
+            P(v, "Personagens/Familia_FilhoMaisNovo_Animado", F.V(4f, .1f, 2.4f), 160);
+            P(v, "Natureza/Cachorro_Caramelo", F.V(4.9f, .1f, 1.7f), 200);
+            P(v, "Props/Banco", F.V(-6f, .1f, 1f), 180);
+            // Engarrafamento: fila de carros parados na pista de cá.
+            string[] fila = { "Carro_Sedan", "Carro_Hatch", "Carro_Van", "Carro_Taxi", "Carro_SUV", "Carro_Compacto_Azul", "Carro_Picape", "Carro_Sedan_Azul", "Carro_Entregas" };
+            for (int i = 0; i < fila.Length; i++)
+                P(v, "Carros/" + fila[i], F.V(-22f + i * 4.6f, .02f, 10f), 90);
+            // Ponto de ônibus do outro lado, com o ônibus chegando e os passageiros esperando.
+            P(v, "Props/Ponto_De_Onibus", F.V(3f, .08f, 17.6f), 180);
+            P(v, "Carros/Onibus_Urbano", F.V(4f, .02f, 14.2f), -90);
+            P(v, "Personagens/Idosa", F.V(2.2f, .08f, 17f), 180);
+            P(v, "Personagens/Pedestre_Mulher", F.V(3.8f, .08f, 17f), 170);
+            P(v, "Personagens/Mini_Homem_4", F.V(5.6f, .08f, 16.8f), 190, .9f);
+
+            P(c[0], "Enchente/Papeis_Espalhados", F.V(-1f, .08f, 4.8f), 20, 1.3f);
+            P(c[0], "Lixo_Reciclagem/Saco_De_Lixo_Preto_1", F.V(6.6f, .1f, 1.2f));
+            P(c[0], "Lixo_Reciclagem/Casca_De_Banana", F.V(1.6f, .08f, 5.2f), 0, 2.6f);
+            P(c[0], "Lixo_Reciclagem/Lixeira_Transbordando", F.V(-7.4f, .1f, 2.6f), 180);
+            P(c[0], "Lixo_Reciclagem/Embalagem_Batata", F.V(-3f, .1f, -2f), 50, 2.4f);
+
+            P(c[1], "Enchente/Chao_De_Lama", F.V(6f, .08f, 4.8f), 40, .5f);
+            P(c[1], "Enchente/Chao_De_Lama", F.V(-5f, .11f, -2.6f), 0, .6f);
+            P(c[1], "Enchente/Arvore_Seca_2", F.V(-7.6f, .1f, -3.6f), 30, .9f);
+            P(c[1], "Enchente/Arbusto_Seco", F.V(7.6f, .1f, -3.6f), 0, .8f);
+
+            Tombar(P(c[2], "Props/Placa_Ciclovia", F.V(-7f, .28f, 2.4f), 130, 1.15f));
+            Tombar(P(c[2], "Props/Placa_De_Ponto_De_Onibus", F.V(7.4f, .26f, 17.2f), 215));
+            Virar(P(c[2], "Carros/Bicicleta_Azul", F.V(1f, .3f, 4.8f), 70), 82);
+            P(c[2], "Props/Pilarete", F.V(7.8f, .1f, 3.2f)).transform.Rotate(0, 0, 40);
+
+            Tombar(P(c[3], "Enchente/Arvore_Seca_3", F.V(-9.5f, .42f, 4.2f), 15, .9f), 82);
+            P(c[3], "Enchente/Cavalete_Pequeno_2", F.V(8.4f, .06f, 4.8f), 100);
+            P(c[3], "Enchente/Entulho_De_Concreto", F.V(-7.4f, .08f, 16.8f), 100, .45f);
+            P(c[3], "Enchente/Cone_Quebrado_1", F.V(2.2f, .1f, 2.8f), 60);
+
+            P(o[0], "Natureza/Flores", F.V(6.6f, .1f, 1.2f), 0, 1.4f);
+            P(o[0], "Props/Lixeira_De_Rua", F.V(-7.4f, .1f, 2.6f), 180);
+            P(o[0], "Props/Floreira_De_Madeira", F.V(0, .1f, -3.4f), 180);
+            P(o[1], "Natureza/Arvore_Comum_1", F.V(-7.6f, .1f, -3.6f), 0, .7f);
+            P(o[1], "Natureza/Arbusto_Frutinhas", F.V(7.6f, .1f, -3.6f), 0, .8f);
+            P(o[2], "Props/Placa_Ciclovia", F.V(-7.8f, .1f, 3.2f), 180, 1.15f);
+            P(o[2], "Props/Placa_De_Ponto_De_Onibus", F.V(.6f, .08f, 17.4f), 180);
+            P(o[2], "Carros/Bicicleta_Azul", F.V(1f, .06f, 4.8f), 90);
+            P(o[2], "Props/Pilarete", F.V(7.8f, .1f, 3.2f));
+            P(o[3], "Natureza/Passaro", F.V(-6f, .62f, 1f), 180, 1.6f);
+            P(o[3], "Natureza/Passaro", F.V(-2f, .1f, 1.4f), 30, 1.6f);
+            P(o[3], "Props/Vaso_De_Laranjeira", F.V(2.4f, .1f, -3.4f));
         }
 
         // ------------------------------------------------------------------ jogador

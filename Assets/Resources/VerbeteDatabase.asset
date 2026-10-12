@@ -50,3 +50,4 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 7386c6a38862f044887ecf74e3042e58, type: 3}
   - {fileID: 21300000, guid: c135f25efa10c9946b1974041512684a, type: 3}
   - {fileID: 21300000, guid: 5019bcce50ef3a340bb084d66190090d, type: 3}
+  prefabDoCartao: {fileID: 2668994961963701330, guid: d60018e594210784991ac6db6f2595ba, type: 3}

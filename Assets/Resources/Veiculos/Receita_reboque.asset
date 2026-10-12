@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 523fd1b478bd4eb4b9085f9389689697, type: 3}
+  m_Name: Receita_reboque
+  m_EditorClassIdentifier: Assembly-CSharp::VeiculoReceita
+  idDoVerbete: reboque
+  nivel: 4
+  ordem: 1
+  chassi: UmEixo
+  itens:
+  - peca: 0
+    tambemAceita: 
+    quantidade: 2
+    ouMais: 0
+    trechoDaDefinicao: com duas rodas
+    verbeteDoTrecho: 
+    comoEhCitado: 
+    basePadrao: 0
+    opcional: 0
+  - peca: 8
+    tambemAceita: 
+    quantidade: 1
+    ouMais: 0
+    trechoDaDefinicao: "movimentado quando arrastado por outro ve\xEDculo com motor"
+    verbeteDoTrecho: 
+    comoEhCitado: 
+    basePadrao: 0
+    opcional: 0
+  proibidas:
+  - peca: 2
+    tambemAceita: 03000000i
+    quantidade: 1
+    ouMais: 0
+    trechoDaDefinicao: sem motor
+    verbeteDoTrecho: 
+    comoEhCitado: 
+    basePadrao: 0
+    opcional: 0
+  extrasAceitos: 0700000006000000i
+  andaEmTrilhos: 0
+  puxadoPor: caminhao_trator
+  velocidadeNaPista: 1
+  variante: 
+  modeloPronto: {fileID: 4840708812745529397, guid: 31e1f5a639396cd4489ac65f60cf561f, type: 3}
+  escalaDoModeloPronto: 0.85
+  giroDoModeloPronto: 0
+  observacao: "Duas rodas e o engate v\xEAm da defini\xE7\xE3o; qualquer motor \xE9 recusado citando \"sem motor\". Depois de montado h\xE1 o passo de engatar: ele \xE9 \"arrastado por outro ve\xEDculo com motor\", e o jogo usa o caminh\xE3o trator (que \"serve para puxar carretas\") pra puxar."

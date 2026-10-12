@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18b31ebee526ac64dbe24dee30dca563, type: 3}
+  m_Name: Problema_n4_avenida_caminhonete
+  m_EditorClassIdentifier: Assembly-CSharp::ObraProblema
+  nivel: 4
+  ordem: 2
+  obstaculo: 2
+  ruaComum: 0
+  quemPassa: 0
+  nomeDeQuemPassa: A caminhonete
+  modeloDeQuemPassa: {fileID: 5690537696563551851, guid: 35e2754065582e04d9f3ece6639a7b6e, type: 3}
+  opcoes:
+  - passarela
+  - passagem_subterranea
+  - viaduto
+  - faixa_de_pedestre
+  correta: viaduto
+  trechoDaDefinicao: "Via elevada para ve\xEDculos"
+  rotaDaAmbulancia: 0
+  observacao: "Gerado pelo ObrasConstrutor a partir das defini\xE7\xF5es do gloss\xE1rio; pendente de revis\xE3o da coordena\xE7\xE3o."

@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 523fd1b478bd4eb4b9085f9389689697, type: 3}
+  m_Name: Receita_quadriciclo
+  m_EditorClassIdentifier: Assembly-CSharp::VeiculoReceita
+  idDoVerbete: quadriciclo
+  nivel: 2
+  ordem: 0
+  chassi: QuatroRodas
+  itens:
+  - peca: 0
+    tambemAceita: 
+    quantidade: 4
+    ouMais: 0
+    trechoDaDefinicao: tem quatro rodas
+    verbeteDoTrecho: 
+    comoEhCitado: 
+    basePadrao: 0
+    opcional: 0
+  - peca: 2
+    tambemAceita: 03000000i
+    quantidade: 1
+    ouMais: 0
+    trechoDaDefinicao: um motor
+    verbeteDoTrecho: 
+    comoEhCitado: 
+    basePadrao: 0
+    opcional: 0
+  - peca: 15
+    tambemAceita: 
+    quantidade: 1
+    ouMais: 0
+    trechoDaDefinicao: "Pode ter ou n\xE3o uma parte de cima para cobrir"
+    verbeteDoTrecho: 
+    comoEhCitado: 
+    basePadrao: 0
+    opcional: 1
+  proibidas: []
+  extrasAceitos: 0900000006000000i
+  andaEmTrilhos: 0
+  puxadoPor: 
+  velocidadeNaPista: 1
+  variante: 
+  modeloPronto: {fileID: 4430643087105462047, guid: ab5b15bda7b052c41bdf9ed7a0025a8a, type: 3}
+  escalaDoModeloPronto: 0.85
+  giroDoModeloPronto: 0
+  observacao: "A defini\xE7\xE3o diz s\xF3 \"motor\", sem dizer de que tipo: por isso o encaixe aceita o motor comum e o motor el\xE9trico. \"Pode ter ou n\xE3o uma parte de cima para cobrir\": a cobertura \xE9 opcional (encaixa sem erro, n\xE3o \xE9 exigida). \"levar pessoas ou coisas\" n\xE3o virou pe\xE7a."

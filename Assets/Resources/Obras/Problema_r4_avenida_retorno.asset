@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18b31ebee526ac64dbe24dee30dca563, type: 3}
+  m_Name: Problema_r4_avenida_retorno
+  m_EditorClassIdentifier: Assembly-CSharp::ObraProblema
+  modo: 1
+  nivel: 4
+  ordem: 0
+  enunciado: O carro errou o caminho e precisa voltar pela outra pista.
+  obstaculo: 8
+  ruaComum: 0
+  quemPassa: 0
+  nomeDeQuemPassa: O carro
+  modeloDeQuemPassa: {fileID: 4917397923712586445, guid: be941e66e59a71548a2be6b877b9bdb1, type: 3}
+  opcoes:
+  - retorno
+  - estacionamento
+  - via_urbana
+  - ciclofaixa
+  correta: retorno
+  trechoDaDefinicao: "passar para se mover na via de sentido contr\xE1rio ao que estava"
+  rotaDaAmbulancia: 0
+  observacao: "A avenida de duas pistas com canteiro no meio \xE9 encena\xE7\xE3o do jogo; a defini\xE7\xE3o s\xF3 fala em mudar de lado e de sentido."

@@ -25,7 +25,8 @@ public class HubSpawn : MonoBehaviour
         {
             if (cameraFollow.target == transform)
             {
-                cameraFollow.transform.position = transform.position + cameraFollow.offset;
+                cameraFollow.Giro = pontoDeRetorno.eulerAngles.y;
+                cameraFollow.transform.position = cameraFollow.PosicaoPara(transform.position);
                 cameraFollow.transform.LookAt(transform.position + Vector3.up * cameraFollow.lookHeightOffset);
             }
         }

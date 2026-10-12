@@ -481,6 +481,33 @@ namespace CidadeViva.EditorArte
             painel.nome = nomeDoPerfil;
             painel.avisoDoVisitante = aviso.gameObject;
             UnityEventTools.AddPersistentListener(trocar.onClick, painel.TrocarDePerfil);
+
+            // Botão "Álbum", fixo no canto de cima à direita: abre o Álbum Glotrânsito.
+            var album = Botao("Botao_Album", canvas.transform, "Álbum", "Mostarda", new Vector2(-210, -110), new Vector2(340, 150), 64);
+            var rtAlbum = (RectTransform)album.transform;
+            rtAlbum.anchorMin = rtAlbum.anchorMax = new Vector2(1, 1);
+            ((RectTransform)album.transform.Find("Frente/Texto")).anchoredPosition = new Vector2(0, 16);
+            var contador = Imagem("Contador", album.transform.Find("Frente"), arredondado, C("Petroleo"), new Vector2(0, -44), new Vector2(150, 50));
+            var botaoDoAlbum = album.gameObject.AddComponent<BotaoDoAlbum>();
+            botaoDoAlbum.contador = Texto("Texto", contador.transform, "0/38", 34, C("Branco"), Vector2.zero, new Vector2(140, 46));
+            UnityEventTools.AddPersistentListener(album.onClick, botaoDoAlbum.Abrir);
+
+            // Linha de ajuda no pé da tela: como olhar em volta com o mouse.
+            var ajuda = Imagem("Dica_Do_Olhar", canvas.transform, arredondado, C("Petroleo_Escuro", .78f), new Vector2(0, 52), new Vector2(900, 60));
+            var rtAjuda = (RectTransform)ajuda.transform;
+            rtAjuda.anchorMin = rtAjuda.anchorMax = new Vector2(.5f, 0);
+            var dicaDoOlhar = ajuda.gameObject.AddComponent<DicaDoOlhar>();
+            dicaDoOlhar.texto = Texto("Texto", ajuda.transform, "", 30, C("Branco"), Vector2.zero, new Vector2(870, 52), FontStyle.Normal);
+            dicaDoOlhar.texto.resizeTextForBestFit = true; dicaDoOlhar.texto.resizeTextMinSize = 20; dicaDoOlhar.texto.resizeTextMaxSize = 30;
+
+            // Recado no alto da tela quando a criança pisa numa área que ainda não tem jogo ("em breve").
+            var recado = Imagem("Aviso_Em_Breve", canvas.transform, arredondado, C("Petroleo", .95f), new Vector2(0, -330), new Vector2(980, 140));
+            var rtRecado = (RectTransform)recado.transform;
+            rtRecado.anchorMin = rtRecado.anchorMax = new Vector2(.5f, 1);
+            var avisoDoHub = canvas.gameObject.AddComponent<AvisoDoHub>();
+            avisoDoHub.painel = recado.gameObject;
+            avisoDoHub.texto = Texto("Texto", recado.transform, "Em breve!", 60, C("Branco"), Vector2.zero, new Vector2(920, 120));
+            avisoDoHub.texto.resizeTextForBestFit = true; avisoDoHub.texto.resizeTextMinSize = 36; avisoDoHub.texto.resizeTextMaxSize = 60;
         }
 
         // ------------------------------------------------------------------ estrelas

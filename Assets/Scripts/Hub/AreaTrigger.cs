@@ -6,8 +6,17 @@ public class AreaTrigger : MonoBehaviour
     public string areaName;
     public string cenaDoMinigame = "Minigame_Template";
 
+    [Tooltip("Área que ainda não tem cena: não deixa entrar, só mostra o recado.")]
+    public bool emBreve;
+    public string recadoEmBreve = "{0}: em breve!";
+
     private void Start()
     {
+        // Área nova (caos por verbetes): quem cuida da cor e da bagunça é o ChaosController.
+        if (GetComponent<ChaosController>() != null)
+        {
+            return;
+        }
         AtualizarCor();
     }
 
@@ -50,6 +59,12 @@ public class AreaTrigger : MonoBehaviour
     {
         if (other.GetComponent<PlayerMovement>() == null)
         {
+            return;
+        }
+
+        if (emBreve)
+        {
+            AvisoDoHub.Mostrar(string.Format(recadoEmBreve, areaName));
             return;
         }
 

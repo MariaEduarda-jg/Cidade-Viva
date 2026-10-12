@@ -115,6 +115,7 @@ Montado com primitivas do Unity pelos scripts em `Assets/Editor/ArteCidadeViva` 
 - Água da enchente, lago, trecho de rio, cadeira, mesa e sofá.
 - Sons sintetizados por script em `Assets/Audio/Efeitos`: `buzina.wav`, `sirene.wav`, `tropeco.wav`, `campainha_bicicleta.wav`, `pulo.wav`, `deslizar.wav`, `moeda.wav`; e a música `Assets/Audio/Musica/corre_correndo.wav` (melodia própria, gerada por script).
 - Moeda e escudo do runner (`Props/Moeda`, `Props/Escudo`).
+- Oficina de Veículos (`Prefabs/Art/Oficina`): peças (roda, pedal, motor, motor elétrico, trilho, sirene, luzes, carroceria, engate, assento), os dois chassis, bancada e prateleira; e o som `Assets/Audio/Efeitos/motor_ligando.wav`, sintetizado por script.
 - Ícones de interface em `Assets/Art/UI/Perfis` (bichinhos, figuras do segredo, cadeado, setas, olho, escudo, moeda), desenhados por script.
 - Malhas auxiliares em `Assets/Art/Malhas` (prisma, cone, cúpula, cuia, arcos) e texturas em `Assets/Art/Props/Texturas` (placas, rótulos e letreiros, desenhados por script; o texto usa a fonte Arial do sistema, rasterizada na imagem).
 

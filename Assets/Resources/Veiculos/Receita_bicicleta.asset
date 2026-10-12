@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 523fd1b478bd4eb4b9085f9389689697, type: 3}
+  m_Name: Receita_bicicleta
+  m_EditorClassIdentifier: Assembly-CSharp::VeiculoReceita
+  idDoVerbete: bicicleta
+  nivel: 1
+  ordem: 0
+  chassi: DuasRodas
+  itens:
+  - peca: 1
+    tambemAceita: 
+    quantidade: 1
+    ouMais: 0
+    trechoDaDefinicao: se move quando a pessoa pedala
+    verbeteDoTrecho: 
+    comoEhCitado: 
+    basePadrao: 0
+    opcional: 0
+  - peca: 0
+    tambemAceita: 
+    quantidade: 2
+    ouMais: 0
+    trechoDaDefinicao: possui duas rodas
+    verbeteDoTrecho: 
+    comoEhCitado: 
+    basePadrao: 0
+    opcional: 0
+  proibidas: []
+  extrasAceitos: 09000000i
+  andaEmTrilhos: 0
+  puxadoPor: 
+  velocidadeNaPista: 1
+  variante: 
+  modeloPronto: {fileID: 569586037506195412, guid: 429c3537bc5b6d746926c5087786999d, type: 3}
+  escalaDoModeloPronto: 0.9
+  giroDoModeloPronto: 180
+  observacao: 

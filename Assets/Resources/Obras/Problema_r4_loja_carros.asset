@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18b31ebee526ac64dbe24dee30dca563, type: 3}
+  m_Name: Problema_r4_loja_carros
+  m_EditorClassIdentifier: Assembly-CSharp::ObraProblema
+  modo: 1
+  nivel: 4
+  ordem: 1
+  enunciado: "Tr\xEAs carros chegaram \xE0 loja e precisam ficar guardados."
+  obstaculo: 9
+  ruaComum: 0
+  quemPassa: 0
+  nomeDeQuemPassa: "O t\xE1xi"
+  modeloDeQuemPassa: {fileID: 3372291251282446092, guid: 8b6d21b1561a4d64d85fec3cea694f9e, type: 3}
+  opcoes:
+  - retorno
+  - estacionamento
+  - calcada
+  - via_rural
+  correta: estacionamento
+  trechoDaDefinicao: "Local para guardar ve\xEDculos temporariamente, de forma organizada"
+  rotaDaAmbulancia: 0
+  observacao: "\"temporariamente\" n\xE3o aparece no jogo. \"De forma organizada\" virou vagas pintadas, uma pra cada carro."

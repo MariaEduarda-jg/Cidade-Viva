@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 523fd1b478bd4eb4b9085f9389689697, type: 3}
+  m_Name: Receita_ambulancia
+  m_EditorClassIdentifier: Assembly-CSharp::VeiculoReceita
+  idDoVerbete: ambulancia
+  nivel: 2
+  ordem: 2
+  chassi: QuatroRodas
+  itens:
+  - peca: 5
+    tambemAceita: 
+    quantidade: 1
+    ouMais: 0
+    trechoDaDefinicao: tem sirene barulhenta
+    verbeteDoTrecho: 
+    comoEhCitado: 
+    basePadrao: 0
+    opcional: 0
+  - peca: 0
+    tambemAceita: 
+    quantidade: 4
+    ouMais: 0
+    trechoDaDefinicao: 
+    verbeteDoTrecho: 
+    comoEhCitado: 
+    basePadrao: 1
+    opcional: 0
+  - peca: 2
+    tambemAceita: 03000000i
+    quantidade: 1
+    ouMais: 0
+    trechoDaDefinicao: 
+    verbeteDoTrecho: 
+    comoEhCitado: 
+    basePadrao: 1
+    opcional: 0
+  proibidas: []
+  extrasAceitos: 0900000006000000i
+  andaEmTrilhos: 0
+  puxadoPor: 
+  velocidadeNaPista: 1
+  variante: 
+  modeloPronto: {fileID: 6280498339973772763, guid: 7c0225d416a95ad40b4f6ddacbc05a71, type: 3}
+  escalaDoModeloPronto: 1
+  giroDoModeloPronto: 0
+  observacao: "S\xF3 a sirene vem da defini\xE7\xE3o. BASE PADR\xC3O (n\xE3o vem da defini\xE7\xE3o): 4 rodas e 1 motor, porque a defini\xE7\xE3o n\xE3o diz quantas rodas nem fala de motor. \"transporta pessoas doentes\" e \"cuida delas\" n\xE3o viraram pe\xE7a. Luzes entram como extra aceito (a defini\xE7\xE3o n\xE3o fala de luzes)."

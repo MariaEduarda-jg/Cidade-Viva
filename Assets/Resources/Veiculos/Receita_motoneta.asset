@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 523fd1b478bd4eb4b9085f9389689697, type: 3}
+  m_Name: Receita_motoneta
+  m_EditorClassIdentifier: Assembly-CSharp::VeiculoReceita
+  idDoVerbete: motoneta
+  nivel: 5
+  ordem: 1
+  chassi: DuasRodas
+  itens:
+  - peca: 2
+    tambemAceita: 03000000i
+    quantidade: 1
+    ouMais: 0
+    trechoDaDefinicao: com motor
+    verbeteDoTrecho: motocicleta
+    comoEhCitado: moto
+    basePadrao: 0
+    opcional: 0
+  - peca: 0
+    tambemAceita: 
+    quantidade: 2
+    ouMais: 0
+    trechoDaDefinicao: duas rodas
+    verbeteDoTrecho: motocicleta
+    comoEhCitado: moto
+    basePadrao: 0
+    opcional: 0
+  - peca: 9
+    tambemAceita: 
+    quantidade: 1
+    ouMais: 0
+    trechoDaDefinicao: em que o motorista fica com as pernas juntas
+    verbeteDoTrecho: 
+    comoEhCitado: 
+    basePadrao: 0
+    opcional: 0
+  proibidas: []
+  extrasAceitos: 06000000i
+  andaEmTrilhos: 0
+  puxadoPor: 
+  velocidadeNaPista: 0.7
+  variante: Motoneta
+  modeloPronto: {fileID: 4207660134141130721, guid: 7d331294b8af44c4fbadc99f02fc2990, type: 3}
+  escalaDoModeloPronto: 0.8
+  giroDoModeloPronto: 0
+  observacao: "\"Tipo de moto\": o gloss\xE1rio n\xE3o tem o verbete \"moto\", mas a defini\xE7\xE3o de motocicleta termina com \"Ver moto\"; por isso o motor e as duas rodas v\xEAm da defini\xE7\xE3o de motocicleta. A defini\xE7\xE3o diz s\xF3 \"motor\", sem dizer de que tipo: por isso o encaixe aceita o motor comum e o motor el\xE9trico. O assento vem de \"o motorista fica com as pernas juntas\" (formato pr\xF3prio de assento). \"mais devagar\": na pista ela anda a 70% da velocidade. \"mais leve\" n\xE3o virou pe\xE7a."

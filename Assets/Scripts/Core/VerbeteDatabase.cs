@@ -18,6 +18,9 @@ public class VerbeteDatabase : ScriptableObject
     [Tooltip("Ilustrações de Assets/Art/Verbetes. O nome de cada sprite é o id do verbete.")]
     public Sprite[] ilustracoes = new Sprite[0];
 
+    [Tooltip("Assets/Prefabs/UI_CartaoVerbete.prefab, aberto por CartaoVerbete.Mostrar.")]
+    public CartaoVerbete prefabDoCartao;
+
     [Serializable]
     private class Arquivo
     {

@@ -99,6 +99,9 @@ public static class GameProgress
 
     // ---- Álbum Glotrânsito: verbetes desbloqueados no perfil ativo (id = Verbete.id) ----
 
+    // Avisa quem mostra o álbum (cena do álbum, botão do Hub) que o conjunto de verbetes desbloqueados mudou.
+    public static event System.Action VerbetesMudaram;
+
     // Põe a figurinha do verbete no álbum. Devolve true se era nova (pra tela poder comemorar).
     public static bool DesbloquearVerbete(string idDoVerbete)
     {
@@ -111,7 +114,22 @@ public static class GameProgress
         v.desbloqueado = true;
         Perfis.SalvarAtivo();
         Debug.Log("Verbete desbloqueado por " + Perfis.Ativo.nome + ": " + idDoVerbete);
+        if (VerbetesMudaram != null)
+        {
+            VerbetesMudaram();
+        }
         return true;
+    }
+
+    // Esvazia o álbum do perfil ativo. Só pra testes (menu Cidade Viva > Teste).
+    public static void BloquearTodosOsVerbetes()
+    {
+        Perfis.Ativo.verbetes.Clear();
+        Perfis.SalvarAtivo();
+        if (VerbetesMudaram != null)
+        {
+            VerbetesMudaram();
+        }
     }
 
     public static bool VerbeteDesbloqueado(string idDoVerbete)

@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18b31ebee526ac64dbe24dee30dca563, type: 3}
+  m_Name: Problema_r3_parque_ciclista
+  m_EditorClassIdentifier: Assembly-CSharp::ObraProblema
+  modo: 1
+  nivel: 3
+  ordem: 1
+  enunciado: O ciclista vai pedalar pelo parque, longe dos carros.
+  obstaculo: 7
+  ruaComum: 0
+  quemPassa: 3
+  nomeDeQuemPassa: O ciclista
+  modeloDeQuemPassa: {fileID: 8020787116287112171, guid: c407f46bdeac4c74daf3e9e639262c88, type: 3}
+  opcoes:
+  - ciclofaixa
+  - ciclovia
+  - calcada
+  correta: ciclovia
+  trechoDaDefinicao: "est\xE1 em via separada do tr\xE2nsito dos ve\xEDculos"
+  rotaDaAmbulancia: 0
+  observacao: "O parque com a rua dos carros ao longe \xE9 encena\xE7\xE3o do jogo pra \"via separada do tr\xE2nsito dos ve\xEDculos\"."

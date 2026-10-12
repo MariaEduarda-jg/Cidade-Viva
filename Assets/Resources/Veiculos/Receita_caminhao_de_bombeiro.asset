@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 523fd1b478bd4eb4b9085f9389689697, type: 3}
+  m_Name: Receita_caminhao_de_bombeiro
+  m_EditorClassIdentifier: Assembly-CSharp::VeiculoReceita
+  idDoVerbete: caminhao_de_bombeiro
+  nivel: 3
+  ordem: 1
+  chassi: QuatroRodas
+  itens:
+  - peca: 0
+    tambemAceita: 
+    quantidade: 4
+    ouMais: 0
+    trechoDaDefinicao: 
+    verbeteDoTrecho: 
+    comoEhCitado: 
+    basePadrao: 1
+    opcional: 0
+  - peca: 2
+    tambemAceita: 03000000i
+    quantidade: 1
+    ouMais: 0
+    trechoDaDefinicao: 
+    verbeteDoTrecho: 
+    comoEhCitado: 
+    basePadrao: 1
+    opcional: 0
+  proibidas: []
+  extrasAceitos: 090000000500000006000000i
+  andaEmTrilhos: 0
+  puxadoPor: 
+  velocidadeNaPista: 1
+  variante: 
+  modeloPronto: {fileID: 9079860014536129669, guid: 7d4545a2eaad7e04abb8d6c9ed0179e4, type: 3}
+  escalaDoModeloPronto: 1.15
+  giroDoModeloPronto: 0
+  observacao: "NENHUMA pe\xE7a vem da defini\xE7\xE3o: ela fala de cor (\"vermelho\"), tamanho (\"grande\"), velocidade (\"veloz\") e do que o caminh\xE3o leva, mas n\xE3o de rodas, motor, sirene nem luzes. BASE PADR\xC3O (n\xE3o vem da defini\xE7\xE3o): 4 rodas e 1 motor. Sirene e luzes entram s\xF3 como extras aceitos. O \"vermelho\" est\xE1 no modelo do ve\xEDculo."

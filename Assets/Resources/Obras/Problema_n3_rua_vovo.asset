@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18b31ebee526ac64dbe24dee30dca563, type: 3}
+  m_Name: Problema_n3_rua_vovo
+  m_EditorClassIdentifier: Assembly-CSharp::ObraProblema
+  nivel: 3
+  ordem: 1
+  obstaculo: 2
+  ruaComum: 1
+  quemPassa: 1
+  nomeDeQuemPassa: "O vov\xF4"
+  modeloDeQuemPassa: {fileID: 825196385444868200, guid: c1b8942f00c7b7341b26f8467ac653e2, type: 3}
+  opcoes:
+  - viaduto
+  - faixa_de_pedestre
+  - ponte
+  correta: faixa_de_pedestre
+  trechoDaDefinicao: "para o pedestre atravessar com seguran\xE7a quando o ve\xEDculo para"
+  rotaDaAmbulancia: 0
+  observacao: "Gerado pelo ObrasConstrutor a partir das defini\xE7\xF5es do gloss\xE1rio; pendente de revis\xE3o da coordena\xE7\xE3o."
