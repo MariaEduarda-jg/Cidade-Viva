@@ -1,0 +1,164 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51f0002191d5f544aa2bd2ef7b7c0661, type: 3}
+  m_Name: Niveis_RuaVivaCarro
+  m_EditorClassIdentifier: Assembly-CSharp::LevelConfig
+  niveis:
+  - objetivo: Prenda o cinto, olhe pela janela e buzine na hora!
+    velocidade: 5
+    quantidadeDeObstaculos: 1
+    tempoEmSegundos: 0
+    quantidadeDeItens: 3
+    errosPermitidos: -1
+    regrasExtras:
+    - figura_no_pedido
+    - carro_para
+    - carro_devagar
+    - dica_buzina
+    extras:
+    - nome: ocupantes
+      valor: 2
+    - nome: atentas
+      valor: 0
+    - nome: distracoes
+      valor: 0
+    - nome: dificuldadeMinima
+      valor: 1
+    - nome: dificuldadeMaxima
+      valor: 1
+    - nome: distanciaMaxima
+      valor: 9
+    - nome: janelaDaBuzina
+      valor: 5
+    - nome: tempoPorPedido
+      valor: 0
+    estrelas:
+      medida: 1
+      para2Estrelas: 2
+      para3Estrelas: 0
+  - objetivo: "Agora o motorista s\xF3 diz o nome. Procure!"
+    velocidade: 5.5
+    quantidadeDeObstaculos: 2
+    tempoEmSegundos: 0
+    quantidadeDeItens: 4
+    errosPermitidos: -1
+    regrasExtras:
+    - carro_devagar
+    - dica_buzina
+    extras:
+    - nome: ocupantes
+      valor: 3
+    - nome: atentas
+      valor: 0
+    - nome: distracoes
+      valor: 2
+    - nome: dificuldadeMinima
+      valor: 1
+    - nome: dificuldadeMaxima
+      valor: 2
+    - nome: distanciaMaxima
+      valor: 12
+    - nome: janelaDaBuzina
+      valor: 4.5
+    - nome: tempoPorPedido
+      valor: 0
+    estrelas:
+      medida: 1
+      para2Estrelas: 2
+      para3Estrelas: 0
+  - objetivo: Nem todo mundo precisa de buzina. Olhe bem!
+    velocidade: 6.5
+    quantidadeDeObstaculos: 3
+    tempoEmSegundos: 0
+    quantidadeDeItens: 5
+    errosPermitidos: -1
+    regrasExtras:
+    - ciclistas
+    extras:
+    - nome: ocupantes
+      valor: 4
+    - nome: atentas
+      valor: 1
+    - nome: distracoes
+      valor: 3
+    - nome: dificuldadeMinima
+      valor: 1
+    - nome: dificuldadeMaxima
+      valor: 2
+    - nome: distanciaMaxima
+      valor: 18
+    - nome: janelaDaBuzina
+      valor: 4
+    - nome: tempoPorPedido
+      valor: 0
+    estrelas:
+      medida: 1
+      para2Estrelas: 2
+      para3Estrelas: 0
+  - objetivo: "Coisas pequenas e longe. Aten\xE7\xE3o!"
+    velocidade: 7
+    quantidadeDeObstaculos: 4
+    tempoEmSegundos: 0
+    quantidadeDeItens: 6
+    errosPermitidos: -1
+    regrasExtras:
+    - ciclistas
+    extras:
+    - nome: ocupantes
+      valor: 5
+    - nome: atentas
+      valor: 2
+    - nome: distracoes
+      valor: 4
+    - nome: dificuldadeMinima
+      valor: 2
+    - nome: dificuldadeMaxima
+      valor: 3
+    - nome: distanciaMaxima
+      valor: 26
+    - nome: janelaDaBuzina
+      valor: 3.5
+    - nome: tempoPorPedido
+      valor: 0
+    estrelas:
+      medida: 1
+      para2Estrelas: 2
+      para3Estrelas: 0
+  - objetivo: Passeio longo e cada pedido com tempo!
+    velocidade: 8
+    quantidadeDeObstaculos: 5
+    tempoEmSegundos: 0
+    quantidadeDeItens: 8
+    errosPermitidos: -1
+    regrasExtras:
+    - ciclistas
+    extras:
+    - nome: ocupantes
+      valor: 5
+    - nome: atentas
+      valor: 3
+    - nome: distracoes
+      valor: 5
+    - nome: dificuldadeMinima
+      valor: 2
+    - nome: dificuldadeMaxima
+      valor: 3
+    - nome: distanciaMaxima
+      valor: 32
+    - nome: janelaDaBuzina
+      valor: 3
+    - nome: tempoPorPedido
+      valor: 7
+    estrelas:
+      medida: 1
+      para2Estrelas: 2
+      para3Estrelas: 0

@@ -47,5 +47,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Minigame_Obras.unity
     guid: 84a67aaf79c9ff94487e3d7377f878ba
+  - enabled: 1
+    path: Assets/Scenes/Minigame_Sinais.unity
+    guid: bf60a44e271a7bd40abf99ef09ae1813
+  - enabled: 1
+    path: Assets/Scenes/Minigame_RuaViva_Carro.unity
+    guid: 12fa715fe2551134fb9e718daf9d4d45
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}

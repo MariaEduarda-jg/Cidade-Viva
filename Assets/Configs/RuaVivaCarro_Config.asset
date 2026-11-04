@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61a945530d2bf14dad321370f68cdd0, type: 3}
+  m_Name: RuaVivaCarro_Config
+  m_EditorClassIdentifier: Assembly-CSharp::RuaVivaConfig
+  trechoDaFivela: com a fivela e o fecho
+  trechoDeQuando: quando entramos no carro
+  trechoDaFreada: evitar machucar em freada
+  trechoDoPassageiro: "mas n\xE3o o conduz"
+  trechoDoMotorista: Ele acompanha o motorista
+  trechoDaBuzina: "faz barulho para chamar aten\xE7\xE3o no tr\xE2nsito"
+  encaixeDaFivela: 150
+  pausaEntreOcupantes: 0.45
+  nomesDosOcupantes:
+  - "Voc\xEA"
+  - Pai (motorista)
+  - "M\xE3e"
+  - Filha
+  - "Ca\xE7ula"
+  alturaDaCamera: 1.35
+  giroDaCamera: 45
+  aceleracao: 3
+  freio: 9
+  comecoDoPasseio: 25
+  espacoEntreEventos: 50
+  fimDepoisDoUltimo: 30
+  antecipacaoDoPedido: 45
+  toleranciaDepoisDoObjeto: 4
+  lateralMinima: 6
+  velocidadeDevagar: 1.5
+  esperaAoLadoDoObjeto: 8
+  tempoAteAMarca: 4
+  tempoDaFigurinha: 1.6
+  fracaoDoSafari: 0.75
+  distanciaDaFreada: 9
+  ladoDeOndeVem: 6.5
+  beiraDaRua: 2
+  velocidadeDeAtravessar: 3
+  intervaloEntreBuzinadas: 0.35
+  tempoDoBalao: 3
+  pausaAntesDoFim: 1.4
+  textoDoNivel: "N\xEDvel {0}"
+  rotulosDosCriterios:
+  - safari
+  - buzina
+  - sem susto
+  textoDoSafari: 'Safari: {0} de {1}'
+  recadoDaGaragem: "Arraste a fivela at\xE9 o fecho!"
+  textoDoOcupante: 'Cinto de: {0}'
+  recadoDeSair: Todos de cinto. Vamos passear!
+  recadoDoPasseio: Olhe pela janela!
+  textoDoPedido: "Voc\xEA v\xEA {0} {1}?"
+  recadoDeAcerto: Isso!
+  recadoDeOutroObjeto: "Esse \xE9: {0}. Procure de novo!"
+  recadoDePassou: "Passou! Olhe o pr\xF3ximo."
+  recadoDoTempo: "Acabou o tempo desse! Olhe o pr\xF3ximo."
+  recadoDeBuzinar: Buzine agora!
+  recadoDaBuzinaCerta: Isso! A pessoa ouviu e parou.
+  balaoDaBuzinaAToa: "Ningu\xE9m precisava ouvir! O bichinho levou um susto.\nBuzina: \"{0}\"."
+  balaoDaFreada: 'Ufa! O motorista freou.
+
+    Buzina: "{0}".
+
+    Cinto: "{1}".'
+  recadoDaFreada: "Ufa! Quase n\xE3o viu o carro."
+  recadoDeChegada: Chegamos! Que passeio bom.
+  somDaFivela: {fileID: 8300000, guid: e134596c617eee7479b8d5fe5d742b99, type: 3}
+  somDeSoltar: {fileID: 8300000, guid: 2d2e8a8b43189c84bb88e3f9fc7fdf6b, type: 3}
+  somDoMotor: {fileID: 8300000, guid: 5c274b58157239044aed353b0e4359f8, type: 3}
+  somDaBuzina: {fileID: 8300000, guid: 16b753b4b2626b44aa980f63611b57df, type: 3}
+  somDeAcerto: {fileID: 8300000, guid: b6105524ee9596f4cbdfd16b2831d6dd, type: 3}
+  somDeOutroObjeto: {fileID: 8300000, guid: 5d9549170dffbaf4cb4857823f465e15, type: 3}
+  somDoSusto: {fileID: 8300000, guid: 85709d7ca20676e41a90262ac70b4ddd, type: 3}
+  somDaFreada: {fileID: 8300000, guid: 4a7623e25a4916744855ab9c8fb23632, type: 3}
+  somDePedido: {fileID: 8300000, guid: 4a632fed2d2437c4986c7339972ed971, type: 3}
+  somDeComemoracao: {fileID: 8300000, guid: b64e11d0e7942054b86186a98c34f1d2, type: 3}

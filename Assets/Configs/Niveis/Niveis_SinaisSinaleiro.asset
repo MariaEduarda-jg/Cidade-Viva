@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51f0002191d5f544aa2bd2ef7b7c0661, type: 3}
+  m_Name: Niveis_SinaisSinaleiro
+  m_EditorClassIdentifier: Assembly-CSharp::LevelConfig
+  niveis:
+  - objetivo: "Uma via s\xF3. Abra o verde para os carros passarem!"
+    velocidade: 1
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 60
+    quantidadeDeItens: 6
+    errosPermitidos: -1
+    regrasExtras: []
+    extras:
+    - nome: pedestres
+      valor: 0
+    - nome: intervalo
+      valor: 3.5
+    estrelas:
+      medida: 1
+      para2Estrelas: 1
+      para3Estrelas: 0
+  - objetivo: Duas vias! Um verde de cada vez.
+    velocidade: 1
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 90
+    quantidadeDeItens: 10
+    errosPermitidos: -1
+    regrasExtras:
+    - duas_vias
+    extras:
+    - nome: pedestres
+      valor: 0
+    - nome: intervalo
+      valor: 3.5
+    estrelas:
+      medida: 1
+      para2Estrelas: 1
+      para3Estrelas: 0
+  - objetivo: "Agora os pedestres tamb\xE9m querem passar."
+    velocidade: 1
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 110
+    quantidadeDeItens: 10
+    errosPermitidos: -1
+    regrasExtras:
+    - duas_vias
+    - pedestres
+    extras:
+    - nome: pedestres
+      valor: 4
+    - nome: intervalo
+      valor: 3.5
+    estrelas:
+      medida: 1
+      para2Estrelas: 1
+      para3Estrelas: 0
+  - objetivo: Mais carros e mais pedestres.
+    velocidade: 1
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 130
+    quantidadeDeItens: 16
+    errosPermitidos: -1
+    regrasExtras:
+    - duas_vias
+    - pedestres
+    extras:
+    - nome: pedestres
+      valor: 8
+    - nome: intervalo
+      valor: 2.6
+    estrelas:
+      medida: 1
+      para2Estrelas: 1
+      para3Estrelas: 0
+  - objetivo: "Vem uma ambul\xE2ncia: ela n\xE3o pode ficar esperando!"
+    velocidade: 1
+    quantidadeDeObstaculos: 0
+    tempoEmSegundos: 140
+    quantidadeDeItens: 16
+    errosPermitidos: -1
+    regrasExtras:
+    - duas_vias
+    - pedestres
+    - ambulancia
+    extras:
+    - nome: pedestres
+      valor: 8
+    - nome: intervalo
+      valor: 2.6
+    estrelas:
+      medida: 1
+      para2Estrelas: 1
+      para3Estrelas: 0

@@ -785,10 +785,10 @@ namespace CidadeViva.EditorArte
             new AreaDeVerbetes { objeto = "Area_ObrasDaCidade", nome = "Obras da Cidade", areaName = ObrasConstrutor.NomeDaArea, cena = ObrasConstrutor.NomeDaCena,
                 grupos = new[] { GrupoDeVerbete.ViasEEstruturas }, centro = new Vector3(46f, .5f, 69f), marcador = "Mostarda",
                 zDoLetreiro = 4.4f, luz = new Vector3(0, 7f, 9f), montar = ObrasDaCidade },
-            new AreaDeVerbetes { objeto = "Area_CruzamentoCentral", nome = "Cruzamento Central", areaName = "Cruzamento Central", cena = "", emBreve = true,
+            new AreaDeVerbetes { objeto = "Area_CruzamentoCentral", nome = "Cruzamento Central", areaName = "Cruzamento Central", cena = SinaisConstrutor.NomeDaCena,
                 grupos = new[] { GrupoDeVerbete.Sinais }, centro = new Vector3(0f, .5f, 50f), marcador = "Vermelho",
                 zDoLetreiro = 4.4f, luz = new Vector3(0, 7f, 9f), montar = CruzamentoCentral },
-            new AreaDeVerbetes { objeto = "Area_RuaViva", nome = "Rua Viva", areaName = "Rua Viva", cena = "", emBreve = true,
+            new AreaDeVerbetes { objeto = "Area_RuaViva", nome = "Rua Viva", areaName = RuaVivaCarroConstrutor.NomeDaArea, cena = RuaVivaCarroConstrutor.NomeDaCena,
                 grupos = new[] { GrupoDeVerbete.PessoasESeguranca, GrupoDeVerbete.Situacao }, centro = new Vector3(-45f, .5f, 48f), marcador = "Rosa",
                 zDoLetreiro = 3f, luz = new Vector3(0, 6f, 7f), montar = RuaViva },
         };
