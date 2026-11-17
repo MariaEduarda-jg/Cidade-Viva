@@ -4,18 +4,14 @@ using UnityEngine.UI;
 // Interface do Passeio de Carro. Só apresentação.
 public class RuaVivaHUD : MonoBehaviour
 {
-    [Header("Partes que aparecem em cada momento")]
-    public GameObject painelDaGaragem;
-    public GameObject painelDoPasseio;
     public Image telaPreta;
 
-    [Header("Garagem")]
-    public Text textoDoOcupante;
-    public FivelaArrastavel fivela;
-    public Text textoDoRecado;
-    public RectTransform painelDoRecado;
-    public Vector2 recadoNaGaragem = new Vector2(0f, 365f);
-    public Vector2 recadoNoPasseio = new Vector2(520f, 275f);
+    [Header("Cartão da missão")]
+    public GameObject cartaoDaMissao;
+    public Text tituloDaMissao;
+    public Text textoDaMissao;
+    public Text novidadeDaMissao;
+    public GameObject botaoOuvirMissao;
 
     [Header("Nível e critérios")]
     public GameObject painelDoNivel;
@@ -25,6 +21,10 @@ public class RuaVivaHUD : MonoBehaviour
     public Text textoDoSafari;
     public Color corGanha = Color.white;
     public Color corPerdida = new Color(0.4f, 0.45f, 0.5f, 0.3f);
+
+    [Header("Recado (o que fazer agora)")]
+    public GameObject painelDoRecado;
+    public Text textoDoRecado;
 
     [Header("Pedido do motorista")]
     public GameObject balaoDoPedido;
@@ -39,23 +39,13 @@ public class RuaVivaHUD : MonoBehaviour
     public Text palavraDaFigurinha;
     public Image imagemDaFigurinha;
 
-    [Header("Buzina")]
-    public RectTransform botaoDaBuzina;
+    [Header("Rádio, buzina, balão e marca")]
+    public GameObject painelDoRadio;
+    public Text textoDoRadio;
     public GameObject sinalDaBuzina;
-
-    [Header("Balão e marca")]
     public GameObject balao;
     public Text textoDoBalao;
     public RectTransform marca;
-
-    public void Parte(bool garagem, bool passeio)
-    {
-        painelDaGaragem.SetActive(garagem);
-        painelDoPasseio.SetActive(passeio);
-        painelDoNivel.SetActive(garagem || passeio);
-        painelDoRecado.gameObject.SetActive(garagem || passeio);
-        painelDoRecado.anchoredPosition = garagem ? recadoNaGaragem : recadoNoPasseio;
-    }
 
     public void Escuro(float alfa)
     {
@@ -65,9 +55,19 @@ public class RuaVivaHUD : MonoBehaviour
         telaPreta.gameObject.SetActive(alfa > 0.001f);
     }
 
-    public void Ocupante(string texto)
+    public void Missao(string titulo, string texto, string novidade, bool ouvir)
     {
-        textoDoOcupante.text = texto;
+        cartaoDaMissao.SetActive(!string.IsNullOrEmpty(titulo));
+        tituloDaMissao.text = titulo ?? "";
+        textoDaMissao.text = texto ?? "";
+        novidadeDaMissao.text = novidade ?? "";
+        botaoOuvirMissao.SetActive(ouvir);
+    }
+
+    public void Jogando(bool sim)
+    {
+        painelDoNivel.SetActive(sim);
+        painelDoRecado.SetActive(sim);
     }
 
     public void Recado(string texto)
@@ -118,17 +118,16 @@ public class RuaVivaHUD : MonoBehaviour
         imagemDaFigurinha.gameObject.SetActive(imagem != null);
     }
 
+    public void Radio(string texto)
+    {
+        painelDoRadio.SetActive(!string.IsNullOrEmpty(texto));
+        textoDoRadio.text = texto ?? "";
+    }
+
     public void Balao(string texto)
     {
         balao.SetActive(!string.IsNullOrEmpty(texto));
         textoDoBalao.text = texto ?? "";
-    }
-
-    // O botão da buzina pulsa (nos níveis com dica) e um sinal mostra que ela tocou, pra quem joga sem som.
-    public void PulsarBuzina(bool pulsando)
-    {
-        float k = pulsando ? 1f + Mathf.Abs(Mathf.Sin(Time.unscaledTime * 6f)) * 0.14f : 1f;
-        botaoDaBuzina.localScale = new Vector3(k, k, 1f);
     }
 
     public void SinalDaBuzina(bool ligado)
@@ -136,7 +135,7 @@ public class RuaVivaHUD : MonoBehaviour
         sinalDaBuzina.SetActive(ligado);
     }
 
-    // posicao em pixels da tela; negativo esconde.
+    // posicao em pixels da tela.
     public void Marca(Vector3 posicaoNaTela, bool visivel)
     {
         marca.gameObject.SetActive(visivel);

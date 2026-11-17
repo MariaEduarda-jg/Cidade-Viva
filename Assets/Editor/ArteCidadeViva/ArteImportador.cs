@@ -454,6 +454,16 @@ namespace CidadeViva.EditorArte
             I("Predios", "CityPack", "Greenhouse/Greenhouse", "Estufa", 1f, "greenhouse_1=Branco;greenhouse_glass=Vidro").Obj().Mede(3f),
             I("Natureza", "CityPack", "Tree/Tree", "Arvore_LowPoly", 1f).Obj().Autor().Mede(5f),
             I("Natureza", "QuaterniusAvulsos", "TwistedTree_3", "Arvore_Retorcida", 1f, "Bark_TwistedTree=Marrom_Escuro;Leaves_TwistedTree=Verde").Mede(6f),
+
+            // ================= Quarta leva: o interior do carro (Passeio de Carro, 2026-11-04) =================
+            // Origem e licença a confirmar com a usuária (ver CREDITOS.md). Painel, volante e fivela vão pra paleta;
+            // o rádio (glb) fica com as cores do autor. Do painel saem duas peças (o painel e o câmbio);
+            // do "clip belt" fica só a fivela (Cube.001): a tira do cinto é feita pelo jogo, pra poder esticar.
+            I("Carros", "InteriorDoCarro", "Painel_CarDash", "Interior_Painel", 1f).Obj().Partes("Dash_1_Retopo1").Gira(-90f).Mede(1.5f),
+            I("Carros", "InteriorDoCarro", "Painel_CarDash", "Interior_Cambio", 1f).Obj().Partes("polySurface14").Gira(-90f).Mede(.5f),
+            I("Carros", "InteriorDoCarro", "Volante_Shutt", "Interior_Volante", 1f).Mede(.38f),
+            I("Carros", "InteriorDoCarro", "Radio_Carro", "Interior_Radio", 1f).Glb().Mede(.2f),
+            I("Carros", "InteriorDoCarro", "Fivela_ClipBelt", "Interior_Fivela", 1f).Partes("Cube.001").Mede(.12f),
         };
 
         // Nome do material no FBX -> cor da paleta, por pacote.
@@ -504,6 +514,12 @@ namespace CidadeViva.EditorArte
             ["QuaterniusTransport"] = new Dictionary<string, string>(),
             ["CityEnvPack1"] = new Dictionary<string, string>(),
             ["CityPack"] = new Dictionary<string, string>(),
+            ["InteriorDoCarro"] = new Dictionary<string, string>
+            {
+                ["Dash_1_Retopo1Mat"] = "Petroleo_Escuro", ["polySurface14Mat"] = "Grafite",
+                ["steering Leather"] = "Grafite", ["steering Base"] = "Cinza_Escuro", ["steering Strut"] = "Cinza", ["Logo"] = "Mostarda",
+                ["CLIP"] = "Cinza_Claro", ["CLIP.2"] = "Cinza", ["STRAP"] = "Petroleo",
+            },
             ["QuaterniusAvulsos"] = new Dictionary<string, string>(),
             ["LixosAvulsos"] = new Dictionary<string, string>(),
             ["CidadeDestruida"] = new Dictionary<string, string>

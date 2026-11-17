@@ -13,67 +13,404 @@ MonoBehaviour:
   m_Name: RuaVivaCarro_Config
   m_EditorClassIdentifier: Assembly-CSharp::RuaVivaConfig
   trechoDaFivela: com a fivela e o fecho
+  trechoDoCorpo: prender ao nosso corpo e ao assento
   trechoDeQuando: quando entramos no carro
   trechoDaFreada: evitar machucar em freada
+  trechoDeDentro: "Pessoa que est\xE1 dentro de um carro"
   trechoDoPassageiro: "mas n\xE3o o conduz"
   trechoDoMotorista: Ele acompanha o motorista
+  trechoDoBotao: "Bot\xE3o do ve\xEDculo"
+  trechoDeQuemAperta: "quando algu\xE9m apertado"
   trechoDaBuzina: "faz barulho para chamar aten\xE7\xE3o no tr\xE2nsito"
-  encaixeDaFivela: 150
-  pausaEntreOcupantes: 0.45
-  nomesDosOcupantes:
-  - "Voc\xEA"
-  - Pai (motorista)
-  - "M\xE3e"
-  - Filha
-  - "Ca\xE7ula"
-  alturaDaCamera: 1.35
-  giroDaCamera: 45
+  trechoDoVermelho: "os ve\xEDculos ou os pedestres devem parar"
+  missoes:
+  - titulo: "Miss\xE3o 1: o parque reabriu!"
+    texto: "A \xE1gua da enchente baixou e o parque abriu de novo. A fam\xEDlia vai passear l\xE1!"
+    novidade: "Novo: prender o cinto de seguran\xE7a."
+    ocupantes:
+    - quem: pai
+      assento: 0
+    - quem: voce
+      assento: 3
+    - quem: filha
+      assento: 4
+    soltos: []
+    guardarSoltos: 0
+    eventos:
+    - tipo: 0
+      lugar: bairro
+      pedido: automovel
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 2
+      lugar: parque
+      pedido: bicicleta
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    radio:
+    - O parque da cidade reabriu hoje!
+    - "A \xE1gua baixou e as ruas est\xE3o secando."
+    recadoDeChegada: "Chegamos ao parque! Todo mundo de cinto, do come\xE7o ao fim."
+  - titulo: "Miss\xE3o 2: buscar a vov\xF3"
+    texto: "A vov\xF3 chega de \xF4nibus na rodovi\xE1ria. Vamos buscar!"
+    novidade: 'Novo: a freada e a buzina.'
+    ocupantes:
+    - quem: pai
+      assento: 0
+    - quem: mae
+      assento: 2
+    - quem: voce
+      assento: 3
+    soltos:
+    - quem: ursinho
+      assento: 4
+    guardarSoltos: 0
+    eventos:
+    - tipo: 0
+      lugar: bairro
+      pedido: motocicleta
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 5
+      lugar: 
+      pedido: 
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 0
+      lugar: cruzamento
+      pedido: semaforo
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 3
+      lugar: 
+      pedido: 
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 2
+      lugar: rodoviaria
+      pedido: onibus
+      entra: vovo
+      assento: 1
+      descem: []
+      espera: 
+    radio:
+    - "Os \xF4nibus voltaram a chegar na rodovi\xE1ria!"
+    - "Os sem\xE1foros do cruzamento j\xE1 funcionam de novo."
+    recadoDeChegada: "A vov\xF3 chegou! E j\xE1 est\xE1 de cinto."
+  - titulo: "Miss\xE3o 3: dia de escola"
+    texto: "A escola abriu de novo! O pai leva as crian\xE7as, e no caminho busca a filha na casa da amiga."
+    novidade: 'Novo: gente entrando no carro no meio do caminho.'
+    ocupantes:
+    - quem: pai
+      assento: 0
+    - quem: voce
+      assento: 3
+    - quem: cacula
+      assento: 2
+    soltos: []
+    guardarSoltos: 0
+    eventos:
+    - tipo: 1
+      lugar: casa_amiga
+      pedido: 
+      entra: filha
+      assento: 4
+      descem: []
+      espera: 
+    - tipo: 0
+      lugar: bombeiros
+      pedido: caminhao_de_bombeiro
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 3
+      lugar: 
+      pedido: 
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 0
+      lugar: bairro
+      pedido: motoneta
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 3
+      lugar: 
+      pedido: 
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 2
+      lugar: escola
+      pedido: faixa_de_pedestre
+      entra: 
+      assento: 0
+      descem:
+      - cacula
+      - filha
+      espera: 
+    radio:
+    - As escolas abrem de novo hoje!
+    - Os bombeiros ajudaram muita gente na enchente.
+    recadoDeChegada: "Chegamos na escola! Boa aula, crian\xE7as!"
+  - titulo: "Miss\xE3o 4: doa\xE7\xF5es ao hospital"
+    texto: "A fam\xEDlia leva brinquedos e roupas pro hospital. Primeiro, guarde as coisas soltas!"
+    novidade: "Novo: coisa solta no banco voa na freada. E a rua est\xE1 mais cheia."
+    ocupantes:
+    - quem: pai
+      assento: 0
+    - quem: mae
+      assento: 2
+    - quem: voce
+      assento: 3
+    soltos:
+    - quem: caixa
+      assento: 1
+    - quem: ursinho
+      assento: 4
+    guardarSoltos: 1
+    eventos:
+    - tipo: 0
+      lugar: obra
+      pedido: caminhao_trator
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 5
+      lugar: 
+      pedido: 
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 0
+      lugar: lago
+      pedido: ponte
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 3
+      lugar: 
+      pedido: 
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 0
+      lugar: delegacia
+      pedido: viatura
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 4
+      lugar: 
+      pedido: 
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 3
+      lugar: 
+      pedido: 
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 2
+      lugar: hospital
+      pedido: ambulancia
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    radio:
+    - "O hospital pede doa\xE7\xF5es de roupas e brinquedos."
+    - "A ponte do lago j\xE1 foi consertada."
+    recadoDeChegada: "As doa\xE7\xF5es chegaram ao hospital!"
+  - titulo: "Miss\xE3o 5: a festa da reconstru\xE7\xE3o"
+    texto: "A cidade est\xE1 quase toda arrumada! A m\xE3e espera na festa. No caminho, a fam\xEDlia busca a vov\xF3."
+    novidade: "Agora \xE9 tudo junto: a viagem inteira."
+    ocupantes:
+    - quem: pai
+      assento: 0
+    - quem: voce
+      assento: 3
+    - quem: filha
+      assento: 2
+    soltos:
+    - quem: caixa
+      assento: 1
+    guardarSoltos: 1
+    eventos:
+    - tipo: 1
+      lugar: casa_vovo
+      pedido: 
+      entra: vovo
+      assento: 4
+      descem: []
+      espera: 
+    - tipo: 0
+      lugar: parque
+      pedido: ciclista
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 3
+      lugar: 
+      pedido: 
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 0
+      lugar: obra
+      pedido: reboque
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 4
+      lugar: 
+      pedido: 
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 0
+      lugar: cruzamento
+      pedido: semaforo_de_pedestre
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 3
+      lugar: 
+      pedido: 
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 0
+      lugar: rodoviaria
+      pedido: micro_onibus
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 4
+      lugar: 
+      pedido: 
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 3
+      lugar: 
+      pedido: 
+      entra: 
+      assento: 0
+      descem: []
+      espera: 
+    - tipo: 2
+      lugar: festa
+      pedido: estacionamento
+      entra: 
+      assento: 0
+      descem: []
+      espera: mae
+    radio:
+    - "Hoje tem festa da reconstru\xE7\xE3o!"
+    - "A cidade est\xE1 quase toda arrumada."
+    recadoDeChegada: "Chegamos na festa! A m\xE3e estava esperando."
+  encaixeDaFivela: 0.12
+  raioDeToqueDaFivela: 110
+  pausaEntreOcupantes: 0.6
   aceleracao: 3
-  freio: 9
-  comecoDoPasseio: 25
-  espacoEntreEventos: 50
-  fimDepoisDoUltimo: 30
+  freio: 5
+  freioForte: 16
+  comecoDoPasseio: 30
+  espacoEntreEventos: 40
   antecipacaoDoPedido: 45
   toleranciaDepoisDoObjeto: 4
-  lateralMinima: 6
   velocidadeDevagar: 1.5
   esperaAoLadoDoObjeto: 8
   tempoAteAMarca: 4
   tempoDaFigurinha: 1.6
   fracaoDoSafari: 0.75
+  esperaNoVermelho: 3
+  velocidadeDoTransito: 8
   distanciaDaFreada: 9
   ladoDeOndeVem: 6.5
   beiraDaRua: 2
   velocidadeDeAtravessar: 3
   intervaloEntreBuzinadas: 0.35
-  tempoDoBalao: 3
-  pausaAntesDoFim: 1.4
+  tempoDoBalao: 3.5
+  tempoDoRadio: 5
+  pausaAntesDoFim: 2
   textoDoNivel: "N\xEDvel {0}"
   rotulosDosCriterios:
   - safari
   - buzina
   - sem susto
   textoDoSafari: 'Safari: {0} de {1}'
-  recadoDaGaragem: "Arraste a fivela at\xE9 o fecho!"
-  textoDoOcupante: 'Cinto de: {0}'
-  recadoDeSair: Todos de cinto. Vamos passear!
+  botaoDaMissao: Vamos!
+  recadoDosSoltos: Tem coisa solta no banco! Toque nela pra guardar no porta-malas.
+  recadoTudoGuardado: Tudo guardado no porta-malas!
+  recadoDoMotorista: O motorista prende o cinto dele.
+  textoDoOcupante: "Cinto de: {0}. Puxe a fivela at\xE9 o fecho!"
+  recadoDaChave: Todos de cinto! Agora toque na chave pra ligar o carro.
+  recadoDaChaveSemCinto: "Ainda falta algu\xE9m prender o cinto."
   recadoDoPasseio: Olhe pela janela!
-  textoDoPedido: "Voc\xEA v\xEA {0} {1}?"
+  textoDoPedido: "{0} Voc\xEA v\xEA {1} {2}?"
   recadoDeAcerto: Isso!
   recadoDeOutroObjeto: "Esse \xE9: {0}. Procure de novo!"
   recadoDePassou: "Passou! Olhe o pr\xF3ximo."
   recadoDoTempo: "Acabou o tempo desse! Olhe o pr\xF3ximo."
-  recadoDeBuzinar: Buzine agora!
-  recadoDaBuzinaCerta: Isso! A pessoa ouviu e parou.
-  balaoDaBuzinaAToa: "Ningu\xE9m precisava ouvir! O bichinho levou um susto.\nBuzina: \"{0}\"."
+  recadoDeBuzinar: "Algu\xE9m vem sem olhar! Toque no meio do volante!"
+  recadoDaBuzinaCerta: Isso! O motorista apertou a buzina e a pessoa parou.
+  balaoDaBuzinaAToa: "Ningu\xE9m precisava ouvir! Todo mundo levou um susto.\nBuzina: \"{0}\"."
   balaoDaFreada: 'Ufa! O motorista freou.
 
     Buzina: "{0}".
 
     Cinto: "{1}".'
   recadoDaFreada: "Ufa! Quase n\xE3o viu o carro."
-  recadoDeChegada: Chegamos! Que passeio bom.
-  somDaFivela: {fileID: 8300000, guid: e134596c617eee7479b8d5fe5d742b99, type: 3}
+  recadoDaBola: Opa, uma bola! O motorista freou.
+  balaoDaFreadaComSolto: 'Quem estava de cinto ficou no banco. O que estava solto voou!
+
+    Cinto: "{0}".'
+  balaoDaFreadaSemSolto: 'Todo mundo de cinto ficou no banco, e nada voou: estava tudo guardado!
+
+    Cinto: "{0}".'
+  recadoDoVermelho: 'Sinal vermelho: "{0}".'
+  recadoDoVerde: Verde! Pode seguir.
+  recadoDaParada: "Paramos: {0}. Algu\xE9m vai entrar!"
+  recadoDeQuemEntrou: '{0} entrou no carro: agora precisa prender o cinto!'
+  recadoTodosDeCinto: Todos de cinto. Vamos!
+  recadoDeQuemDesceu: Tchau, {0}!
+  prefixoDoRadio: "R\xE1dio Cidade:"
+  somDaFivela: {fileID: 8300000, guid: 440e9e0234e91a745a926600cd7d20a1, type: 3}
   somDeSoltar: {fileID: 8300000, guid: 2d2e8a8b43189c84bb88e3f9fc7fdf6b, type: 3}
   somDoMotor: {fileID: 8300000, guid: 5c274b58157239044aed353b0e4359f8, type: 3}
   somDaBuzina: {fileID: 8300000, guid: 16b753b4b2626b44aa980f63611b57df, type: 3}
@@ -83,3 +420,5 @@ MonoBehaviour:
   somDaFreada: {fileID: 8300000, guid: 4a7623e25a4916744855ab9c8fb23632, type: 3}
   somDePedido: {fileID: 8300000, guid: 4a632fed2d2437c4986c7339972ed971, type: 3}
   somDeComemoracao: {fileID: 8300000, guid: b64e11d0e7942054b86186a98c34f1d2, type: 3}
+  somDoRadio: {fileID: 8300000, guid: d063641a66b57644cac8aee4763a76e2, type: 3}
+  somDoPortaMalas: {fileID: 8300000, guid: 0a5034a23193cf643a8f36f674aebdc0, type: 3}
