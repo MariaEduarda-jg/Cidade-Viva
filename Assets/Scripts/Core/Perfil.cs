@@ -15,6 +15,15 @@ public class Perfil
     // Álbum Glotrânsito: só entram aqui os verbetes em que a criança já mexeu.
     // Perfil gravado antes de existirem verbetes não tem este campo no arquivo e carrega com a lista vazia.
     public List<ProgressoDoVerbete> verbetes = new List<ProgressoDoVerbete>();
+    // A abertura e o final 3D já foram vistos (aparecem sozinhos uma vez só; ver Historia).
+    public bool viuAbertura;
+    public bool viuFinal;
+    // Loja (versão final): moedas ganhas por estrela nova, itens comprados e o que está vestido.
+    // Perfis antigos, sem estes campos, carregam com 0 moedas e nada comprado.
+    public int moedas;
+    public List<string> itensComprados = new List<string>();
+    public string roupaVestida = "";
+    public string acessorioVestido = "";
 
     // Perfil "Visitante": só existe na memória, nunca vira arquivo.
     [NonSerialized] public bool visitante;

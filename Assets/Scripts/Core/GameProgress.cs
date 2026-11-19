@@ -27,7 +27,10 @@ public static class GameProgress
             m.recordePorNivel.Add(0);
         }
 
+        int estrelasAntes = m.estrelasPorNivel[nivel - 1];
         m.estrelasPorNivel[nivel - 1] = Mathf.Max(m.estrelasPorNivel[nivel - 1], Mathf.Clamp(estrelas, 1, 3));
+        // Loja: cada estrela nova do nível (só a melhora) vira moedas.
+        Loja.GanharPorEstrelas(m.estrelasPorNivel[nivel - 1] - estrelasAntes);
         m.recordePorNivel[nivel - 1] = Mathf.Max(m.recordePorNivel[nivel - 1], pontuacao);
         m.niveisConcluidos = Mathf.Max(m.niveisConcluidos, nivel);
         m.recorde = Mathf.Max(m.recorde, pontuacao);

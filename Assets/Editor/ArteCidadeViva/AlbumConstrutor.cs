@@ -206,6 +206,10 @@ namespace CidadeViva.EditorArte
             album.conteudo = conteudo;
             album.modeloDeFigurinha = ModeloDeFigurinha(conteudo);
 
+            var final = Botao("Botao_Ver_Final", canvas.transform, "Ver o final", "Verde", new Vector2(760, -470), new Vector2(320, 100), 44);
+            UnityEventTools.AddPersistentListener(final.onClick, album.VerFinal);
+            album.botaoDoFinal = final.gameObject;
+            final.gameObject.SetActive(false);
             album.textoDaDica = Texto("Dica", pagina.transform, album.dicaPadrao, 40, C("Cinza_Escuro"), new Vector2(0, -392), new Vector2(1700, 60), FontStyle.Normal);
         }
 

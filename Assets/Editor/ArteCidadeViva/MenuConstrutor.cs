@@ -227,7 +227,8 @@ namespace CidadeViva.EditorArte
             TelaAvatar(canvas.transform, menu, icones);
             TelaCodigo(canvas.transform, menu, icones);
             TelaVisitante(canvas.transform, menu);
-            foreach (var tela in new[] { menu.telaLista, menu.telaNome, menu.telaAvatar, menu.telaCodigo, menu.telaVisitante })
+            TelaCreditos(canvas.transform, menu);
+            foreach (var tela in new[] { menu.telaLista, menu.telaNome, menu.telaAvatar, menu.telaCodigo, menu.telaVisitante, menu.telaCreditos })
                 tela.SetActive(false);
 
             EditorSceneManager.SaveScene(cena, CaminhoDaCena);
@@ -298,6 +299,42 @@ namespace CidadeViva.EditorArte
             UnityEventTools.AddPersistentListener(entrar.onClick, menu.AbrirEntrar);
             UnityEventTools.AddPersistentListener(criar.onClick, menu.AbrirCriar);
             UnityEventTools.AddPersistentListener(visitante.onClick, menu.AbrirVisitante);
+            var creditos = Botao("Botao_Creditos", tela, "Créditos", "Branco", new Vector2(-150, -75), new Vector2(240, 96), 38);
+            TravessiaConstrutor.Ancorar(creditos, new Vector2(1, 1));
+            UnityEventTools.AddPersistentListener(creditos.onClick, menu.AbrirCreditos);
+            var abertura = Botao("Botao_Ver_Abertura", tela, "Ver abertura", "Branco", new Vector2(-440, -75), new Vector2(300, 96), 38);
+            TravessiaConstrutor.Ancorar(abertura, new Vector2(1, 1));
+            UnityEventTools.AddPersistentListener(abertura.onClick, menu.VerAbertura);
+        }
+
+        // Créditos: texto gerado do Assets/Art/CREDITOS.md (CreditosConstrutor), numa lista que rola.
+        static void TelaCreditos(Transform canvas, MenuInicial menu)
+        {
+            var tela = Tela("Tela_Creditos", canvas);
+            menu.telaCreditos = tela.gameObject;
+            var cartao = Cartao(tela, menu, "Créditos", out _);
+            var rolagem = Ret("Rolagem", cartao, new Vector2(0, -60), new Vector2(1440, 780));
+            rolagem.gameObject.AddComponent<Image>().color = new Color(1, 1, 1, 0);
+            var scroll = rolagem.gameObject.AddComponent<ScrollRect>();
+            scroll.horizontal = false;
+            scroll.scrollSensitivity = 50f;
+            scroll.movementType = ScrollRect.MovementType.Clamped;
+            var janela = Ret("Janela", rolagem, Vector2.zero, Vector2.zero);
+            janela.anchorMin = Vector2.zero; janela.anchorMax = Vector2.one; janela.offsetMin = janela.offsetMax = Vector2.zero;
+            janela.gameObject.AddComponent<RectMask2D>();
+            var texto = Texto("Texto", janela, CreditosConstrutor.GerarTexto(), 32, C("Grafite"), Vector2.zero, new Vector2(1380, 100), FontStyle.Normal);
+            texto.alignment = TextAnchor.UpperCenter;
+            texto.supportRichText = true;
+            texto.horizontalOverflow = HorizontalWrapMode.Wrap;
+            texto.verticalOverflow = VerticalWrapMode.Overflow;
+            texto.lineSpacing = 1.05f;
+            var rt = texto.rectTransform;
+            rt.anchorMin = new Vector2(0, 1); rt.anchorMax = new Vector2(1, 1); rt.pivot = new Vector2(.5f, 1);
+            rt.offsetMin = new Vector2(30, 0); rt.offsetMax = new Vector2(-30, 0);
+            rt.anchoredPosition = new Vector2(0, -10);
+            texto.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            scroll.viewport = janela;
+            scroll.content = rt;
         }
 
         static void TelaLista(Transform canvas, MenuInicial menu)
@@ -491,6 +528,9 @@ namespace CidadeViva.EditorArte
             var botaoDoAlbum = album.gameObject.AddComponent<BotaoDoAlbum>();
             botaoDoAlbum.contador = Texto("Texto", contador.transform, "0/38", 34, C("Branco"), Vector2.zero, new Vector2(140, 46));
             UnityEventTools.AddPersistentListener(album.onClick, botaoDoAlbum.Abrir);
+
+            // Moedas e loja (versão final), embaixo do Álbum.
+            LojaConstrutor.Painel(canvas);
 
             // Linha de ajuda no pé da tela: como olhar em volta com o mouse.
             var ajuda = Imagem("Dica_Do_Olhar", canvas.transform, arredondado, C("Petroleo_Escuro", .78f), new Vector2(0, 52), new Vector2(900, 60));

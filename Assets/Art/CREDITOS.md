@@ -7,7 +7,7 @@ A maior parte dos modelos de terceiros está sob **CC0 1.0 Universal (domínio p
 
 1. **CC0** (Kenney, Quaternius, KayKit, MilkAndBanana): uso livre, crédito opcional.
 2. **CC-BY** (modelos do Sketchfab e do Poly by Google, seções próprias abaixo): o **crédito é obrigatório** em qualquer lugar onde o jogo for distribuído (tela de créditos do jogo, página de download). O texto de cada um do Sketchfab está copiado abaixo e em `LICENCA_*.txt` ao lado do modelo.
-3. **Licença não identificada** (CityEnvPack1 e, na terceira leva, City Pack, pasta "lixos", Destroyed City Assets e a textura de poça): ver os avisos nas seções próprias. Confirmar a origem antes de distribuir o jogo.
+3. **Licença não identificada** (CityEnvPack1 e, na terceira leva, City Pack, pasta "lixos", Destroyed City Assets e a textura de poça; na quarta leva, os cinco assets do Passeio de Carro): ver os avisos nas seções próprias. Confirmar a origem antes de distribuir o jogo.
 
 ## Pacotes usados
 
@@ -91,6 +91,22 @@ As pastas abaixo vieram **sem autor nem licença**. Foram incluídas para o jogo
 - Da pasta "lixos": `EggCarton` (40 mil triângulos), `Dumpster`, `Sandwich`, `PizzaBox`, `MetalTrashcan`, `EmptyBottle`, `RegularBottle` (sem cor ou repetidos) e `Soda Can Crushed` (já existe pelo Food Kit).
 - Do Traffic Road Assets: as outras 39 variações (mesmas peças com outras cores ou danos) e os dois blocos de plástico, que só existem em FBX, sem a textura.
 - Da textura de poça: os mapas de normal, brilho, relevo e oclusão.
+
+## Quarta leva: Passeio de Carro (2026-11-17)
+
+Baixados em `C:\dev\Assets_Baixados\Novos3`. Usados no Passeio de Carro refeito (Rua Viva, parte 1). **Nenhum veio com arquivo de licença: origem e licença a confirmar com a usuária antes de distribuir o jogo.**
+
+| Asset | Autor (pelo nome do arquivo) | Origem | Onde está no projeto | O que foi usado |
+|---|---|---|---|---|
+| Unity 6 Cartoon City Free (v1.0) | ithappy | a confirmar com a usuária | `Ruas/Modelos/CartoonCityFree` (pacote importado com materiais URP, malhas, texturas e prefabs do autor) | ruas, calçadas, prédios, pontos de ônibus, plantas e carros do bairro do passeio |
+| car-dash (`dash.zip`) | não identificado | a confirmar com a usuária | `Carros/Modelos/InteriorDoCarro/Painel_CarDash.obj`; prefabs `Interior_Painel`, `Interior_Cambio` | painel e câmbio, recoloridos com a paleta do jogo (as texturas originais eram quase pretas) |
+| steering-wheel-shutt-s3rr | não identificado | a confirmar com a usuária | `Carros/Modelos/InteriorDoCarro/Volante_Shutt.fbx`; prefab `Interior_Volante` | volante (o centro é o botão da buzina) |
+| Car Radio - with tape player | Jakers_H | a confirmar com a usuária (o nome do arquivo sugere Sketchfab ou poly.pizza) | `Carros/Modelos/InteriorDoCarro/Radio_Carro.glb`; prefab `Interior_Radio` | rádio do painel |
+| clip-belt (`CLIP BELT 2.fbx`) | não identificado | a confirmar com a usuária | `Carros/Modelos/InteriorDoCarro/Fivela_ClipBelt.fbx`; prefab `Interior_Fivela` | só a fivela (malha `Cube.001`); a tira do cinto é desenhada por código |
+
+Feitos pela equipe com formas da paleta (pelo `RuaVivaCarroConstrutor`): bancos, portas, cabine, colunas, fechos e tiras do cinto, retrovisor (material `Assets/Materials/Retrovisor.mat`), porta-malas e os lugares do percurso que o Cartoon City não tem.
+
+Baixados nesta leva mas não usados: `key.glb` (chave; a do jogo é de formas), `Parking Lot by Alex Safayan`, o volante NRG (pesado demais pra WebGL), `leather_pouch`, o cinto de corda (`white-belt...`) e as ferramentas de `source (1)`.
 
 ## Fontes (SIL Open Font License 1.1)
 

@@ -20,6 +20,7 @@ public class MenuInicial : MonoBehaviour
     public GameObject telaAvatar;
     public GameObject telaCodigo;
     public GameObject telaVisitante;
+    public GameObject telaCreditos;
 
     [Header("Entrar: lista de perfis")]
     public Transform conteudoDaLista;
@@ -48,7 +49,7 @@ public class MenuInicial : MonoBehaviour
     public string mensagemAoCriar = "Guarde bem! Você vai usar para entrar.";
     public string mensagemDeErro = "Ops! Não é esse. Tente de novo!";
 
-    private enum Tela { Inicio, Lista, Nome, Avatar, Codigo, Visitante }
+    private enum Tela { Inicio, Lista, Nome, Avatar, Codigo, Visitante, Creditos }
 
     private Tela telaAtual;
     private bool criando;
@@ -112,10 +113,21 @@ public class MenuInicial : MonoBehaviour
         Mostrar(Tela.Visitante);
     }
 
+    // Botão "Ver abertura": mostra a abertura e volta pro menu.
+    public void VerAbertura()
+    {
+        Historia.VerAbertura();
+    }
+
+    public void AbrirCreditos()
+    {
+        Mostrar(Tela.Creditos);
+    }
+
     public void JogarComoVisitante()
     {
         Perfis.EntrarComoVisitante();
-        SceneManager.LoadScene(cenaDoJogo);
+        Historia.EntrarNoJogo();
     }
 
     public void Voltar()
@@ -279,7 +291,7 @@ public class MenuInicial : MonoBehaviour
         }
 
         Perfis.Entrar(Perfis.Criar(nome, avatar, tentativa.ToArray()));
-        SceneManager.LoadScene(cenaDoJogo);
+        Historia.EntrarNoJogo();
     }
 
     private IEnumerator ConferirCodigo()
@@ -289,7 +301,7 @@ public class MenuInicial : MonoBehaviour
         if (Perfis.CodigoConfere(perfilEscolhido, tentativa))
         {
             Perfis.Entrar(perfilEscolhido);
-            SceneManager.LoadScene(cenaDoJogo);
+            Historia.EntrarNoJogo();
             yield break;
         }
 
@@ -325,5 +337,9 @@ public class MenuInicial : MonoBehaviour
         telaAvatar.SetActive(tela == Tela.Avatar);
         telaCodigo.SetActive(tela == Tela.Codigo);
         telaVisitante.SetActive(tela == Tela.Visitante);
+        if (telaCreditos != null)
+        {
+            telaCreditos.SetActive(tela == Tela.Creditos);
+        }
     }
 }

@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3949a88a8e87ce4c984cc59483cb442, type: 3}
+  m_Name: CatalogoDaLoja
+  m_EditorClassIdentifier: Assembly-CSharp::CatalogoDaLoja
+  moedasPorEstrela: 10
+  itens:
+  - id: camiseta_vermelha
+    nome: Camiseta vermelha
+    tipo: 0
+    preco: 20
+    corDaRoupa: {fileID: 2100000, guid: 9aa321327e8d45c49936cb6417ac2cd8, type: 2}
+    acessorio: {fileID: 0}
+    posicaoNaCabeca: {x: 0, y: 0, z: 0}
+    icone: {fileID: -974147939501380015, guid: 1880f1748e325e745ba5dab0df3e3d8e, type: 3}
+  - id: camiseta_amarela
+    nome: Camiseta amarela
+    tipo: 0
+    preco: 20
+    corDaRoupa: {fileID: 2100000, guid: f264aa50010132943b735d6340e7227f, type: 2}
+    acessorio: {fileID: 0}
+    posicaoNaCabeca: {x: 0, y: 0, z: 0}
+    icone: {fileID: 8058840963001017324, guid: 46d4184ea1a03774aa3f3363797a52e0, type: 3}
+  - id: camiseta_azul
+    nome: Camiseta azul
+    tipo: 0
+    preco: 30
+    corDaRoupa: {fileID: 2100000, guid: aff6f28b4e55cbc42989c02e04944021, type: 2}
+    acessorio: {fileID: 0}
+    posicaoNaCabeca: {x: 0, y: 0, z: 0}
+    icone: {fileID: -8723572205345728511, guid: 3ecc0367f17e8d24d8311ace8fa2e090, type: 3}
+  - id: camiseta_rosa
+    nome: Camiseta rosa
+    tipo: 0
+    preco: 30
+    corDaRoupa: {fileID: 2100000, guid: 7d8c1dfd4737d0146b01d62a99783f98, type: 2}
+    acessorio: {fileID: 0}
+    posicaoNaCabeca: {x: 0, y: 0, z: 0}
+    icone: {fileID: 3651388388812265879, guid: eea054b3cc652e849b0fef878d241a61, type: 3}
+  - id: bone
+    nome: "Bon\xE9"
+    tipo: 1
+    preco: 40
+    corDaRoupa: {fileID: 0}
+    acessorio: {fileID: 5584042374616169055, guid: 4153339dd76968c48934ff2d019a8efd, type: 3}
+    posicaoNaCabeca: {x: 0, y: 0.37, z: -0.02}
+    icone: {fileID: 6238187460106050167, guid: 88a4fd83626423c49940ac6295427760, type: 3}
+  - id: oculos
+    nome: "\xD3culos escuros"
+    tipo: 1
+    preco: 50
+    corDaRoupa: {fileID: 0}
+    acessorio: {fileID: 8726626336652310544, guid: daf52eee7b9518a419cf82cd6f2bfd46, type: 3}
+    posicaoNaCabeca: {x: 0, y: 0.19, z: 0.255}
+    icone: {fileID: -5475823026644283332, guid: 42e0f0747f86b4e4a9e3e8b24d547794, type: 3}
+  - id: chapeu_de_festa
+    nome: "Chap\xE9u de festa"
+    tipo: 1
+    preco: 60
+    corDaRoupa: {fileID: 0}
+    acessorio: {fileID: 4262254465887586998, guid: 03b864a5ddffee74cb4320a50884367c, type: 3}
+    posicaoNaCabeca: {x: 0, y: 0.53, z: -0.02}
+    icone: {fileID: 226624246793715962, guid: ad77a7e76fd81524fa848ea48b059731, type: 3}

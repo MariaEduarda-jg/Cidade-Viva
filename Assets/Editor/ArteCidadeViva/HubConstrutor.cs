@@ -45,21 +45,27 @@ namespace CidadeViva.EditorArte
             Vizinhanca(cidade);
             Limites(cidade);
 
-            var areas = new Dictionary<string, System.Action<Transform, Transform, Transform>>
+            // Versão final (2026-11-18): do centro antigo ficam só os dois "Extras" (Travessia Segura e
+            // Corre, Correndo!). As áreas dos outros 7 minigames antigos saem da cena (os arquivos dos
+            // minigames continuam no projeto) e o quarteirão de cada uma vira uma pracinha.
+            foreach (string nome in AreasQueSairam)
             {
-                ["Area_OndeEuVou"] = OndeEuVou, ["Area_TravessiaSegura"] = TravessiaSegura, ["Area_ReciclaComigo"] = ReciclaComigo,
-                ["Area_CorreCorrendo"] = CorreCorrendo, ["Area_PedalSeguro"] = PedalSeguro, ["Area_SobeSobe"] = SobeSobe,
-                ["Area_SemaforoMagico"] = SemaforoMagico, ["Area_GuardaOSinal"] = GuardaOSinal, ["Area_OlhoVivo"] = OlhoVivo,
-            };
-            string[] coresDoMarcador = { "Mostarda", "Petroleo_Claro", "Verde", "Laranja", "Terracota", "Petroleo", "Vermelho", "Mostarda_Clara", "Rosa" };
-            int n = 0;
-            foreach (var par in areas)
-            {
-                var area = GameObject.Find(par.Key);
-                if (area == null) { Debug.LogError("[Hub] Área não encontrada: " + par.Key); continue; }
-                MontarArea(area, par.Value, n, coresDoMarcador[n % coresDoMarcador.Length], texturasCinza);
-                n++;
+                var velha = GameObject.Find(nome);
+                if (velha != null) Object.DestroyImmediate(velha);
             }
+            var extras = new (string objeto, System.Action<Transform, Transform, Transform> montar, int indice, string cor)[]
+            {
+                ("Area_TravessiaSegura", TravessiaSegura, 1, "Petroleo_Claro"),
+                ("Area_CorreCorrendo", CorreCorrendo, 3, "Laranja"),
+            };
+            foreach (var e in extras)
+            {
+                var area = GameObject.Find(e.objeto);
+                if (area == null) { Debug.LogError("[Hub] Área não encontrada: " + e.objeto); continue; }
+                MontarArea(area, e.montar, e.indice, e.cor, texturasCinza);
+            }
+            Pracinhas(cidade);
+            TirarDoBuild();
 
             foreach (var area in AreasDeVerbetes) MontarAreaDeVerbetes(area, texturasCinza);
 
@@ -259,6 +265,95 @@ namespace CidadeViva.EditorArte
         {
             var go = F.Grupo("Parede", limites, pos);
             go.AddComponent<BoxCollider>().size = tam;
+        }
+
+        // ------------------------------------------------------------------ versão final: extras e pracinhas
+
+        static readonly string[] AreasQueSairam =
+        {
+            "Area_OndeEuVou", "Area_ReciclaComigo", "Area_PedalSeguro", "Area_SobeSobe", "Area_SemaforoMagico", "Area_OlhoVivo", "Area_GuardaOSinal",
+        };
+
+        // Cenas que saem do Build Settings na versão final (os arquivos ficam no projeto).
+        public static readonly string[] CenasForaDoBuild =
+        {
+            "Minigame_Template", "Minigame_OndeEuVou", "Minigame_ReciclaComigo", "Minigame_PedalSeguro", "Minigame_SobeSobe",
+            "Minigame_SemaforoMagico", "Minigame_OlhoVivo",
+        };
+
+        [MenuItem("Cidade Viva/Hub/Tirar os minigames antigos do Build Settings")]
+        public static void TirarDoBuild()
+        {
+            var lista = new List<EditorBuildSettingsScene>();
+            foreach (var cena in EditorBuildSettings.scenes)
+            {
+                if (System.Array.IndexOf(CenasForaDoBuild, Path.GetFileNameWithoutExtension(cena.path)) < 0) lista.Add(cena);
+            }
+            EditorBuildSettings.scenes = lista.ToArray();
+        }
+
+        // Os quarteirões que tinham as áreas antigas viram pracinhas (árvores, bancos, flores e um chafariz);
+        // a do meio é a "Praça dos Extras", com a placa que aponta pros dois minigames que ficaram.
+        static readonly Vector3[] LugaresDasPracinhas =
+        {
+            new Vector3(-20, 0, -20), new Vector3(20, 0, -20), new Vector3(20, 0, 0), new Vector3(20, 0, 20),
+            new Vector3(-20, 0, 20), new Vector3(0, 0, 20), new Vector3(0, 0, 0),
+        };
+
+        static void Pracinhas(Transform cidade)
+        {
+            var raiz = F.Grupo("Pracinhas", cidade).transform;
+            string[] arvores = { "Natureza/Arvore_Comum_1", "Natureza/Arvore_Comum_2", "Natureza/Arvore_Simples_Grande", "Natureza/Arvore_Betula" };
+            for (int i = 0; i < LugaresDasPracinhas.Length; i++)
+            {
+                bool extras = i == LugaresDasPracinhas.Length - 1;
+                var g = F.Grupo(extras ? "Praca_Dos_Extras" : "Pracinha_" + (i + 1), raiz, LugaresDasPracinhas[i]).transform;
+                // Árvores só nos cantos de trás (a câmera fica atrás do jogador, ao sul).
+                P(g, arvores[i % arvores.Length], F.V(-4.6f, .1f, 4.6f), i * 40, 1f);
+                P(g, arvores[(i + 1) % arvores.Length], F.V(4.6f, .1f, 4.6f), i * 70, .95f);
+                P(g, "Natureza/Arbusto_2", F.V(-4.8f, .1f, -4.6f), i * 30, .7f);
+                P(g, "Natureza/Flores", F.V(4.6f, .1f, -4.6f), 0, 1.3f);
+                P(g, "Natureza/Flores", F.V(-4.6f, .1f, 1f), 90, 1.1f);
+                P(g, "Props/Banco_De_Praca", F.V(4.4f, .1f, 0), -90);
+                P(g, "Props/Lixeira_De_Rua", F.V(4.6f, .1f, -2.2f));
+                if (extras)
+                {
+                    PlacaDosExtras(g);
+                    continue;
+                }
+                // Chafariz baixo no meio.
+                F.Cilindro(g, "Chafariz_Borda", "Branco_Concreto", F.V(0, .3f, 0), F.V(3.2f, .4f, 3.2f));
+                F.Cilindro(g, "Chafariz_Agua", "Agua", F.V(0, .48f, 0), F.V(2.8f, .06f, 2.8f));
+                F.Cilindro(g, "Chafariz_Pilar", "Branco_Concreto", F.V(0, .8f, 0), F.V(.4f, .7f, .4f));
+                P(g, "Props/Banco_De_Praca", F.V(-1.8f, .1f, -3.2f), 0);
+            }
+        }
+
+        // Placa grande "Extras" no meio do centro, mais duas plaquinhas apontando pros dois minigames.
+        static void PlacaDosExtras(Transform praca)
+        {
+            var placa = F.Grupo("Placa_Extras", praca, F.V(0, .5f, 1.5f)).transform;
+            PlacaDoLetreiro(placa, 0, out Text titulo, out Text linha);
+            titulo.text = "Extras";
+            linha.text = "Mais dois jogos pra brincar!";
+            var aoSul = F.Grupo("Placa_Travessia", praca, F.V(0, .5f, -4.2f)).transform;
+            Placinha(aoSul, "Travessia Segura", 180f);
+            var aOeste = F.Grupo("Placa_Corre", praca, F.V(-4.2f, .5f, -1.5f)).transform;
+            Placinha(aOeste, "Corre, Correndo!", -90f);
+        }
+
+        // Plaquinha com uma seta: a seta aponta pra direção "giro" (0 = +Z, 90 = +X, 180 = -Z, -90/270 = -X).
+        static void Placinha(Transform pai, string texto, float giro)
+        {
+            PlacaDoLetreiro(pai, 0, out Text titulo, out Text linha);
+            titulo.text = texto;
+            linha.text = "por aqui";
+            var letreiro = pai.Find("Letreiro");
+            letreiro.localScale = Vector3.one * .6f;
+            // A seta fica no chão, na frente da plaquinha, apontando pro minigame.
+            var seta = F.Grupo("Seta", pai, F.V(0, -.38f, -.9f), F.V(0, giro, 0)).transform;
+            F.Cubo(seta, "Haste", "Mostarda", F.V(0, 0, -.25f), F.V(.35f, .05f, .9f));
+            F.M(seta, "Ponta", "Cone", "Mostarda", F.V(0, 0, .35f), F.V(.8f, .5f, .05f), F.V(90, 0, 0));
         }
 
         // ------------------------------------------------------------------ áreas dos minigames
@@ -1119,6 +1214,7 @@ namespace CidadeViva.EditorArte
             if (anim == null) anim = jogador.AddComponent<AnimacaoDoJogador>();
             anim.animator = visual.GetComponentInChildren<Animator>();
             anim.velocidadeDeCorrida = jogador.GetComponent<PlayerMovement>().moveSpeed;
+            LojaConstrutor.ConfigurarJogador(jogador, visual);
             EditorUtility.SetDirty(jogador);
         }
 

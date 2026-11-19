@@ -21,6 +21,8 @@ public class AlbumGlotransito : MonoBehaviour
 
     [Header("Progresso")]
     public Text textoDoProgresso;
+    [Tooltip("Aparece quando o perfil tem todos os verbetes: revê o final.")]
+    public GameObject botaoDoFinal;
     public RectTransform barraDeProgresso;
 
     [Header("Recado embaixo")]
@@ -44,6 +46,11 @@ public class AlbumGlotransito : MonoBehaviour
     private void Start()
     {
         AbrirAba(0);
+    }
+
+    public void VerFinal()
+    {
+        Historia.VerFinal();
     }
 
     // Botões das abas.
@@ -78,6 +85,10 @@ public class AlbumGlotransito : MonoBehaviour
         }
 
         int total = VerbeteDatabase.Instancia.Quantidade;
+        if (botaoDoFinal != null)
+        {
+            botaoDoFinal.SetActive(Historia.CompletouTudo);
+        }
         int desbloqueados = GameProgress.ContarVerbetesDesbloqueados();
         textoDoProgresso.text = desbloqueados + " de " + total + " verbetes";
         barraDeProgresso.gameObject.SetActive(desbloqueados > 0);

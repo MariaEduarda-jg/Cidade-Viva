@@ -125,6 +125,8 @@ namespace CidadeViva.EditorArte
             UnityEventTools.AddPersistentListener(hud.botaoOuvir.GetComponent<Button>().onClick, gerente.OuvirPedido);
             UnityEventTools.AddPersistentListener(botaoMissao.onClick, gerente.ComecarMissao);
             UnityEventTools.AddPersistentListener(botaoOuvirMissao.onClick, gerente.OuvirMissao);
+            // Abas "Passeio de Carro" / "Pedalada" (a parte 2 da Rua Viva fica em outra cena).
+            RuaVivaPedaladaConstrutor.AbasDaRuaViva(canvas.transform, gerente, 0);
 
             ConferirTrechos(percurso.lugares);
             EditorSceneManager.SaveScene(cena, CaminhoDaCena);

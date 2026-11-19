@@ -78,6 +78,7 @@ public class CartaoVerbete : MonoBehaviour
 
         aberto = Instantiate(banco.prefabDoCartao);
         aberto.Preencher(v, novo, aoFechar, origemNaTela);
+        TelaFixa.AjustarAgora();
     }
 
     private void Preencher(Verbete v, bool novo, Action quandoFechar, Vector2 origemNaTela)

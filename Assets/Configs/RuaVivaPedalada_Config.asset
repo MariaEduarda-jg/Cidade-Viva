@@ -1,0 +1,232 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a735447734acd8046b38c0080d8b636c, type: 3}
+  m_Name: RuaVivaPedalada_Config
+  m_EditorClassIdentifier: Assembly-CSharp::PedaladaConfig
+  trechoDoCiclista: Pessoa que conduz uma bicicleta
+  trechoDoCapacete: "deve usar equipamentos de seguran\xE7a, como capacete"
+  trechoDaCiclovia: "incluindo o uso de ciclovia ou ciclofaixa quando dispon\xEDveis"
+  trechoDoAcumulo: "muitos ve\xEDculos acumulados na via"
+  trechoDaPassagem: "atrapalha a passagem de outros ve\xEDculos"
+  trechoDaCalcada: destinada para a passagem de pedestres ou animais
+  trechoDaViaSeparada: "est\xE1 em via separada do tr\xE2nsito dos ve\xEDculos"
+  trechoDoLadoDosCarros: "est\xE1 ao lado da via dos outros ve\xEDculos"
+  roteiros:
+  - titulo: Passeio no parque
+    texto: "O parque reabriu depois da enchente, com ciclovia nova! Antes de pedalar, escolha o que vai na cabe\xE7a."
+    novidade: 'Novo: o capacete e a ciclovia, que muda de lado.'
+    coisasDaCabeca:
+    - capacete
+    - bone
+    trechos:
+    - esquerda: 0
+      meio: 1
+      direita: 4
+      comprimento: 30
+      parque: 1
+      obstaculo: 0
+      engarrafamento: 0
+      aviso: 
+    - esquerda: 0
+      meio: 4
+      direita: 1
+      comprimento: 36
+      parque: 1
+      obstaculo: 0
+      engarrafamento: 0
+      aviso: A ciclovia vai pra direita!
+    - esquerda: 4
+      meio: 1
+      direita: 0
+      comprimento: 36
+      parque: 1
+      obstaculo: 0
+      engarrafamento: 0
+      aviso: A ciclovia volta pro meio!
+    - esquerda: 1
+      meio: 4
+      direita: 0
+      comprimento: 36
+      parque: 1
+      obstaculo: 0
+      engarrafamento: 0
+      aviso: Agora a ciclovia vai pra esquerda!
+    - esquerda: 1
+      meio: 0
+      direita: 0
+      comprimento: 30
+      parque: 1
+      obstaculo: 0
+      engarrafamento: 0
+      aviso: "Quase l\xE1: o mirante do parque!"
+    recadoDeChegada: Chegamos ao mirante! De capacete e na ciclovia o tempo todo.
+  - titulo: "P\xE3o fresquinho"
+    texto: "A padaria abriu de novo! O caminho \xE9 pela rua: em parte dela tem ciclofaixa, pintada de vermelho, ao lado dos carros."
+    novidade: 'Novo: a ciclofaixa e os trechos sem ciclofaixa.'
+    coisasDaCabeca:
+    - capacete
+    - bone
+    - chapeu_de_festa
+    trechos:
+    - esquerda: 3
+      meio: 3
+      direita: 2
+      comprimento: 30
+      parque: 0
+      obstaculo: 0
+      engarrafamento: 0
+      aviso: 
+    - esquerda: 3
+      meio: 3
+      direita: 2
+      comprimento: 30
+      parque: 0
+      obstaculo: 0
+      engarrafamento: 0
+      aviso: 
+    - esquerda: 3
+      meio: 3
+      direita: 4
+      comprimento: 36
+      parque: 0
+      obstaculo: 0
+      engarrafamento: 0
+      aviso: "A ciclofaixa acabou: pedale na rua, perto da cal\xE7ada."
+    - esquerda: 3
+      meio: 3
+      direita: 2
+      comprimento: 36
+      parque: 0
+      obstaculo: 0
+      engarrafamento: 0
+      aviso: Tem ciclofaixa de novo! Volte pra ela.
+    - esquerda: 3
+      meio: 3
+      direita: 4
+      comprimento: 36
+      parque: 0
+      obstaculo: 1
+      engarrafamento: 0
+      aviso: Sem ciclofaixa de novo. Cuidado com o buraco!
+    - esquerda: 3
+      meio: 3
+      direita: 2
+      comprimento: 30
+      parque: 0
+      obstaculo: 0
+      engarrafamento: 0
+      aviso: "Ciclofaixa! A padaria \xE9 logo ali."
+    recadoDeChegada: "Chegamos na padaria! P\xE3o fresquinho pra fam\xEDlia."
+  - titulo: "A festa da reconstru\xE7\xE3o"
+    texto: Hoje tem festa! Atravesse o parque e a avenida antes do tempo acabar.
+    novidade: "Novo: o engarrafamento e o rel\xF3gio."
+    coisasDaCabeca:
+    - capacete
+    - chapeu_de_festa
+    - bone
+    trechos:
+    - esquerda: 0
+      meio: 1
+      direita: 4
+      comprimento: 30
+      parque: 1
+      obstaculo: 0
+      engarrafamento: 0
+      aviso: 
+    - esquerda: 1
+      meio: 4
+      direita: 0
+      comprimento: 30
+      parque: 1
+      obstaculo: 0
+      engarrafamento: 0
+      aviso: A ciclovia vai pra esquerda!
+    - esquerda: 3
+      meio: 3
+      direita: 2
+      comprimento: 36
+      parque: 0
+      obstaculo: 0
+      engarrafamento: 0
+      aviso: "Saindo do parque: agora \xE9 ciclofaixa, \xE0 direita."
+    - esquerda: 3
+      meio: 3
+      direita: 4
+      comprimento: 30
+      parque: 0
+      obstaculo: 1
+      engarrafamento: 0
+      aviso: 'Sem ciclofaixa: pedale na rua. Olhe o buraco!'
+    - esquerda: 3
+      meio: 3
+      direita: 2
+      comprimento: 50
+      parque: 0
+      obstaculo: 0
+      engarrafamento: 1
+      aviso: Ciclofaixa de novo! E olhe a avenida...
+    - esquerda: 3
+      meio: 3
+      direita: 2
+      comprimento: 30
+      parque: 0
+      obstaculo: 0
+      engarrafamento: 0
+      aviso: "A festa \xE9 logo ali!"
+    recadoDeChegada: "Chegamos na festa da reconstru\xE7\xE3o!"
+  larguraDaFaixa: 2.4
+  tempoDeTrocaDeFaixa: 0.25
+  toleranciaNoLugarErrado: 1.3
+  antecedenciaDoAviso: 16
+  paradaNaBatida: 1.2
+  velocidadeDosCarros: 10
+  distanciaEntreCarros: 6.5
+  intervaloDosCarros: 2.2
+  paradaNoEngarrafamento: 10
+  tempoAteAMarca: 4
+  tempoDoBalao: 4
+  pausaAntesDoFim: 1.5
+  textoDoNivel: "N\xEDvel {0}"
+  rotulosDosCriterios:
+  - capacete
+  - lugar certo
+  - sem batida
+  rotulosComTempo:
+  - lugar certo
+  - sem batida
+  - no tempo
+  botaoDoRoteiro: Vamos!
+  recadoDoCapacete: "Antes de pedalar: o que vai na cabe\xE7a? Toque nele!"
+  balaoDaCabecaErrada: "{0} n\xE3o \xE9 capacete!\nCiclista: \"{1}\"."
+  recadoDoCapaceteCerto: "Capacete na cabe\xE7a! Agora \xE9 ciclista."
+  recadoDaSaida: "Use as setas (ou toque nos bot\xF5es) pra trocar de faixa."
+  balaoNaPistaDosCarros: 'Aqui tem {0}! Pedale nela.
+
+    Ciclista: "{1}".'
+  balaoNaCalcada: "Cal\xE7ada: \"{0}\".\nA bicicleta vai {1}."
+  naCiclovia: na ciclovia
+  naCiclofaixa: na ciclofaixa
+  naRua: na rua
+  recadoDoCanteiro: "Ali \xE9 canteiro! Espere a ciclovia chegar."
+  recadoDaBatida: Opa! Bateu. Olhe o caminho e troque de faixa antes.
+  recadoDoEngarrafamento: "Os carros n\xE3o andam e a ambul\xE2ncia n\xE3o passa! Toque no engarrafamento."
+  balaoDoEngarrafamento: "Engarrafamento: \"{0}\" e \"{1}\".\nA ambul\xE2ncia ficou presa. A bicicleta segue na ciclofaixa."
+  recadoDepoisDoEngarrafamento: Siga pela ciclofaixa!
+  recadoDoTempo: Acabou o tempo! Termine o caminho.
+  somDoCapacete: {fileID: 8300000, guid: b6105524ee9596f4cbdfd16b2831d6dd, type: 3}
+  somDeErro: {fileID: 8300000, guid: 4a7623e25a4916744855ab9c8fb23632, type: 3}
+  somDeTrocarDeFaixa: {fileID: 8300000, guid: fc6a09ba22e6f024885dd09cadd018ae, type: 3}
+  somDaBatida: {fileID: 8300000, guid: 85709d7ca20676e41a90262ac70b4ddd, type: 3}
+  somDaCampainha: {fileID: 8300000, guid: aa9c638a0f56b974e8eeb09fbac37286, type: 3}
+  somDaSirene: {fileID: 8300000, guid: 283093c94a61ba947a2c1092f6271d10, type: 3}
+  somDaBuzina: {fileID: 8300000, guid: 16b753b4b2626b44aa980f63611b57df, type: 3}
+  somDeComemoracao: {fileID: 8300000, guid: b64e11d0e7942054b86186a98c34f1d2, type: 3}
