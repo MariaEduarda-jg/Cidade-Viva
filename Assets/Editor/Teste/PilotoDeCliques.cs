@@ -352,6 +352,8 @@ public static class PilotoDeCliques
         if (Faz("abertura")) yield return Abertura();
         yield return EsperarAte(() => Cena == "Hub", 10, "chegar no Hub");
         if (Faz("hub")) { yield return Foto("hub"); yield return Medir("andando"); }
+        if (Faz("campanha")) yield return CampanhaDia1();
+        if (Faz("campanha_antiga")) yield return CampanhaPerfilAntigo();
         if (Faz("oficina")) yield return Area("Area_Oficina", "Minigame_Oficina", null, Oficina());
         if (Faz("obras")) yield return Area("Area_ObrasDaCidade", "Minigame_Obras", "Pontes e Passagens", Obras());
         if (Faz("ruas")) yield return Area("Area_ObrasDaCidade", "Minigame_Obras", "Planejar a rua", Obras());
@@ -524,6 +526,8 @@ public static class PilotoDeCliques
         {
             Vector3 d = Achatar(alvo - player.transform.position);
             if (d.magnitude < 1f) break;
+            var campanha = UnityEngine.Object.FindAnyObjectByType<CampanhaNoHub>();
+            if (campanha != null && campanha.Conversando) break;
             // As setas andam em relação ao olhar da câmera.
             Vector3 frente = Achatar(Camera.main.transform.forward).normalized;
             Vector3 direita = Vector3.Cross(Vector3.up, frente);
@@ -539,7 +543,8 @@ public static class PilotoDeCliques
                     Nota($"o personagem ficou PRESO perto de {player.transform.position:F0} indo pra {alvo:F0}");
                     var cc = player.GetComponent<CharacterController>();
                     if (cc) cc.enabled = false;
-                    player.transform.position = alvo + Vector3.up;
+                    // Avança só um pouco na direção do alvo (pular em cima dele pode cair dentro de uma área).
+                    player.transform.position += Vector3.ClampMagnitude(Achatar(alvo - player.transform.position), 1.5f) + Vector3.up * 0.1f;
                     if (cc) cc.enabled = true;
                 }
                 ultimo = player.transform.position;
@@ -549,6 +554,190 @@ public static class PilotoDeCliques
             yield return 0.05f;
         }
         foreach (var k in teclas) Teclado.Simular(k, false);
+    }
+
+    // ------------------------------------------------------------------ campanha (Dia 1)
+
+    static CampanhaNoHub Camp => UnityEngine.Object.FindAnyObjectByType<CampanhaNoHub>();
+    static string Objetivo => Camp != null && Camp.barraDoObjetivo.activeSelf ? Camp.textoDoObjetivo.text : "(sem objetivo)";
+
+    // Anda pela mesma trilha de setas que a criança vê.
+    static IEnumerator SeguirTrilha(Vector3 alvo, string cenaDoFim = null)
+    {
+        var player = GameObject.Find("Player");
+        var caminho = Camp.Caminho(player.transform.position, alvo);
+        int setas = Camp.GetComponentsInChildren<Transform>().Count(t => t.name == "Seta_Da_Trilha");
+        L($"trilha até {alvo:F0}: {caminho.Count} pontos; setas visíveis: {setas}");
+        for (int i = 1; i < caminho.Count; i++)
+        {
+            yield return AndarAte(player, caminho[i], cenaDoFim);
+            if (Cena != "Hub") yield break;
+            if (Camp.Conversando)
+            {
+                L($"no caminho abriu conversa de {Camp.nomeDeQuemFala.text}: \"{Camp.textoDaFala.text}\"");
+                yield break;
+            }
+        }
+    }
+
+    static IEnumerator Conversar(string quem)
+    {
+        yield return 0.3f;
+        if (!Camp.Conversando)
+        {
+            var b = Botao("Botao_Conversar");
+            if (b == null || !b.gameObject.activeInHierarchy) { Nota("botão Conversar não apareceu perto de " + quem); yield return Tecla(KeyCode.E); }
+            else Clicar(b, "Conversar com " + quem);
+        }
+        yield return 0.5f;
+        if (!Camp.Conversando) { Nota("a conversa com " + quem + " não abriu"); yield break; }
+        int n = 0;
+        while (Camp.Conversando && n < 10)
+        {
+            L($"balão de {Camp.nomeDeQuemFala.text}: \"{Camp.textoDaFala.text}\" [{Camp.textoDoSeguir.text}]");
+            if (n == 0)
+            {
+                yield return Foto("conversa_" + quem);
+                if (Camp.botaoOuvir.gameObject.activeInHierarchy) Clicar(Camp.botaoOuvir, "Ouvir");
+            }
+            yield return 0.4f;
+            Clicar(Camp.botaoSeguir, "Seguir");
+            n++;
+            yield return 0.5f;
+        }
+        L("objetivo agora: " + Objetivo);
+    }
+
+    static Vector3 Frente(NpcDaCampanha n) => n.transform.position + n.olharPadrao.normalized * 2.2f;
+
+    static IEnumerator CampanhaDia1()
+    {
+        L("== campanha: perfil novo, tutorial e Dia 1");
+        yield return EsperarAte(() => Cena == "Hub" && Camp != null, 10, "Hub com a campanha");
+        yield return 1.5f;
+        L($"objetivo: {Objetivo} | pular visível: {Botao("Botao_Pular_Tutorial") != null}");
+        yield return Foto("campanha_inicio");
+        var mae = Camp.Npc(QuemFala.Mae);
+
+        // Área antes de falar com a mãe: o ajudante explica e não deixa entrar.
+        yield return SeguirTrilha(GameObject.Find("Area_CruzamentoCentral").transform.position, "Minigame_Sinais");
+        yield return 0.8f;
+        if (Cena != "Hub") { Nota("ENTROU numa área antes de falar com a mãe"); Clicar("Botao_VoltarAoHub"); yield return EsperarAte(() => Cena == "Hub", 8); }
+        else if (!Camp.Conversando) Nota("pisou na área bloqueada e ninguém explicou");
+        else
+        {
+            L("bloqueio: " + Camp.nomeDeQuemFala.text + ": " + Camp.textoDaFala.text);
+            yield return Foto("area_bloqueada");
+            Clicar(Camp.botaoSeguir, "Seguir (bloqueio)");
+            yield return 0.5f;
+        }
+
+        // Tutorial: andar até a mãe e falar.
+        yield return SeguirTrilha(Frente(mae));
+        yield return 0.5f;
+        L("objetivo perto da mãe: " + Objetivo);
+        yield return Conversar("mae");
+        yield return Foto("depois_da_mae");
+
+        var missoes = new (QuemFala quem, string area, string cena, Func<IEnumerator> jogo)[]
+        {
+            (QuemFala.Mecanico, "Area_Oficina", "Minigame_Oficina", Oficina),
+            (QuemFala.Engenheira, "Area_ObrasDaCidade", "Minigame_Obras", Obras),
+            (QuemFala.Guarda, "Area_CruzamentoCentral", "Minigame_Sinais", Motorista),
+            (QuemFala.Vizinha, "Area_RuaViva", "Minigame_RuaViva_Carro", Carro),
+        };
+        foreach (var mi in missoes)
+        {
+            L($"== missão de {mi.quem}; objetivo: {Objetivo}");
+            var npc = Camp.Npc(mi.quem);
+            L($"{mi.quem} com exclamação: {npc.exclamacao.gameObject.activeSelf}");
+            yield return SeguirTrilha(Frente(npc));
+            yield return Conversar(mi.quem.ToString());
+            int moedasAntes = Loja.Moedas;
+            yield return SeguirTrilha(GameObject.Find(mi.area).transform.position, mi.cena);
+            yield return EsperarAte(() => Cena == mi.cena, 8, "a missão abrir " + mi.cena);
+            if (Cena != mi.cena) { Nota("a missão não abriu " + mi.cena); continue; }
+            yield return 1.5f;
+            var sel = UnityEngine.Object.FindAnyObjectByType<TelaSelecaoDeNivel>();
+            if (sel != null && sel.gameObject.activeInHierarchy) Nota("a missão abriu a tela de seleção em vez do nível");
+            var mb = UnityEngine.Object.FindAnyObjectByType<MinigameBase>();
+            L($"missão abriu {mi.cena}, nível {mb.NivelAtual}, área {mb.nomeDaArea}");
+            yield return Foto("missao_" + mi.quem);
+            yield return mi.jogo();
+            SoltarTudo();
+            Toque.PararDeSimular();
+            yield return EsperarAte(() => UnityEngine.Object.FindAnyObjectByType<TelaFimDeJogo>() != null, 6, "tela de fim");
+            yield return 1.5f;
+            Clicar("Button_VoltarAoHub");
+            yield return EsperarAte(() => Cena == "Hub" && Camp != null, 10, "voltar ao Hub");
+            yield return 2.4f;
+            yield return Foto("conserto_" + mi.quem);
+            L($"volta: conversando={Camp.Conversando} fala=\"{(Camp.Conversando ? Camp.textoDaFala.text : "")}\" moedas {moedasAntes} -> {Loja.Moedas}, aviso de moedas: {Camp.avisoDasMoedas.activeSelf}");
+            int n = 0;
+            while (Camp.Conversando && n++ < 8)
+            {
+                L($"  balão: {Camp.textoDaFala.text}");
+                Clicar(Camp.botaoSeguir, "Seguir");
+                yield return 0.6f;
+            }
+            L("objetivo: " + Objetivo);
+            if (Objetivo == Campanha.Dados.objetivoAbrirOAlbum)
+            {
+                yield return Foto("tutorial_album");
+                Clicar("Botao_Album");
+                yield return EsperarAte(() => Cena == "Album_Glotransito", 6, "abrir o Álbum");
+                yield return 1f;
+                yield return Foto("album_do_tutorial");
+                L($"tutorial feito depois do Álbum: {Campanha.P.tutorialFeito}");
+                Clicar("Botao_Voltar");
+                yield return EsperarAte(() => Cena == "Hub" && Camp != null, 8, "voltar do Álbum");
+                yield return 1.2f;
+                L("objetivo: " + Objetivo + " | pular visível: " + (Botao("Botao_Pular_Tutorial") != null));
+            }
+        }
+
+        // Fim do dia: falar com a mãe.
+        L($"== fim do Dia 1; objetivo: {Objetivo}; mãe com exclamação: {mae.exclamacao.gameObject.activeSelf}");
+        yield return SeguirTrilha(Frente(mae));
+        yield return Conversar("mae_fim");
+        L($"Dia atual={Campanha.DiaAtual} acabou={Campanha.Acabou} feitas={string.Join(",", Campanha.P.missoesFeitas)}");
+        yield return Foto("fim_do_dia_1");
+
+        // Missão feita pode ser jogada de novo: entra na Oficina e vê a seleção de níveis.
+        yield return SeguirTrilha(GameObject.Find("Area_Oficina").transform.position, "Minigame_Oficina");
+        yield return EsperarAte(() => Cena == "Minigame_Oficina", 8, "jogar de novo a Oficina");
+        var selecao = UnityEngine.Object.FindAnyObjectByType<TelaSelecaoDeNivel>();
+        L("rejogar Oficina: cena=" + Cena + " seleção aberta=" + (selecao != null && selecao.gameObject.activeInHierarchy));
+        Clicar("Botao_VoltarAoHub");
+        yield return EsperarAte(() => Cena == "Hub", 8, "voltar ao Hub");
+    }
+
+    // Perfil antigo (sem campanha no JSON, com níveis feitos): entra direto no dia certo, sem tutorial.
+    static IEnumerator CampanhaPerfilAntigo()
+    {
+        L("== campanha: perfil antigo");
+        var p = Perfis.Criar("Antigo", 1, new[] { 0, 1, 2 });
+        Perfis.Entrar(p);
+        GameProgress.FinalizarNivel("Oficina de Veículos", 1, 100, 2, true);
+        GameProgress.FinalizarNivel("Obras da Cidade", 1, 100, 3, true);
+        // Grava sem o campo "campanha", como um perfil de antes da campanha, e lê de novo do disco.
+        string arquivo = Path.Combine(Perfis.Pasta, "perfil_" + p.id + ".json");
+        Perfis.SalvarAtivo();
+        string json = File.ReadAllText(arquivo);
+        json = System.Text.RegularExpressions.Regex.Replace(json, @",\s*""campanha"":\s*\{[^}]*\}", "");
+        File.WriteAllText(arquivo, json);
+        L("JSON tem campanha: " + File.ReadAllText(arquivo).Contains("\"campanha\""));
+        var lido = Perfis.Listar().First(x => x.id == p.id);
+        Perfis.Entrar(lido);
+        SceneManager.LoadScene("Hub");
+        yield return EsperarAte(() => Cena == "Hub" && Camp != null, 10, "Hub do perfil antigo");
+        yield return 2f;
+        L($"perfil antigo: tutorial feito={Campanha.P.tutorialFeito} dia={Campanha.DiaAtual} aberto={Campanha.P.diaAberto} feitas: oficina={Campanha.Feita(Campanha.Buscar("d1_oficina"))} pontes={Campanha.Feita(Campanha.Buscar("d1_pontes"))}");
+        L("objetivo: " + Objetivo + " | pular visível: " + (Botao("Botao_Pular_Tutorial") != null));
+        var conserto = GameObject.Find("Campanha/Consertos/Conserto_d1_oficina");
+        L("conserto da oficina já aplicado: " + (conserto != null && conserto.transform.Find("Depois").gameObject.activeSelf));
+        yield return Foto("perfil_antigo");
+        L("perfil antigo em " + arquivo + " (apagar depois)");
     }
 
     // ------------------------------------------------------------------ jogos

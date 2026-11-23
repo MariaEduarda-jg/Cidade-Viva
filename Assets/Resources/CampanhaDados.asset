@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48fbc8cc35d47e54798c9134f5c0706b, type: 3}
+  m_Name: CampanhaDados
+  m_EditorClassIdentifier: Assembly-CSharp::CampanhaDados
+  dias:
+  - {fileID: 11400000, guid: 0d5a8901d25f98446a4d76918c4e255d, type: 2}
+  npcs:
+  - quem: 0
+    nome: "M\xE3e"
+    lugar: "perto da pra\xE7a"
+  - quem: 1
+    nome: "o mec\xE2nico Z\xE9"
+    lugar: na Oficina
+  - quem: 2
+    nome: a engenheira Ana
+    lugar: nas Obras, perto do rio
+  - quem: 3
+    nome: o guarda Beto
+    lugar: no Cruzamento Central
+  - quem: 4
+    nome: "a vizinha L\xFAcia"
+    lugar: na Rua Viva
+  objetivoAndarAteAMae: "Ande at\xE9 a sua m\xE3e (setas ou W A S D)."
+  objetivoFalarComAMae: "Fale com a sua m\xE3e: toque nela ou aperte E."
+  objetivoAbrirOAlbum: "Toque no \xC1lbum pra ver a sua figurinha nova!"
+  falasDoAlbum:
+  - "Viu s\xF3? Cada ajuda que voc\xEA d\xE1 vira uma figurinha nova."
+  - "Toque no \xC1lbum, l\xE1 no canto de cima, pra ver a sua!"
+  objetivoFalarCom: Fale com {0} {1}.
+  objetivoVoltarAMae: "Volte e fale com a sua m\xE3e."
+  objetivoLivre: Jogue de novo o que quiser!
+  falasDaMaeComMissao:
+  - Ainda tem gente precisando de ajuda!
+  - Fale com {0} {1}. Siga as setas!
+  falasDoFimDaCampanha:
+  - "Por hoje \xE9 s\xF3! Os pr\xF3ximos dias da reconstru\xE7\xE3o est\xE3o chegando."
+  - "Enquanto isso, voc\xEA pode jogar de novo o que quiser."
+  falaAntesDaMae: "Calma! Primeiro fale com a sua m\xE3e. Ela est\xE1 perto da pra\xE7a."
+  falaSemMissaoHoje: "Ainda n\xE3o \xE9 hora daqui. Fale com a sua m\xE3e pra saber o que fazer hoje."
+  falaMissaoAceita: "\xC9 s\xF3 entrar ali! Siga as setas."
+  falaJaAjudou: "Obrigado pela ajuda! Se quiser jogar de novo, \xE9 s\xF3 entrar."
+  textoConversar: Conversar (E)
+  textoSeguir: Seguir
+  textoVamos: Vamos!
+  textoOuvir: Ouvir
+  textoPular: Pular tutorial
+  textoMoedas: +{0} moedas!

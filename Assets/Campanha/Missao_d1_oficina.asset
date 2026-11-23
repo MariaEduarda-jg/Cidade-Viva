@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e2918fd948aefa42a7d39db17229a51, type: 3}
+  m_Name: Missao_d1_oficina
+  m_EditorClassIdentifier: Assembly-CSharp::MissaoDaCampanha
+  id: d1_oficina
+  npc: 1
+  objetivo: "Entre na Oficina e ajude o mec\xE2nico Z\xE9."
+  falas:
+  - "Oi! A \xE1gua entrou na oficina e desmontou tudo."
+  - "Sem ve\xEDculos, ningu\xE9m consegue ir trabalhar nem ir pra escola."
+  - Me ajuda a montar os primeiros? Entre na oficina!
+  agradecimento: "Ficaram \xF3timos! J\xE1 tem ve\xEDculo pronto no p\xE1tio. Obrigado!"
+  cena: Minigame_Oficina
+  modo: -1
+  nomeDaArea: "Oficina de Ve\xEDculos"
+  nivel: 1
+  areaDoHub: Area_Oficina
+  conserto: "Os primeiros ve\xEDculos ficam prontos e estacionados no p\xE1tio da oficina."

@@ -91,6 +91,12 @@ public class ObrasManager : MinigameBase
 
     // Modo em jogo: 0 = Pontes e Passagens, 1 = Planejar a rua.
     public static int Modo { get; private set; }
+
+    // Campanha: a missão escolhe o modo antes de carregar a cena (não muda nada do jogo).
+    public static void DefinirModo(int modo)
+    {
+        Modo = Mathf.Max(0, modo);
+    }
     public Etapa EtapaAtual { get; private set; }
     public IList<Lote> Lotes { get { return lotes; } }
     public int IndiceDoProblema { get; private set; } = -1;

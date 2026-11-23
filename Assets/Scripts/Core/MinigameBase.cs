@@ -62,6 +62,14 @@ public abstract class MinigameBase : MonoBehaviour
         Time.timeScale = 1f;
     }
 
+    // Campanha: a missão abre direto um nível (sem a tela de seleção). Chamar antes de carregar a cena.
+    public static void PreEscolherNivel(string cena, int nivel)
+    {
+        cenaDoNivelEscolhido = cena;
+        nivelEscolhido = nivel;
+        Time.timeScale = 1f;
+    }
+
     protected virtual void Awake()
     {
         if (telaFimDeJogo != null)

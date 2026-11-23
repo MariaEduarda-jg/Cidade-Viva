@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b5bfb20a8f47940960dc9e229ee562, type: 3}
+  m_Name: Dia_1
+  m_EditorClassIdentifier: Assembly-CSharp::DiaDaCampanha
+  numero: 1
+  titulo: Depois da enchente
+  falasDaMae:
+  - "Que bom que voc\xEA chegou! A enchente bagun\xE7ou a cidade inteira."
+  - "Hoje come\xE7a a reconstru\xE7\xE3o. Muita gente precisa da sua ajuda."
+  - "Quem tem um ponto de exclama\xE7\xE3o em cima quer falar com voc\xEA. Siga as setas no ch\xE3o!"
+  falasDoFim:
+  - "Voc\xEA ajudou o bairro todo hoje! Que orgulho!"
+  - "Amanh\xE3 a gente continua a reconstru\xE7\xE3o."
+  missoes:
+  - {fileID: 11400000, guid: a07fee0e2b5db9e418afb8c28f2df52f, type: 2}
+  - {fileID: 11400000, guid: 6477082f1a313424581cd48265c38eee, type: 2}
+  - {fileID: 11400000, guid: 2f32da71b84927246a0cfd945292bc5b, type: 2}
+  - {fileID: 11400000, guid: 6b468143d18988a4b82001cecd189b70, type: 2}

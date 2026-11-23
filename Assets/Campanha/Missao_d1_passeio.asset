@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e2918fd948aefa42a7d39db17229a51, type: 3}
+  m_Name: Missao_d1_passeio
+  m_EditorClassIdentifier: Assembly-CSharp::MissaoDaCampanha
+  id: d1_passeio
+  npc: 4
+  objetivo: "Entre na Rua Viva e passeie com a vizinha L\xFAcia."
+  falas:
+  - Oi, vizinho! O parque reabriu hoje!
+  - "Vou levar a fam\xEDlia pra passear de carro. Vem com a gente?"
+  - "O carro est\xE1 aqui na Rua Viva. \xC9 s\xF3 entrar!"
+  agradecimento: "Que passeio bom! E a pracinha j\xE1 est\xE1 ficando limpinha de novo."
+  cena: Minigame_RuaViva_Carro
+  modo: -1
+  nomeDaArea: Rua Viva
+  nivel: 1
+  areaDoHub: Area_RuaViva
+  conserto: "Na pracinha, o lixo some e o banco volta a ficar em p\xE9, com flores."

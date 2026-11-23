@@ -72,8 +72,16 @@ namespace CidadeViva.EditorArte
 
             Jogador();
             MenuConstrutor.PainelDoHub();
+            CampanhaConstrutor.NoHub();
             OtimizacaoWebGL.TirarSombraDosPequenos();
             Colisores();
+            EditorSceneManager.MarkSceneDirty(cena);
+            EditorSceneManager.SaveScene(cena);
+
+            // A grade da trilha da campanha é assada com a cena reaberta: colisores criados agora mesmo
+            // ainda não estão na física do editor (a trilha passaria por dentro deles).
+            cena = EditorSceneManager.OpenScene(CaminhoDaCena, OpenSceneMode.Single);
+            CampanhaConstrutor.AssarGrade();
             EditorSceneManager.MarkSceneDirty(cena);
             EditorSceneManager.SaveScene(cena);
         }

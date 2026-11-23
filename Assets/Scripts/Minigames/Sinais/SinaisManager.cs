@@ -43,6 +43,12 @@ public class SinaisManager : MinigameBase
 
     // Modo em jogo: 0 = Motorista Mirim, 1 = Sinaleiro.
     public static int Modo { get; private set; }
+
+    // Campanha: a missão escolhe o modo antes de carregar a cena (não muda nada do jogo).
+    public static void DefinirModo(int modo)
+    {
+        Modo = Mathf.Max(0, modo);
+    }
     public int Erros { get; private set; }
     public float TempoGasto { get; private set; }
     public bool EstourouOTempo { get { return Nivel.TemLimiteDeTempo && TempoGasto > Nivel.tempoEmSegundos; } }

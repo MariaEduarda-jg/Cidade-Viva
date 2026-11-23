@@ -25,6 +25,9 @@ public class Perfil
     public string roupaVestida = "";
     public string acessorioVestido = "";
 
+    // Campanha "Os 5 dias da reconstrução" (perfil antigo carrega com tudo zerado; Campanha.Preparar migra).
+    public ProgressoDaCampanha campanha = new ProgressoDaCampanha();
+
     // Perfil "Visitante": só existe na memória, nunca vira arquivo.
     [NonSerialized] public bool visitante;
 

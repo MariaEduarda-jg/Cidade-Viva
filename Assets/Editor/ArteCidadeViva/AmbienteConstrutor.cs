@@ -45,36 +45,24 @@ namespace CidadeViva.EditorArte
                 dados.postProcessData = AssetDatabase.LoadAssetAtPath<PostProcessData>(
                     "Packages/com.unity.render-pipelines.universal/Runtime/Data/PostProcessData.asset");
 
-            ScreenSpaceAmbientOcclusion ssao = null;
-            foreach (var f in dados.rendererFeatures)
-                if (f is ScreenSpaceAmbientOcclusion existente) ssao = existente;
-            if (ssao == null)
+            // SSAO: TIRADO do renderer em 2026-11-22. Em 2026-11-19 ele só tinha sido desligado (SetActive(false)),
+            // mas assim o build descarta os recursos dele e o URP falha ao criar o renderer a cada quadro
+            // ("Couldn't find the required resources for the ScreenSpaceAmbientOcclusion render feature").
+            // Era caro no WebGL e o efeito era discreto. Pra religar: adicionar a feature de novo, ligada.
+            var soDados = new SerializedObject(dados);
+            var lista = soDados.FindProperty("m_RendererFeatures");
+            var mapa = soDados.FindProperty("m_RendererFeatureMap");
+            for (int i = lista.arraySize - 1; i >= 0; i--)
             {
-                ssao = ScriptableObject.CreateInstance<ScreenSpaceAmbientOcclusion>();
-                ssao.name = "SSAO";
-                AssetDatabase.AddObjectToAsset(ssao, dados);
-                AssetDatabase.TryGetGUIDAndLocalFileIdentifier(ssao, out _, out long idLocal);
-                var soDados = new SerializedObject(dados);
-                var lista = soDados.FindProperty("m_RendererFeatures");
-                lista.arraySize++;
-                lista.GetArrayElementAtIndex(lista.arraySize - 1).objectReferenceValue = ssao;
-                var mapa = soDados.FindProperty("m_RendererFeatureMap");
-                mapa.arraySize++;
-                mapa.GetArrayElementAtIndex(mapa.arraySize - 1).longValue = idLocal;
-                soDados.ApplyModifiedPropertiesWithoutUndo();
+                var f = lista.GetArrayElementAtIndex(i).objectReferenceValue;
+                if (!(f is ScreenSpaceAmbientOcclusion)) continue;
+                lista.GetArrayElementAtIndex(i).objectReferenceValue = null;
+                lista.DeleteArrayElementAtIndex(i);
+                if (i < mapa.arraySize) mapa.DeleteArrayElementAtIndex(i);
+                AssetDatabase.RemoveObjectFromAsset(f);
+                Object.DestroyImmediate(f, true);
             }
-
-            // Oclusão discreta: só um escurecido leve nos cantos e embaixo dos objetos.
-            var soSsao = new SerializedObject(ssao);
-            Definir(soSsao, "m_Settings.Intensity", 0.7f);
-            Definir(soSsao, "m_Settings.Radius", 0.35f);
-            Definir(soSsao, "m_Settings.DirectLightingStrength", 0.25f);
-            Definir(soSsao, "m_Settings.Falloff", 80f);
-            soSsao.ApplyModifiedPropertiesWithoutUndo();
-            // Desligado em 2026-11-19: o SSAO é caro em placa de vídeo fraca (computador de escola, WebGL)
-            // e o efeito era discreto. Fica configurado; pra religar, troque pra true.
-            ssao.SetActive(false);
-            EditorUtility.SetDirty(ssao);
+            soDados.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(dados);
             AssetDatabase.SaveAssets();
         }

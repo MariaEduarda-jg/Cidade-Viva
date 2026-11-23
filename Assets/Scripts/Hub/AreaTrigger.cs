@@ -68,6 +68,12 @@ public class AreaTrigger : MonoBehaviour
             return;
         }
 
+        // Campanha: área ainda não liberada (o NPC explica) ou missão aceita (abre direto o nível dela).
+        if (CampanhaNoHub.Instancia != null && !CampanhaNoHub.Instancia.AoEntrarNaArea(this, other.transform))
+        {
+            return;
+        }
+
         Debug.Log("Entrou na área: " + areaName);
         MinigameBase.EsquecerNivelEscolhido();
         SceneManager.LoadScene(cenaDoMinigame);
