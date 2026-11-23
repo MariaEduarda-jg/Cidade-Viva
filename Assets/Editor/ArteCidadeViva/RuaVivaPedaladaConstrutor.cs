@@ -65,9 +65,7 @@ namespace CidadeViva.EditorArte
 
             // O ciclista: o mesmo das Obras (bicicleta com o menino em cima).
             var ciclista = F.Grupo("Ciclista").transform;
-            var visual = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Art/Obras/Ciclista.prefab"), ciclista);
-            visual.name = "Visual";
-            visual.transform.localPosition = Vector3.zero;
+            var visual = Ciclista(ciclista, out var pedalar);
             var banquinho = Banquinho(out var coisas);
 
             var transito = F.Grupo("Transito").transform;
@@ -112,6 +110,7 @@ namespace CidadeViva.EditorArte
             gerente.ciclista = ciclista;
             gerente.visualDoCiclista = visual.transform;
             gerente.animadorDoCiclista = visual.GetComponentInChildren<Animator>();
+            gerente.pedalar = pedalar;
             gerente.banquinho = banquinho;
             gerente.coisasDaCabeca = coisas;
             gerente.carrosDoTransito = carros.ToArray();
@@ -126,9 +125,255 @@ namespace CidadeViva.EditorArte
             cam.transform.SetPositionAndRotation(new Vector3(2, 2, -4), Quaternion.Euler(10, -20, 0));
 
             ConferirTrechos();
+            OtimizacaoWebGL.TirarSombraDosPequenos();
             EditorSceneManager.SaveScene(cena, CaminhoDaCena);
             if (EditorBuildSettings.scenes.All(s => s.path != CaminhoDaCena))
                 EditorBuildSettings.scenes = EditorBuildSettings.scenes.Append(new EditorBuildSettingsScene(CaminhoDaCena, true)).ToArray();
+        }
+
+        // Calçadas contínuas e os pedestres que andam nelas (2026-11-22: as calçadas do parque começavam e
+        // acabavam do nada e os pedestres iam e voltavam num pedaço só).
+        //  - Parque: a calçada de cada trecho liga na do trecho seguinte por uma passagem em diagonal (com faixa
+        //    de pedestre pintada onde cruza a ciclovia); quando o parque acaba e começa a rua, ela vai até a
+        //    calçada da rua. Começa antes da largada e vai até depois da chegada.
+        //  - Rua: as calçadas dos dois lados são caminhos inteiros; se a rua começa depois do parque, a calçada
+        //    que não veio do parque sai de uma pracinha. A calçada que alarga sobre a faixa da direita ganha meio-fio
+        //    atravessado e floreira nas pontas (é um alargamento de propósito, não um pedaço solto).
+        //  - Pedestres a cada ~13 m, metade indo e metade voltando, na altura do piso da calçada.
+        static void Calcadas(Transform raiz, Transform chao, RoteiroDaPedalada r, PedaladaRota rota, Transform pessoas, List<Transform> pedestres, string[] quem)
+        {
+            const float yC = .12f, meio = 3.5f;
+            var g = F.Grupo("Calcadas_Ligadas", raiz).transform;
+            int n = r.trechos.Length;
+            var ini = new float[n + 1];
+            for (int k = 0; k < n; k++) ini[k + 1] = ini[k] + r.trechos[k].comprimento;
+            float total = ini[n];
+            int FaixaK(TrechoDaPedalada t) { for (int i = -1; i <= 1; i++) if (t.Faixa(i) == TipoDeFaixa.Calcada) return i; return 99; }
+            var caminhos = new List<List<Vector3>>();
+            var ligacoes = new List<(Vector3 de, Vector3 ate)>();
+            int ladoQueVeioDoParque = 0;
+
+            // ---- parque
+            List<Vector3> aberto = null;
+            int faixa = 99;
+            for (int k = 0; k < n; k++)
+            {
+                var t = r.trechos[k];
+                int kl = t.parque ? FaixaK(t) : 99;
+                if (aberto != null && kl != faixa)
+                {
+                    var antes = r.trechos[k - 1];
+                    float curva = TrechoDaPedalada.Curva(antes, t);
+                    int a = antes.FaixaDaBicicleta, b = t.FaixaDaBicicleta;
+                    bool naCurva = curva > 0f && faixa >= Mathf.Min(a, b) && faixa <= Mathf.Max(a, b);
+                    var fim = F.V(faixa * L, yC, ini[k] - (naCurva ? curva : meio));
+                    aberto.Add(fim);
+                    if (kl != 99)
+                    {
+                        var comeco = F.V(kl * L, yC, ini[k] + meio);
+                        ligacoes.Add((fim, comeco));
+                        aberto.Add(comeco);
+                        faixa = kl;
+                        continue;
+                    }
+                    if (!t.parque)
+                    {
+                        float lado = faixa > 0 ? 1f : -1f;
+                        var comeco = F.V(lado * 5.4f, yC, ini[k] + 1f);
+                        ligacoes.Add((fim, comeco));
+                        aberto.Add(comeco);
+                        aberto.Add(F.V(lado * 5.4f, yC, total + 60f));
+                        ladoQueVeioDoParque = (int)lado;
+                    }
+                    caminhos.Add(aberto);
+                    aberto = null;
+                    faixa = 99;
+                }
+                if (aberto == null && kl != 99 && kl != faixa)
+                {
+                    aberto = new List<Vector3> { F.V(kl * L, yC, k == 0 ? -24f : ini[k] + meio) };
+                    faixa = kl;
+                }
+            }
+            if (aberto != null)
+            {
+                aberto.Add(F.V(faixa * L, yC, total + 60f));
+                caminhos.Add(aberto);
+            }
+
+            // ---- rua: as duas calçadas de fora, em cada trecho seguido de rua
+            for (int k = 0; k < n; k++)
+            {
+                if (r.trechos[k].parque || (k > 0 && !r.trechos[k - 1].parque)) continue;
+                int kb = k;
+                while (kb + 1 < n && !r.trechos[kb + 1].parque) kb++;
+                float zs = k == 0 ? -24f : ini[k], ze = kb == n - 1 ? total + 60f : ini[kb + 1];
+                foreach (int lado in new[] { 1, -1 })
+                {
+                    if (lado == ladoQueVeioDoParque && k > 0) continue;
+                    var cam = new List<Vector3>();
+                    if (k > 0)
+                    {
+                        // A calçada sai de uma pracinha do parque.
+                        var praca = F.V(lado * 10f, yC, ini[k] - 7f);
+                        Pracinha(g, praca, lado);
+                        var comeco = F.V(lado * 5.4f, yC, ini[k] + 1f);
+                        ligacoes.Add((praca, comeco));
+                        cam.Add(praca);
+                        cam.Add(comeco);
+                    }
+                    else cam.Add(F.V(lado * 5.4f, yC, zs));
+                    cam.Add(F.V(lado * 5.4f, yC, ze));
+                    caminhos.Add(cam);
+                }
+            }
+
+            // ---- rua: alargamento da calçada sobre a faixa da direita (meio-fio atravessado e floreira nas pontas)
+            for (int k = 0; k < n; k++)
+            {
+                var t = r.trechos[k];
+                int kl = FaixaK(t);
+                if (t.parque || kl == 99) continue;
+                float x = kl * L;
+                foreach (var (z, s) in new[] { (ini[k], 1f), (ini[k + 1], -1f) })
+                {
+                    F.Cubo(g, "Meio_Fio_Da_Ponta", "Branco_Concreto", F.V(x, .07f, z + s * .08f), F.V(L, .15f, .16f));
+                    P(g, "Props/Floreira_De_Madeira", F.V(x - .3f, .12f, z + s * .9f), 90, .8f);
+                    P(g, "Props/Pilarete", F.V(x - 1f, .12f, z + s * .3f), 0, 1f);
+                }
+            }
+
+            // ---- as passagens (piso mais baixo que a ciclovia, que passa por cima) e a faixa de pedestre na ciclovia
+            var curvas = chao.GetComponentsInChildren<Transform>().Where(x => x.name == "Ciclovia_Curva").ToList();
+            foreach (var (de, ate) in ligacoes)
+            {
+                Vector3 a = new Vector3(de.x, .025f, de.z), b = new Vector3(ate.x, .025f, ate.z);
+                var piso = F.Cubo(g, "Passagem", "Cinza_Claro", (a + b) / 2f, F.V(2f, .05f, Vector3.Distance(a, b) + 1.6f));
+                piso.transform.rotation = Quaternion.LookRotation(b - a);
+                SemSombra(piso);
+                foreach (var cv in curvas)
+                {
+                    Vector3 c1 = cv.position - cv.forward * cv.localScale.z / 2f, c2 = cv.position + cv.forward * cv.localScale.z / 2f;
+                    c1 = raiz.InverseTransformPoint(c1); c2 = raiz.InverseTransformPoint(c2);
+                    if (!Cruza(a, b, c1, c2, out Vector3 cruz)) continue;
+                    // Listras no sentido da ciclovia, lado a lado de uma beira à outra dela.
+                    Vector3 dirCiclo = (c2 - c1); dirCiclo.y = 0f; dirCiclo.Normalize();
+                    Vector3 atravessado = new Vector3(dirCiclo.z, 0f, -dirCiclo.x);
+                    Quaternion rot = Quaternion.LookRotation(dirCiclo);
+                    for (int i = -2; i <= 2; i++)
+                    {
+                        var listra = F.Cubo(g, "Faixa_De_Pedestre", "Branco", new Vector3(cruz.x, .07f, cruz.z) + atravessado * i * .42f, F.V(.26f, .012f, 1.1f));
+                        listra.transform.rotation = rot;
+                        SemSombra(listra);
+                    }
+                }
+            }
+
+            // ---- pedestres
+            var pontos = new List<Vector3>();
+            var fins = new List<int>();
+            var caminhoDe = new List<int>();
+            var partida = new List<float>();
+            var volta = new List<bool>();
+            foreach (var cam in caminhos) { pontos.AddRange(cam); fins.Add(pontos.Count); }
+            rota.pontosDasCalcadas = pontos.ToArray();
+            rota.fimDosCaminhos = fins.ToArray();
+            int q = 0;
+            for (int c = 0; c < caminhos.Count; c++)
+            {
+                float comp = rota.ComprimentoDoCaminho(c);
+                // No parque a calçada é uma só: mais gente. Na rua são duas: um pouco mais espaçado (e mais leve).
+                float passo = caminhos.Count > 1 ? 18f : 13f;
+                for (float d = 6f + c * 4f; d < comp - 4f; d += passo)
+                {
+                    Vector3 local = rota.PontoNoCaminho(c, d, out Vector3 dir);
+                    bool deVolta = q % 2 == 1;
+                    var p = P(pessoas, quem[q % quem.Length], local, 0);
+                    p.transform.localRotation = Quaternion.LookRotation(deVolta ? -dir : dir);
+                    pedestres.Add(p.transform);
+                    caminhoDe.Add(c); partida.Add(d); volta.Add(deVolta);
+                    q++;
+                }
+            }
+            rota.caminhoDoPedestre = caminhoDe.ToArray();
+            rota.partidaDoPedestre = partida.ToArray();
+            rota.pedestreDeVolta = volta.ToArray();
+        }
+
+        // Cruzamento de dois segmentos no plano do chão (x, z).
+        static bool Cruza(Vector3 a, Vector3 b, Vector3 c, Vector3 d, out Vector3 ponto)
+        {
+            ponto = Vector3.zero;
+            Vector2 p = new Vector2(a.x, a.z), r = new Vector2(b.x - a.x, b.z - a.z);
+            Vector2 q = new Vector2(c.x, c.z), s = new Vector2(d.x - c.x, d.z - c.z);
+            float rxs = r.x * s.y - r.y * s.x;
+            if (Mathf.Abs(rxs) < 1e-5f) return false;
+            Vector2 qp = q - p;
+            float t = (qp.x * s.y - qp.y * s.x) / rxs, u = (qp.x * r.y - qp.y * r.x) / rxs;
+            if (t < 0f || t > 1f || u < 0f || u > 1f) return false;
+            Vector2 x = p + r * t;
+            ponto = new Vector3(x.x, 0f, x.y);
+            return true;
+        }
+
+        // Pracinha redonda no parque, de onde sai uma calçada.
+        static void Pracinha(Transform pai, Vector3 centro, float lado)
+        {
+            var g = F.Grupo("Pracinha", pai, new Vector3(centro.x, 0, centro.z)).transform;
+            SemSombra(F.Cilindro(g, "Piso", "Cinza_Claro", F.V(0, .03f, 0), F.V(5f, .03f, 5f)));
+            F.Cilindro(g, "Canteiro", "Verde", F.V(0, .1f, 0), F.V(1.6f, .1f, 1.6f));
+            P(g, "Natureza/Arvore_Comum_2", F.V(0, .18f, 0), 30, .8f);
+            P(g, "Props/Banco_De_Praca", F.V(lado * 1.9f, .06f, 0), lado > 0 ? 90 : -90);
+            P(g, "Props/Poste_Curvo", F.V(-lado * 1.9f, .06f, 1.2f), 0);
+        }
+
+        // O ciclista: uma bicicleta infantil (a Bicicleta_Q2 em escala menor, pra as pernas do menino alcançarem
+        // os pedais) com o filho mais velho sentado no selim, um pedivela com dois pedais e o PedalarNaBicicleta,
+        // que gira o pedivela e as rodas e dobra as pernas até os pedais.
+        static GameObject Ciclista(Transform pai, out PedalarNaBicicleta pedalar)
+        {
+            const float escala = .55f;
+            var visual = F.Grupo("Visual", pai);
+            var bici = P(visual.transform, "Carros/Bicicleta_Q2", Vector3.zero, 180, escala);
+            Transform Parte(string nome) => bici.GetComponentsInChildren<Transform>().First(t => t.name == nome);
+            Bounds Medida(string nome) => Parte(nome).GetComponent<Renderer>().bounds;
+            var selim = Medida("Saddle");
+            var traseira = Medida("BackWheel");
+            var dianteira = Medida("FrontWheel");
+            var guidao = Medida("Handle");
+
+            var menino = P(visual.transform, "Personagens/Familia_FilhoMaisVelho_Animado", Vector3.zero, 0, .85f);
+            Transform Osso(string nome) => menino.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == nome);
+            // Quadril em cima do selim.
+            Vector3 quadril = (Osso("UpperLeg.L").position + Osso("UpperLeg.R").position) / 2f;
+            menino.transform.position += new Vector3(0, selim.max.y + .01f - quadril.y, selim.center.z - quadril.z);
+
+            // Pedivela no eixo do meio (um pouco à frente do selim, na altura das rodas).
+            float raio = .065f;
+            var eixo = F.Grupo("Pedivela", visual.transform).transform;
+            // Um pouco acima do eixo das rodas, pra as pernas curtas do menino alcançarem o pedal de baixo.
+            eixo.position = new Vector3(traseira.center.x, traseira.center.y + .06f, Mathf.Lerp(traseira.center.z, dianteira.center.z, .44f));
+            F.Cilindro(eixo, "Eixo", "Grafite", Vector3.zero, F.V(.05f, .09f, .05f), F.V(0, 0, 90));
+            Transform Pedal(string nome, float lado)
+            {
+                var braco = F.Cubo(eixo, "Braco_" + nome, "Cinza_Escuro", F.V(lado * .055f, lado * raio / 2f, 0), F.V(.015f, raio, .02f));
+                var pedal = F.Cubo(eixo, "Pedal_" + nome, "Grafite", F.V(lado * .085f, lado * raio, 0), F.V(.05f, .015f, .03f));
+                return pedal.transform;
+            }
+            var pedalE = Pedal("Esquerdo", -1f);
+            var pedalD = Pedal("Direito", 1f);
+
+            pedalar = visual.AddComponent<PedalarNaBicicleta>();
+            pedalar.pedivela = eixo;
+            pedalar.pedalEsquerdo = pedalE;
+            pedalar.pedalDireito = pedalD;
+            pedalar.rodas = new[] { Parte("BackWheel"), Parte("FrontWheel") };
+            pedalar.raioDaRoda = traseira.extents.y;
+            pedalar.coxaEsquerda = Osso("UpperLeg.L"); pedalar.canelaEsquerda = Osso("LowerLeg.L"); pedalar.fimEsquerdo = Osso("LowerLeg.L_end"); pedalar.peEsquerdo = Osso("Foot.L");
+            pedalar.coxaDireita = Osso("UpperLeg.R"); pedalar.canelaDireita = Osso("LowerLeg.R"); pedalar.fimDireito = Osso("LowerLeg.R_end"); pedalar.peDireito = Osso("Foot.R");
+            pedalar.bracos = menino.GetComponentsInChildren<Transform>().Where(t => t.name.StartsWith("UpperArm")).ToArray();
+            foreach (var r in visual.GetComponentsInChildren<MeshRenderer>()) if (r.transform.IsChildOf(eixo)) r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            return visual;
         }
 
         // Abas "Passeio de Carro" e "Pedalada" no alto da seleção de níveis (usadas nas duas cenas da Rua Viva).
@@ -176,16 +421,6 @@ namespace CidadeViva.EditorArte
                 var t = r.trechos[k];
                 var g = F.Grupo("Trecho_" + k, chao).transform;
                 Trecho(g, volta, t, z, z + t.comprimento, aleatorio, false, k + 1 < r.trechos.Length ? r.trechos[k + 1] : null);
-                for (int i = -1; i <= 1; i++)
-                {
-                    if (t.Faixa(i) != TipoDeFaixa.Calcada) continue;
-                    float lado = i == 0 ? 1f : Mathf.Sign(i);
-                    for (float pz = z + 8f; pz < z + t.comprimento - 4f; pz += 16f)
-                    {
-                        var p = P(pessoas, quem[q++ % quem.Length], F.V(i * L + lado * .75f, .12f, pz), 180);
-                        pedestres.Add(p.transform);
-                    }
-                }
                 if (t.obstaculo)
                 {
                     var o = F.Grupo("Obstaculo_" + k, raiz, F.V(t.FaixaCerta * L, 0, z + t.comprimento * .5f)).transform;
@@ -199,6 +434,7 @@ namespace CidadeViva.EditorArte
             }
             Trecho(chao, volta, r.trechos[r.trechos.Length - 1], total, total + 60f, aleatorio, true);
             Chegada(raiz, indice, total);
+            Calcadas(raiz, chao, r, rota, pessoas, pedestres, quem);
 
             var seta = F.Grupo("Seta_Da_Dica", raiz).transform;
             F.M(seta, "Ponta", "Cone", "Mostarda", F.V(0, 0, 0), F.V(.7f, .6f, .7f), F.V(180, 0, 0));
@@ -207,7 +443,7 @@ namespace CidadeViva.EditorArte
             seta.gameObject.SetActive(false);
 
             rota.obstaculos = obstaculos;
-            rota.pedestres = pedestres.ToArray();
+            rota.pedestres = pedestres.ToArray(); // (os caminhos de cada um já foram gravados por Calcadas)
             rota.setaDaDica = seta;
             return rota;
         }
@@ -408,11 +644,18 @@ namespace CidadeViva.EditorArte
 
             var lista = new List<CoisaDaCabeca>();
             var cap = Coisa(b, "capacete", "Capacete", .2f);
-            F.M(cap.transform, "Casco", "Semiesfera", "Mostarda", F.V(0, 0, 0), F.V(.34f, .4f, .4f));
-            F.M(cap.transform, "Faixa", "Semiesfera", "Petroleo", F.V(0, .005f, 0), F.V(.12f, .41f, .405f));
-            F.Cubo(cap.transform, "Respiro_1", "Grafite", F.V(-.07f, .16f, .05f), F.V(.04f, .03f, .1f));
-            F.Cubo(cap.transform, "Respiro_2", "Grafite", F.V(.07f, .16f, .05f), F.V(.04f, .03f, .1f));
-            F.Cubo(cap.transform, "Tira", "Grafite", F.V(0, -.07f, .02f), F.V(.3f, .02f, .03f));
+            // Capacete de ciclista: casco amarelo um pouco alongado pra trás, faixa central azul, respiros escuros,
+            // viseira curta na frente, borda e a tira do queixo (as formas são da paleta).
+            F.M(cap.transform, "Casco", "Semiesfera", "Mostarda", F.V(0, 0, -.01f), F.V(.36f, .38f, .44f));
+            F.M(cap.transform, "Borda", "Semiesfera", "Petroleo_Escuro", F.V(0, -.012f, -.01f), F.V(.37f, .05f, .45f));
+            F.M(cap.transform, "Faixa", "Semiesfera", "Petroleo", F.V(0, .006f, -.01f), F.V(.1f, .385f, .445f));
+            for (int i = 0; i < 3; i++)
+                foreach (float x in new[] { -.085f, .085f })
+                    F.Cubo(cap.transform, "Respiro", "Grafite", F.V(x, .155f - i * .012f, .07f - i * .075f), F.V(.035f, .03f, .06f), F.V(-25 + i * 25, 0, 0));
+            F.Cubo(cap.transform, "Viseira", "Petroleo_Escuro", F.V(0, .03f, .22f), F.V(.28f, .02f, .08f), F.V(-12, 0, 0));
+            foreach (float x in new[] { -.17f, .17f })
+                F.Cubo(cap.transform, "Tira", "Grafite", F.V(x, -.09f, .03f), F.V(.015f, .17f, .025f));
+            F.Cubo(cap.transform, "Fivela", "Cinza_Escuro", F.V(0, -.18f, .05f), F.V(.07f, .03f, .03f));
             lista.Add(cap);
 
             var bone = Coisa(b, "bone", "Boné", .12f);
@@ -444,6 +687,29 @@ namespace CidadeViva.EditorArte
 
         // ------------------------------------------------------------------ conferência com as definições
 
+        // O que NÃO vem direto das definições (lista da conferência e do Docs/Revisao_Coordenacao.md).
+
+        public static readonly string[] NaoVemDasDefinicoes =
+
+        {
+                         "OS ROTEIROS DEPOIS DA ENCHENTE: 1 passeio no parque que reabriu com ciclovia nova; 2 ir até a padaria pela rua; 3 atravessar o parque e a avenida até a festa da reconstrução. Lugares, textos e recados são do jogo.",
+                         "Boné e chapéu de festa como coisas erradas pra cabeça: a definição só diz que o capacete é equipamento de segurança; dizer que o boné \"não é capacete\" é do jogo. O capacete de primeira vale estrela nos níveis 1 e 2.",
+                         "Onde não há ciclofaixa, a bicicleta vai na faixa dos carros da direita (\"pedale na rua, perto da calçada\"). A definição só diz \"quando disponíveis\"; ir mais pra direita é regra de trânsito, não do glossário. A faixa da esquerda também não perde estrela.",
+                         "A calçada vale como lugar errado pela definição de calçada (\"destinada para a passagem de pedestres ou animais\"), que é de outro verbete.",
+                         "Há uma tolerância de 1,3 s no lugar errado (dá tempo de trocar de faixa) e nada conta quando a bicicleta já está indo pra faixa certa do trecho que vem.",
+                         "O canteiro (grama com arbustos) entre as faixas do parque, e os cones e buracos da enchente na rua: bater é \"batida\" (a bicicleta para um pouco). Nenhuma definição fala de batida.",
+                         "Os carros que vêm atrás desviam da bicicleta pela outra faixa, ou esperam; se ela está na pista dos carros onde tinha ciclofaixa, um deles buzina baixinho.",
+                         "Engarrafamento: a ambulância é que fica presa (podia ser o ônibus, que também está na fila). A causa do acúmulo não é mostrada. A bicicleta para pra criança olhar e segue pela ciclofaixa, passando pela fila.",
+                         "O tempo do nível 3 (o relógio corre também enquanto ela olha o engarrafamento) e as setas de dica nos níveis 1 e 2.",
+                         "Ciclista = bicicleta infantil (Bicicleta_Q2 em escala menor) com o menino sentado, pedalando por código (pernas presas aos pedais). Capacete, boné, chapéu, canteiros, ciclovia e ciclofaixa são formas da paleta.",
+
+        };
+
+        // Regras da última conferência: {verbete, trecho literal, regra} (usadas pelo RevisaoConstrutor).
+
+        public static readonly List<string[]> RegrasDaRevisao = new List<string[]>();
+
+
         [MenuItem("Cidade Viva/Verbetes/Conferir regras da Pedalada com as definições")]
         public static void ConferirPeloMenu()
         {
@@ -456,8 +722,10 @@ namespace CidadeViva.EditorArte
             var banco = VerbeteDatabase.Instancia;
             var falhas = new List<string>();
             var lista = new StringBuilder();
+            RegrasDaRevisao.Clear();
             void Regra(string id, string trecho, string regra)
             {
+                RegrasDaRevisao.Add(new[] { id, trecho, regra });
                 var v = banco.Buscar(id);
                 if (v == null) { falhas.Add("verbete desconhecido: " + id); return; }
                 if (!v.definicao.Contains(trecho)) falhas.Add($"{id}: o trecho \"{trecho}\" não está na definição");
@@ -475,19 +743,7 @@ namespace CidadeViva.EditorArte
             Regra("engarrafamento", config.trechoDaPassagem, "a ambulância fica presa na fila; a criança toca no engarrafamento e abre o cartão");
 
             lista.AppendLine().AppendLine("O QUE NÃO VEM DIRETO DAS DEFINIÇÕES (escolhas do jogo, pra revisão)");
-            foreach (string item in new[]
-                     {
-                         "OS ROTEIROS DEPOIS DA ENCHENTE: 1 passeio no parque que reabriu com ciclovia nova; 2 ir até a padaria pela rua; 3 atravessar o parque e a avenida até a festa da reconstrução. Lugares, textos e recados são do jogo.",
-                         "Boné e chapéu de festa como coisas erradas pra cabeça: a definição só diz que o capacete é equipamento de segurança; dizer que o boné \"não é capacete\" é do jogo. O capacete de primeira vale estrela nos níveis 1 e 2.",
-                         "Onde não há ciclofaixa, a bicicleta vai na faixa dos carros da direita (\"pedale na rua, perto da calçada\"). A definição só diz \"quando disponíveis\"; ir mais pra direita é regra de trânsito, não do glossário. A faixa da esquerda também não perde estrela.",
-                         "A calçada vale como lugar errado pela definição de calçada (\"destinada para a passagem de pedestres ou animais\"), que é de outro verbete.",
-                         "Há uma tolerância de 1,3 s no lugar errado (dá tempo de trocar de faixa) e nada conta quando a bicicleta já está indo pra faixa certa do trecho que vem.",
-                         "O canteiro (grama com arbustos) entre as faixas do parque, e os cones e buracos da enchente na rua: bater é \"batida\" (a bicicleta para um pouco). Nenhuma definição fala de batida.",
-                         "Os carros que vêm atrás desviam da bicicleta pela outra faixa, ou esperam; se ela está na pista dos carros onde tinha ciclofaixa, um deles buzina baixinho.",
-                         "Engarrafamento: a ambulância é que fica presa (podia ser o ônibus, que também está na fila). A causa do acúmulo não é mostrada. A bicicleta para pra criança olhar e segue pela ciclofaixa, passando pela fila.",
-                         "O tempo do nível 3 (o relógio corre também enquanto ela olha o engarrafamento) e as setas de dica nos níveis 1 e 2.",
-                         "Ciclista = bicicleta com o menino parado em cima (mesmo modelo das Obras; falta modelo de ciclista pedalando). Capacete, boné, chapéu, canteiros, ciclovia e ciclofaixa são formas da paleta.",
-                     })
+            foreach (string item in NaoVemDasDefinicoes)
                 lista.AppendLine("  - " + item);
 
             lista.AppendLine().AppendLine("TRECHOS POR NÍVEL");
@@ -540,7 +796,7 @@ namespace CidadeViva.EditorArte
                         T(G, K, V, 36, true, "A ciclovia vai pra direita!"),
                         T(K, V, G, 36, true, "A ciclovia volta pro meio!"),
                         T(V, K, G, 36, true, "Agora a ciclovia vai pra esquerda!"),
-                        T(V, G, G, 30, true, "Quase lá: o mirante do parque!"),
+                        T(V, K, G, 30, true, "Quase lá: o mirante do parque!"),
                     },
                     recadoDeChegada = "Chegamos ao mirante! De capacete e na ciclovia o tempo todo.",
                 },
@@ -659,7 +915,8 @@ namespace CidadeViva.EditorArte
             for (int i = 0; i < 3; i++)
             {
                 estrelas[i] = Imagem("Estrela_" + (i + 1), painel.transform, S("figura_estrela"), Color.white, new Vector2(-135 + i * 135, 20), new Vector2(66, 66));
-                rotulos[i] = Texto("Rotulo_" + (i + 1), painel.transform, "", 22, C("Grafite"), new Vector2(-135 + i * 135, -35), new Vector2(135, 32), FontStyle.Normal);
+                rotulos[i] = Texto("Rotulo_" + (i + 1), painel.transform, "", 30, C("Grafite"), new Vector2(-135 + i * 135, -35), new Vector2(140, 42), FontStyle.Normal);
+                rotulos[i].resizeTextForBestFit = true; rotulos[i].resizeTextMinSize = 24; rotulos[i].resizeTextMaxSize = 30;
             }
             hud.estrelasDosCriterios = estrelas;
             hud.rotulosDosCriterios = rotulos;

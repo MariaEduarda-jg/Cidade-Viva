@@ -605,8 +605,8 @@ public class RuaVivaCarroManager : MinigameBase
         {
             return;
         }
-        bool toque = Input.GetMouseButtonDown(0) && !SobreAInterface();
-        if (EtapaAtual == Etapa.Missao && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space)))
+        bool toque = Toque.Apertou && !SobreAInterface();
+        if (EtapaAtual == Etapa.Missao && (Teclado.Apertou(KeyCode.Return) || Teclado.Apertou(KeyCode.Space)))
         {
             ComecarMissao();
         }
@@ -617,13 +617,13 @@ public class RuaVivaCarroManager : MinigameBase
         }
         if (toque && !Pausado)
         {
-            TocarNaTela(Input.mousePosition);
+            TocarNaTela(Toque.Posicao);
         }
-        if (EtapaAtual == Etapa.Chave && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space)))
+        if (EtapaAtual == Etapa.Chave && (Teclado.Apertou(KeyCode.Return) || Teclado.Apertou(KeyCode.Space)))
         {
             LigarCarro();
         }
-        if (EtapaAtual == Etapa.Soltos && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space)))
+        if (EtapaAtual == Etapa.Soltos && (Teclado.Apertou(KeyCode.Return) || Teclado.Apertou(KeyCode.Space)))
         {
             foreach (Solto x in soltos)
             {
@@ -655,7 +655,7 @@ public class RuaVivaCarroManager : MinigameBase
         if (EtapaAtual == Etapa.Passeio)
         {
             TempoGasto += Time.deltaTime;
-            if (Input.GetKeyDown(KeyCode.B) || Input.GetKeyDown(KeyCode.Space))
+            if (Teclado.Apertou(KeyCode.B) || Teclado.Apertou(KeyCode.Space))
             {
                 Buzinar();
             }
@@ -671,7 +671,7 @@ public class RuaVivaCarroManager : MinigameBase
 
     private static bool SobreAInterface()
     {
-        return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+        return Toque.SobreAInterface();
     }
 
     private void CuidarDoArrasto(bool toque)
@@ -680,17 +680,17 @@ public class RuaVivaCarroManager : MinigameBase
         if (toque)
         {
             Vector3 naTela = cameraDoJogo.WorldToScreenPoint(c.fivela.position);
-            arrastando = naTela.z > 0f && Vector2.Distance(Input.mousePosition, naTela) <= config.raioDeToqueDaFivela;
+            arrastando = naTela.z > 0f && Vector2.Distance(Toque.Posicao, naTela) <= config.raioDeToqueDaFivela;
         }
-        if (arrastando && Input.GetMouseButton(0))
+        if (arrastando && Toque.Segurando)
         {
-            ArrastarFivela(Input.mousePosition);
+            ArrastarFivela(Toque.Posicao);
         }
-        if (arrastando && Input.GetMouseButtonUp(0))
+        if (arrastando && Toque.Soltou)
         {
             SoltarFivela();
         }
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
+        if (Teclado.Apertou(KeyCode.Return) || Teclado.Apertou(KeyCode.Space))
         {
             PrenderCinto();
             return;

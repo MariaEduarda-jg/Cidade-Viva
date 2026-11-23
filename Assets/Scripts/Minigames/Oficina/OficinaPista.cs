@@ -171,8 +171,8 @@ public class OficinaPista : MonoBehaviour
             return;
         }
 
-        float direcao = EmTrilhos ? 0f : Mathf.Clamp(Input.GetAxisRaw("Horizontal") + direcaoDosBotoes, -1f, 1f);
-        float pedal = Input.GetAxisRaw("Vertical");
+        float direcao = EmTrilhos ? 0f : Mathf.Clamp(Teclado.Eixo("Horizontal") + direcaoDosBotoes, -1f, 1f);
+        float pedal = Teclado.Eixo("Vertical");
         bool acelerando = aceleradorDosBotoes || pedal > 0.1f;
         float maxima = config.velocidadeMaxima * fatorDeVelocidade;
         float alvo = acelerando ? maxima : (pedal < -0.1f ? -maxima * 0.4f : 0f);

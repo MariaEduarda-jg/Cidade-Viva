@@ -68,6 +68,9 @@ public class SinaisCruzamento : MonoBehaviour
     private float[] zDaFaixa;
     private Vector3[] escalaPedestre;
     private Animator[] animadores;
+    private Vector3[] desvioPedestre;
+    [Tooltip("Quanto cada pedestre anda à direita do caminho (metros), pra não atravessar quem vem do outro lado.")]
+    public float maoDireita = 0.4f;
 
     private float[] avanco;
     private bool[] carroAndando = new bool[0];
@@ -87,6 +90,7 @@ public class SinaisCruzamento : MonoBehaviour
         zDaFaixa = new float[n];
         escalaPedestre = new Vector3[n];
         animadores = new Animator[n];
+        desvioPedestre = new Vector3[n];
         for (int i = 0; i < n; i++)
         {
             Vector3 p = pedestres[i].localPosition;
@@ -214,7 +218,12 @@ public class SinaisCruzamento : MonoBehaviour
                 posicaoPedestre[i] = new Vector3(lado, y, zDeChegada);
             }
 
-            pedestres[i].localPosition = posicaoPedestre[i];
+            if (anda)
+            {
+                Vector3 direita = new Vector3(caminho.z, 0f, -caminho.x).normalized * maoDireita;
+                desvioPedestre[i] = Vector3.MoveTowards(desvioPedestre[i], direita, 1.5f * Time.deltaTime);
+            }
+            pedestres[i].localPosition = posicaoPedestre[i] + desvioPedestre[i];
             // Surge e some aos poucos nas pontas da calçada.
             float ponta = Mathf.Min(Mathf.Abs(posicaoPedestre[i].z - zDeChegada), Mathf.Abs(posicaoPedestre[i].z - zDeSaida));
             pedestres[i].localScale = escalaPedestre[i] * Mathf.Clamp01(ponta / 1.2f);

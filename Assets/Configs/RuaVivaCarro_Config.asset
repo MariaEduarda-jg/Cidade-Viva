@@ -410,7 +410,7 @@ MonoBehaviour:
   recadoTodosDeCinto: Todos de cinto. Vamos!
   recadoDeQuemDesceu: Tchau, {0}!
   prefixoDoRadio: "R\xE1dio Cidade:"
-  somDaFivela: {fileID: 8300000, guid: 440e9e0234e91a745a926600cd7d20a1, type: 3}
+  somDaFivela: {fileID: 8300000, guid: 28800395dd5e3c4468590159c43dd3ea, type: 3}
   somDeSoltar: {fileID: 8300000, guid: 2d2e8a8b43189c84bb88e3f9fc7fdf6b, type: 3}
   somDoMotor: {fileID: 8300000, guid: 5c274b58157239044aed353b0e4359f8, type: 3}
   somDaBuzina: {fileID: 8300000, guid: 16b753b4b2626b44aa980f63611b57df, type: 3}

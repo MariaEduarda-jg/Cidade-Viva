@@ -514,7 +514,7 @@ public class OficinaManager : MinigameBase
             {
                 hud.EsconderEtiqueta();
             }
-            if (EtapaAtual == Etapa.Testando && pista.EsperandoEngate && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space)))
+            if (EtapaAtual == Etapa.Testando && pista.EsperandoEngate && (global::Teclado.Apertou(KeyCode.Return) || global::Teclado.Apertou(KeyCode.Space)))
             {
                 Engatar();
             }
@@ -562,10 +562,10 @@ public class OficinaManager : MinigameBase
     private void MostrarNomeDaPeca()
     {
         PecaDaOficina alvo = arrastando;
-        if (alvo == null && (EventSystem.current == null || !EventSystem.current.IsPointerOverGameObject()))
+        if (alvo == null && !Toque.SobreAInterface())
         {
             RaycastHit toque;
-            if (Physics.Raycast(cameraDoJogo.ScreenPointToRay(Input.mousePosition), out toque, 100f))
+            if (Physics.Raycast(cameraDoJogo.ScreenPointToRay(Toque.Posicao), out toque, 100f))
             {
                 alvo = toque.collider.GetComponentInParent<PecaDaOficina>();
             }
@@ -590,12 +590,12 @@ public class OficinaManager : MinigameBase
     {
         if (arrastando == null)
         {
-            if (!Input.GetMouseButtonDown(0) || (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()))
+            if (!Toque.Apertou || (Toque.SobreAInterface()))
             {
                 return;
             }
             RaycastHit toque;
-            if (!Physics.Raycast(cameraDoJogo.ScreenPointToRay(Input.mousePosition), out toque, 100f))
+            if (!Physics.Raycast(cameraDoJogo.ScreenPointToRay(Toque.Posicao), out toque, 100f))
             {
                 return;
             }
@@ -610,10 +610,10 @@ public class OficinaManager : MinigameBase
             return;
         }
 
-        Ray raio = cameraDoJogo.ScreenPointToRay(Input.mousePosition);
+        Ray raio = cameraDoJogo.ScreenPointToRay(Toque.Posicao);
         float distancia;
         Vector3 ponto = planoDeArrasto.Raycast(raio, out distancia) ? raio.GetPoint(distancia) : arrastando.transform.position;
-        if (Input.GetMouseButton(0))
+        if (Toque.Segurando)
         {
             arrastando.transform.position = ponto;
             arrastando.transform.localScale = Vector3.one * 1.15f;
@@ -637,7 +637,7 @@ public class OficinaManager : MinigameBase
     // Setas escolhem a peça da prateleira; Enter ou Espaço leva pra bancada; D pede dica; O ouve a definição.
     private void Teclado()
     {
-        int passo = (Input.GetKeyDown(KeyCode.RightArrow) ? 1 : 0) - (Input.GetKeyDown(KeyCode.LeftArrow) ? 1 : 0);
+        int passo = (global::Teclado.Apertou(KeyCode.RightArrow) ? 1 : 0) - (global::Teclado.Apertou(KeyCode.LeftArrow) ? 1 : 0);
         if (passo != 0 && pecas.Count > 0)
         {
             DestacarSelecionada(false);
@@ -652,18 +652,18 @@ public class OficinaManager : MinigameBase
             DestacarSelecionada(true);
         }
 
-        if ((Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space)) && selecionada >= 0 && selecionada < pecas.Count)
+        if ((global::Teclado.Apertou(KeyCode.Return) || global::Teclado.Apertou(KeyCode.Space)) && selecionada >= 0 && selecionada < pecas.Count)
         {
             PecaDaOficina peca = pecas[selecionada];
             DestacarSelecionada(false);
             PegarPeca(peca);
             ColocarPeca(peca);
         }
-        if (Input.GetKeyDown(KeyCode.D))
+        if (global::Teclado.Apertou(KeyCode.D))
         {
             PedirDica();
         }
-        if (Input.GetKeyDown(KeyCode.O))
+        if (global::Teclado.Apertou(KeyCode.O))
         {
             OuvirDefinicao();
         }

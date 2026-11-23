@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -71,8 +72,25 @@ namespace CidadeViva.EditorArte
 
             Jogador();
             MenuConstrutor.PainelDoHub();
+            OtimizacaoWebGL.TirarSombraDosPequenos();
+            Colisores();
             EditorSceneManager.MarkSceneDirty(cena);
             EditorSceneManager.SaveScene(cena);
+        }
+
+        // A criança não atravessa prédios, árvores, carros, objetos e pessoas (2026-11-22). O jogador tem
+        // CharacterController; aqui o cenário ganha os colisores (ver ColisoresDoCenario). O marcador de cada
+        // área fica livre num raio de 2,8 m.
+        static void Colisores()
+        {
+            var livres = Object.FindObjectsByType<AreaTrigger>(FindObjectsInactive.Include).Select(a => a.transform.position).ToList();
+            int n = 0;
+            foreach (var go in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
+            {
+                if (go.GetComponent<CharacterController>() != null || go.GetComponentInChildren<Camera>(true) != null || go.GetComponent<Canvas>() != null) continue;
+                n += ColisoresDoCenario.Criar(go.transform, livres);
+            }
+            Debug.Log($"[Hub] Colisores no cenário: {n}");
         }
 
         // ------------------------------------------------------------------ base da cidade
@@ -779,6 +797,9 @@ namespace CidadeViva.EditorArte
             F.Cilindro(chao, "Rio_Laguinho", "Agua", F.V(22f, 0, 80f), F.V(13f, .04f, 11f));
             foreach (float z in new[] { 75.4f, 84.6f })
                 F.Caixa(chao, "Rio_Margem", "Areia", 66f, -.02f, z, 88f, .035f, 1.3f);
+            // Capim, plantas e pedras nas margens, vitórias-régias e reflexos na água (fora do trecho da ponte).
+            ArteDetalhes.MargemDeRio(chao, "Margem_Sul_Do_Rio", 24f, 108f, 75.4f, 1f, .02f, 21, 40f, 52f);
+            ArteDetalhes.MargemDeRio(chao, "Margem_Norte_Do_Rio", 24f, 108f, 84.6f, -1f, .02f, 22, 40f, 52f);
         }
 
         // Pintura das ruas novas e o que há em volta delas (prédios, árvores, postes).
@@ -1036,8 +1057,12 @@ namespace CidadeViva.EditorArte
             F.Esfera(v, "Morro_Grande", "Verde_Escuro", F.V(2f, 0, 40f), F.V(48f, 26f, 24f));
             F.Esfera(v, "Morro_Esquerdo", "Verde", F.V(-16f, 0, 36f), F.V(16f, 10f, 12f));
             F.Esfera(v, "Morro_Direito", "Verde_Musgo", F.V(27f, 0, 39f), F.V(30f, 18f, 18f));
-            F.Cubo(v, "Tunel_Portal", "Branco_Concreto", F.V(0, 2.7f, 27.6f), F.V(8.4f, 5.4f, 1.2f));
-            F.Cubo(v, "Tunel_Boca", "Grafite", F.V(0, 2.1f, 27.3f), F.V(6f, 4.2f, 1f));
+            // Boca do túnel em arco (ArteDetalhes) e o morro com árvores, arbustos e pedras (antes era só a esfera lisa).
+            ArteDetalhes.BocaDeTunel(v, "Tunel", F.V(0, 0, 27f), 0, 6f, 5f, 2f);
+            var livre = new Rect(-8f, 18f, 16f, 14f);
+            ArteDetalhes.EnfeitarMorro(v, "Mato_Do_Morro_Grande", F.V(2f, 0, 40f), F.V(48f, 26f, 24f), 22, 11, livre);
+            ArteDetalhes.EnfeitarMorro(v, "Mato_Do_Morro_Esquerdo", F.V(-16f, 0, 36f), F.V(16f, 10f, 12f), 6, 12, livre);
+            ArteDetalhes.EnfeitarMorro(v, "Mato_Do_Morro_Direito", F.V(27f, 0, 39f), F.V(30f, 18f, 18f), 12, 13, livre);
             P(v, "Natureza/Pedra_1", F.V(-6f, .03f, 6.2f), 20, 1.8f);
             P(v, "Natureza/Pedra_Musgo", F.V(7f, .03f, 6.1f), 80, 1.6f);
             P(v, "Natureza/Pedra_3", F.V(-8f, .03f, 15.9f), 140, 1.6f);
@@ -1205,6 +1230,8 @@ namespace CidadeViva.EditorArte
             var velho = jogador.transform.Find("Visual");
             if (velho != null) Object.DestroyImmediate(velho.gameObject);
 
+            // Começa no cruzamento ao sul do centro, olhando pro norte (antes nascia na quina, colado numa árvore).
+            jogador.transform.SetPositionAndRotation(new Vector3(10, 1, -12), Quaternion.identity);
             var capsula = jogador.GetComponent<MeshRenderer>();
             if (capsula != null) capsula.enabled = false;
             var visual = P(jogador.transform, "Personagens/Familia_FilhoMaisVelho_Animado", F.V(0, -1f, 0));

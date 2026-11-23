@@ -547,6 +547,25 @@ namespace CidadeViva.EditorArte
         // ------------------------------------------------------------------ regras (conferência com as definições)
 
         // Confere os trechos citados com as definições e grava as regras em Temp/sinais_regras.txt.
+        // O que NÃO vem direto das definições (lista da conferência e do Docs/Revisao_Coordenacao.md).
+        public static readonly string[] NaoVemDasDefinicoes =
+        {
+                         "Parar \"antes da linha\" e \"esperar o verde\": a definição de sinal vermelho só diz \"devem parar\".",
+                         "Quanto é \"diminuir a velocidade\" no amarelo: o jogo exige cruzar a linha a no máximo metade da velocidade máxima; a definição não dá número e não manda parar.",
+                         "A ordem das luzes (verde, amarelo, vermelho, verde) e quanto tempo cada uma dura.",
+                         "Motorista Mirim: o amarelo acender quando o carrinho chega perto (é pra garantir que a criança encontre o amarelo). Depois de um tempo fixo ele vira vermelho. O acerto do amarelo é baixar a velocidade: cruzar a linha rápido é erro.",
+                         "Motorista Mirim: os lugares do passeio (cruzamento, praça, escola, obra com uma mão de cada vez, trilhos do bonde, saída do hospital). Nenhuma definição fala deles; são situações escolhidas pro semáforo fazer sentido.",
+                         "A tolerância: sinal que acabou de mudar há menos de 0,7 s ainda vale a cor de antes, se ela exigir menos.",
+                         "No Sinaleiro, carro no amarelo passa devagar em vez de parar (segue a definição ao pé da letra).",
+                         "Que carros de duas vias, ou carro e pedestre, não podem passar juntos: as definições falam em \"organizar a passagem\", não em conflito. A \"quase batida\" é encenação do jogo.",
+                         "O semáforo de pedestre abrir junto com o vermelho dos carros (Motorista Mirim): é o ciclo que o jogo escolheu.",
+                         "A AMBULÂNCIA: a definição dela não fala de semáforo. No jogo ela obedece o sinal como os outros carros e conta um erro se ficar parada no vermelho por mais de 8 s. Ela não fura o sinal.",
+                         "A buzina de quem espera muito: só efeito sonoro, sem regra.",
+                         "Em que jogada cada cartão abre: sinal verde, amarelo e vermelho no Motorista Mirim (primeira vez que a regra é cumprida); semáforo e semáforo de pedestre no Sinaleiro (primeiro carro e primeiro pedestre que passam no verde).",
+        };
+        // Regras da última conferência: {verbete, trecho literal, regra} (usadas pelo RevisaoConstrutor).
+        public static readonly List<string[]> RegrasDaRevisao = new List<string[]>();
+
         [MenuItem("Cidade Viva/Verbetes/Conferir trechos da Central de Sinais com as definições")]
         public static bool ConferirTrechos()
         {
@@ -554,8 +573,10 @@ namespace CidadeViva.EditorArte
             var banco = VerbeteDatabase.Instancia;
             var falhas = new List<string>();
             var lista = new StringBuilder();
+            RegrasDaRevisao.Clear();
             void Regra(string id, string trecho, string regra)
             {
+                RegrasDaRevisao.Add(new[] { id, trecho, regra });
                 var v = banco.Buscar(id);
                 if (v == null) { falhas.Add("verbete desconhecido: " + id); return; }
                 if (!v.definicao.Contains(trecho)) falhas.Add($"{id}: o trecho \"{trecho}\" não está na definição");
@@ -572,21 +593,7 @@ namespace CidadeViva.EditorArte
             Regra("semaforo_de_pedestre", "luzes vermelha e verde", "o semáforo de pedestre só tem duas luzes (painel: verde e vermelho, sem amarelo)");
 
             lista.AppendLine().AppendLine("O QUE NÃO VEM DIRETO DAS DEFINIÇÕES (escolhas do jogo, pra revisão)");
-            foreach (string item in new[]
-                     {
-                         "Parar \"antes da linha\" e \"esperar o verde\": a definição de sinal vermelho só diz \"devem parar\".",
-                         "Quanto é \"diminuir a velocidade\" no amarelo: o jogo exige cruzar a linha a no máximo metade da velocidade máxima; a definição não dá número e não manda parar.",
-                         "A ordem das luzes (verde, amarelo, vermelho, verde) e quanto tempo cada uma dura.",
-                         "Motorista Mirim: o amarelo acender quando o carrinho chega perto (é pra garantir que a criança encontre o amarelo). Depois de um tempo fixo ele vira vermelho. O acerto do amarelo é baixar a velocidade: cruzar a linha rápido é erro.",
-                         "Motorista Mirim: os lugares do passeio (cruzamento, praça, escola, obra com uma mão de cada vez, trilhos do bonde, saída do hospital). Nenhuma definição fala deles; são situações escolhidas pro semáforo fazer sentido.",
-                         "A tolerância: sinal que acabou de mudar há menos de 0,7 s ainda vale a cor de antes, se ela exigir menos.",
-                         "No Sinaleiro, carro no amarelo passa devagar em vez de parar (segue a definição ao pé da letra).",
-                         "Que carros de duas vias, ou carro e pedestre, não podem passar juntos: as definições falam em \"organizar a passagem\", não em conflito. A \"quase batida\" é encenação do jogo.",
-                         "O semáforo de pedestre abrir junto com o vermelho dos carros (Motorista Mirim): é o ciclo que o jogo escolheu.",
-                         "A AMBULÂNCIA: a definição dela não fala de semáforo. No jogo ela obedece o sinal como os outros carros e conta um erro se ficar parada no vermelho por mais de 8 s. Ela não fura o sinal.",
-                         "A buzina de quem espera muito: só efeito sonoro, sem regra.",
-                         "Em que jogada cada cartão abre: sinal verde, amarelo e vermelho no Motorista Mirim (primeira vez que a regra é cumprida); semáforo e semáforo de pedestre no Sinaleiro (primeiro carro e primeiro pedestre que passam no verde).",
-                     })
+            foreach (string item in NaoVemDasDefinicoes)
                 lista.AppendLine("  - " + item);
 
             lista.AppendLine().AppendLine(falhas.Count == 0 ? "CONFERÊNCIA: tudo certo." : "CONFERÊNCIA: " + falhas.Count + " falha(s):");
@@ -713,7 +720,8 @@ namespace CidadeViva.EditorArte
             for (int i = 0; i < 2; i++)
             {
                 estrelas[i] = Imagem("Estrela_" + (i + 1), cartao.transform, S("figura_estrela"), Color.white, new Vector2(-85 + i * 170, 18), new Vector2(72, 72));
-                rotulos[i] = Texto("Rotulo_" + (i + 1), cartao.transform, "", 24, C("Grafite"), new Vector2(-85 + i * 170, -40), new Vector2(160, 36), FontStyle.Normal);
+                rotulos[i] = Texto("Rotulo_" + (i + 1), cartao.transform, "", 30, C("Grafite"), new Vector2(-85 + i * 170, -40), new Vector2(160, 42), FontStyle.Normal);
+                rotulos[i].resizeTextForBestFit = true; rotulos[i].resizeTextMinSize = 24; rotulos[i].resizeTextMaxSize = 30;
             }
             hud.estrelasDosCriterios = estrelas;
             hud.rotulosDosCriterios = rotulos;

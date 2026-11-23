@@ -72,7 +72,7 @@ public class MenuInicial : MonoBehaviour
         }
 
         // Quem tem teclado de verdade pode digitar; quem não tem usa as letras da tela.
-        foreach (char c in Input.inputString)
+        foreach (char c in Teclado.TextoDigitado)
         {
             if (c == '\b')
             {

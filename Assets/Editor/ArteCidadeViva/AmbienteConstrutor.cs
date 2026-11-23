@@ -33,7 +33,8 @@ namespace CidadeViva.EditorArte
             {
                 var so = new SerializedObject(urp);
                 Definir(so, "m_SoftShadowsSupported", true);
-                Definir(so, "m_ShadowDistance", 80f);
+                // 50 m (era 80): a câmera do jogo fica perto do chão, e sombra longe custa caro no WebGL.
+                Definir(so, "m_ShadowDistance", 50f);
                 so.ApplyModifiedPropertiesWithoutUndo();
                 EditorUtility.SetDirty(urp);
             }
@@ -70,6 +71,9 @@ namespace CidadeViva.EditorArte
             Definir(soSsao, "m_Settings.DirectLightingStrength", 0.25f);
             Definir(soSsao, "m_Settings.Falloff", 80f);
             soSsao.ApplyModifiedPropertiesWithoutUndo();
+            // Desligado em 2026-11-19: o SSAO é caro em placa de vídeo fraca (computador de escola, WebGL)
+            // e o efeito era discreto. Fica configurado; pra religar, troque pra true.
+            ssao.SetActive(false);
             EditorUtility.SetDirty(ssao);
             EditorUtility.SetDirty(dados);
             AssetDatabase.SaveAssets();

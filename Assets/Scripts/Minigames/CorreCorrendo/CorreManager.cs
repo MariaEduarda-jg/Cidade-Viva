@@ -123,10 +123,10 @@ public class CorreManager : MinigameBase
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) IrParaAEsquerda();
-        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) IrParaADireita();
-        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)) Pular();
-        if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) Deslizar();
+        if (Teclado.Apertou(KeyCode.LeftArrow) || Teclado.Apertou(KeyCode.A)) IrParaAEsquerda();
+        if (Teclado.Apertou(KeyCode.RightArrow) || Teclado.Apertou(KeyCode.D)) IrParaADireita();
+        if (Teclado.Apertou(KeyCode.UpArrow) || Teclado.Apertou(KeyCode.W) || Teclado.Apertou(KeyCode.Space)) Pular();
+        if (Teclado.Apertou(KeyCode.DownArrow) || Teclado.Apertou(KeyCode.S)) Deslizar();
 
         hud.MostrarDistancia(pista.Distancia, Meta, config.formatoDaDistancia);
         Passos();

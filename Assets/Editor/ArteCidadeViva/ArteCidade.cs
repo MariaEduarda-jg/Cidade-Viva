@@ -132,6 +132,12 @@ namespace CidadeViva.EditorArte
         }
 
         // Inspirada na Catedral: 16 costelas brancas curvas em volta de um miolo de vidro.
+        public static void RefazerCatedral()
+        {
+            Catedral();
+            AssetDatabase.SaveAssets();
+        }
+
         static void Catedral()
         {
             var r = F.Grupo("Brasilia_Catedral").transform;
@@ -158,12 +164,15 @@ namespace CidadeViva.EditorArte
                     Vector3 p = dir * perfil[i].x + Vector3.up * perfil[i].y;
                     Vector3 q = dir * perfil[i + 1].x + Vector3.up * perfil[i + 1].y;
                     float d = Mathf.Lerp(.62f, .34f, (i + 1) / (float)trechos);
-                    F.Barra(c, "Trecho_" + (i + 1), "Branco_Concreto", p, q, d);
-                    F.Esfera(c, "Junta_" + (i + 1), "Branco_Concreto", q, Vector3.one * d);
+                    // Sem esferas nas juntas (eram 110 mil triângulos): cada trecho passa um pouco do ponto e cobre a junta.
+                    Vector3 dir2 = (q - p).normalized;
+                    F.Barra(c, "Trecho_" + (i + 1), "Branco_Concreto", p - dir2 * d * .45f, q + dir2 * d * .45f, d);
                 }
             }
             F.Barra(r, "Cruz_Haste", "Branco_Concreto", F.V(0, 11.6f, 0), F.V(0, 13.6f, 0), .12f);
             F.Barra(r, "Cruz_Braco", "Branco_Concreto", F.V(-.4f, 13.1f, 0), F.V(.4f, 13.1f, 0), .12f);
+            // 150 pedaços viram uma malha por material (menos chamadas de desenho no WebGL).
+            OtimizacaoWebGL.Combinar(r, "Catedral");
             F.Salvar(r.gameObject, "Predios");
         }
 

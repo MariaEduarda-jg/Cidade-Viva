@@ -560,7 +560,7 @@ public class ObrasManager : MinigameBase
             float ate = Time.time + config.tempoDoBalao;
             yield return null;
             // O balão fica um tempo; um toque na tela adianta.
-            while (Time.time < ate && !Input.GetMouseButtonDown(0) && !Input.anyKeyDown)
+            while (Time.time < ate && !Toque.Apertou && !Input.anyKeyDown)
             {
                 yield return null;
             }
@@ -776,32 +776,32 @@ public class ObrasManager : MinigameBase
         }
 
         // Girar a câmera um pouco: arrastar com o mouse (ou o dedo), ou Q/E.
-        float teclas = (Input.GetKey(KeyCode.E) ? 1f : 0f) - (Input.GetKey(KeyCode.Q) ? 1f : 0f);
+        float teclas = (Teclado.Segurando(KeyCode.E) ? 1f : 0f) - (Teclado.Segurando(KeyCode.Q) ? 1f : 0f);
         giro = Mathf.Clamp(giro + teclas * 60f * Time.deltaTime, -config.giroMaximoDaCamera, config.giroMaximoDaCamera);
-        if (Input.GetMouseButtonDown(0))
+        if (Toque.Apertou)
         {
-            toqueInicial = Input.mousePosition;
-            toqueNaInterface = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+            toqueInicial = Toque.Posicao;
+            toqueNaInterface = Toque.SobreAInterface();
             arrastou = false;
         }
-        else if (Input.GetMouseButton(0) && !toqueNaInterface)
+        else if (Toque.Segurando && !toqueNaInterface)
         {
-            Vector3 delta = Input.mousePosition - toqueInicial;
+            Vector3 delta = Toque.Posicao - toqueInicial;
             if (!arrastou && delta.magnitude > 12f)
             {
                 arrastou = true;
             }
             if (arrastou)
             {
-                giro = Mathf.Clamp(giro + Input.GetAxis("Mouse X") * config.sensibilidadeDoGiro * 10f, -config.giroMaximoDaCamera, config.giroMaximoDaCamera);
-                inclinacao = Mathf.Clamp(inclinacao - Input.GetAxis("Mouse Y") * config.sensibilidadeDoGiro * 10f,
+                giro = Mathf.Clamp(giro + Toque.EixoDoMouse("Mouse X") * config.sensibilidadeDoGiro * 10f, -config.giroMaximoDaCamera, config.giroMaximoDaCamera);
+                inclinacao = Mathf.Clamp(inclinacao - Toque.EixoDoMouse("Mouse Y") * config.sensibilidadeDoGiro * 10f,
                     config.limitesDaInclinacao.x, config.limitesDaInclinacao.y);
             }
         }
-        else if (Input.GetMouseButtonUp(0) && !toqueNaInterface && !arrastou)
+        else if (Toque.Soltou && !toqueNaInterface && !arrastou)
         {
             // Toque simples no mapa: procura o lugar destacado embaixo do dedo.
-            Ray raio = cameraDoJogo.ScreenPointToRay(Input.mousePosition);
+            Ray raio = cameraDoJogo.ScreenPointToRay(Toque.Posicao);
             RaycastHit toque;
             if (Physics.Raycast(raio, out toque, 500f))
             {
@@ -819,24 +819,24 @@ public class ObrasManager : MinigameBase
         }
         for (int i = 0; i < 4; i++)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1 + i) || Input.GetKeyDown(KeyCode.Keypad1 + i))
+            if (Teclado.Apertou(KeyCode.Alpha1 + i) || Teclado.Apertou(KeyCode.Keypad1 + i))
             {
                 EscolherOpcao(i);
             }
         }
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
+        if (Teclado.Apertou(KeyCode.Return) || Teclado.Apertou(KeyCode.Space))
         {
             Construir();
         }
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Teclado.Apertou(KeyCode.D))
         {
             PedirDica();
         }
-        if (Input.GetKeyDown(KeyCode.O))
+        if (Teclado.Apertou(KeyCode.O))
         {
             OuvirDefinicao();
         }
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Teclado.Apertou(KeyCode.Tab))
         {
             // Próximo problema ainda aberto.
             for (int passo = 1; passo < lotes.Count; passo++)

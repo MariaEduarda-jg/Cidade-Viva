@@ -52,7 +52,7 @@ public class LojaDoHub : MonoBehaviour
 
     private void Update()
     {
-        if (Aberta && Input.GetKeyDown(KeyCode.Escape)) Fechar();
+        if (Aberta && Teclado.Apertou(KeyCode.Escape)) Fechar();
     }
 
     public void Abrir()

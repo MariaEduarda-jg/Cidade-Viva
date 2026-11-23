@@ -61,7 +61,7 @@ MonoBehaviour:
       engarrafamento: 0
       aviso: Agora a ciclovia vai pra esquerda!
     - esquerda: 1
-      meio: 0
+      meio: 4
       direita: 0
       comprimento: 30
       parque: 1

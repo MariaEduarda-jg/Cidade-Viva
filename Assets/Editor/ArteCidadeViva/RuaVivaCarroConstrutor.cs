@@ -129,6 +129,7 @@ namespace CidadeViva.EditorArte
             RuaVivaPedaladaConstrutor.AbasDaRuaViva(canvas.transform, gerente, 0);
 
             ConferirTrechos(percurso.lugares);
+            OtimizacaoWebGL.TirarSombraDosPequenos();
             EditorSceneManager.SaveScene(cena, CaminhoDaCena);
             if (EditorBuildSettings.scenes.All(s => s.path != CaminhoDaCena))
                 EditorBuildSettings.scenes = EditorBuildSettings.scenes.Append(new EditorBuildSettingsScene(CaminhoDaCena, true)).ToArray();
@@ -587,6 +588,15 @@ namespace CidadeViva.EditorArte
             var raiz = F.Grupo("Carro_Da_Familia").transform;
             var c = raiz.gameObject.AddComponent<CarroDaFamilia>();
             const string cor = "Vermelho";
+            // Luz suave dentro da cabine: com o teto, os bancos e o cinto ficavam escuros de perto.
+            var luz = new GameObject("Luz_Da_Cabine").AddComponent<Light>();
+            luz.transform.SetParent(raiz, false);
+            luz.transform.localPosition = new Vector3(0, 1.35f, -.3f);
+            luz.type = LightType.Point;
+            luz.range = 3.2f;
+            luz.intensity = 1.4f;
+            luz.color = new Color(1f, .95f, .86f);
+            luz.shadows = LightShadows.None;
 
             // Por fora: formas da paleta (não há modelo de carro com interior).
             var fora = F.Grupo("Carroceria", raiz).transform;
@@ -813,6 +823,35 @@ namespace CidadeViva.EditorArte
 
         // ------------------------------------------------------------------ regras (conferência com as definições)
 
+        // O que NÃO vem direto das definições (lista da conferência e do Docs/Revisao_Coordenacao.md).
+
+        public static readonly string[] NaoVemDasDefinicoes =
+
+        {
+                         "AS MISSÕES DEPOIS DA ENCHENTE: 1 o parque que reabriu; 2 buscar a vovó na rodoviária; 3 levar o caçula à escola (buscando a filha na casa da amiga); 4 levar doações ao hospital; 5 a festa da reconstrução. Os lugares do percurso (parque, rodoviária, cruzamento, escola, bombeiros, hospital, delegacia, Lago Paranoá, obra, festa, casa da amiga, casa da vovó), os nomes nas placas e as notícias do rádio também são do jogo.",
+                         "O safari ligado aos lugares: ambulância no hospital, ônibus na rodoviária, viatura na delegacia, ponte no lago etc. É associação do jogo, não das definições.",
+                         "QUEM APERTA A BUZINA É O MOTORISTA. A definição diz \"quando alguém apertado\", sem dizer quem. A criança toca no meio do volante pra pedir, e a mão do motorista aperta. A mão é uma forma simples, solta do corpo do personagem.",
+                         "O motorista prende o próprio cinto sozinho, e a criança puxa a fivela dos outros (adultos também). Na vida real cada adulto prende o seu e ajuda as crianças.",
+                         "A chave só liga o carro depois de todos de cinto (\"o carro só sai com todos de cinto\"): a definição diz que a gente deve prender ao entrar, não fala da chave.",
+                         "A criança vai no meio do banco de trás: vem da regra de trânsito (criança no banco de trás), não do glossário. Pelo mesmo motivo nenhuma criança vai na frente; o banco da frente fica vazio na maior parte das missões (também pra cabeça de quem vai na frente não tapar a rua), e só a vovó senta lá, no fim da missão 2.",
+                         "Coisas soltas (ursinho, caixas) voam na freada e vão pro chão do carro; nos níveis 4 e 5 a criança guarda tudo no porta-malas antes de sair. A definição fala de não machucar quem está de cinto, não de objetos.",
+                         "A bola que atravessa a rua e faz o motorista frear (níveis 2 e 4), e quem está de cinto inclinar um pouco e ficar no banco.",
+                         "Buzinar à toa ser errado e assustar a família: a definição diz para que serve a buzina, não proíbe outros usos.",
+                         "A hora certa de buzinar (pessoa vindo pra rua sem ter visto o carro) e que ela para ao ouvir; sem buzina o motorista freia; a pessoa atenta, que anda pela calçada, não precisa de buzina.",
+                         "No cruzamento, o verde abre depois de alguns segundos com o carro parado.",
+                         "Desafivelar ao descer (escola): a definição não fala de soltar o cinto.",
+                         "\"Automóvel\" aceitar ônibus, ambulância, bombeiro, viatura e micro-ônibus (vem da letra: \"Veículo com motor, com quatro ou mais rodas\"); o semáforo de pedestre também responde \"semáforo\"; ciclista e bicicleta elétrica também respondem \"bicicleta\".",
+                         "Modelos substitutos: micro-ônibus = van; ciclista = bicicleta com menino parado em cima. O carro da família, os bancos e a cabine são formas da paleta.",
+                         "O retrovisor, o rádio, os carros que vêm na outra mão (níveis 2 a 5, mais cheio no 4 e no 5).",
+                         "Passageiro, cinto de segurança e buzina não aparecem como pedido do safari: são a própria mecânica. Os outros verbetes fora dos pedidos: via, via rural, via urbana, calçada, ciclofaixa, retorno, túnel, viaduto, passarela, passagem subterrânea, engarrafamento, bonde, quadriciclo, sinal verde, sinal amarelo e sinal vermelho (este aparece no cruzamento, sem pedido).",
+
+        };
+
+        // Regras da última conferência: {verbete, trecho literal, regra} (usadas pelo RevisaoConstrutor).
+
+        public static readonly List<string[]> RegrasDaRevisao = new List<string[]>();
+
+
         [MenuItem("Cidade Viva/Verbetes/Conferir regras do Passeio de Carro com as definições")]
         public static void ConferirPeloMenu()
         {
@@ -825,8 +864,10 @@ namespace CidadeViva.EditorArte
             var banco = VerbeteDatabase.Instancia;
             var falhas = new List<string>();
             var lista = new StringBuilder();
+            RegrasDaRevisao.Clear();
             void Regra(string id, string trecho, string regra)
             {
+                RegrasDaRevisao.Add(new[] { id, trecho, regra });
                 var v = banco.Buscar(id);
                 if (v == null) { falhas.Add("verbete desconhecido: " + id); return; }
                 if (!v.definicao.Contains(trecho)) falhas.Add($"{id}: o trecho \"{trecho}\" não está na definição");
@@ -847,25 +888,7 @@ namespace CidadeViva.EditorArte
             Regra("sinal_vermelho", config.trechoDoVermelho, "no cruzamento, o carro para no sinal vermelho");
 
             lista.AppendLine().AppendLine("O QUE NÃO VEM DIRETO DAS DEFINIÇÕES (escolhas do jogo, pra revisão)");
-            foreach (string item in new[]
-                     {
-                         "AS MISSÕES DEPOIS DA ENCHENTE: 1 o parque que reabriu; 2 buscar a vovó na rodoviária; 3 levar o caçula à escola (buscando a filha na casa da amiga); 4 levar doações ao hospital; 5 a festa da reconstrução. Os lugares do percurso (parque, rodoviária, cruzamento, escola, bombeiros, hospital, delegacia, Lago Paranoá, obra, festa, casa da amiga, casa da vovó), os nomes nas placas e as notícias do rádio também são do jogo.",
-                         "O safari ligado aos lugares: ambulância no hospital, ônibus na rodoviária, viatura na delegacia, ponte no lago etc. É associação do jogo, não das definições.",
-                         "QUEM APERTA A BUZINA É O MOTORISTA. A definição diz \"quando alguém apertado\", sem dizer quem. A criança toca no meio do volante pra pedir, e a mão do motorista aperta. A mão é uma forma simples, solta do corpo do personagem.",
-                         "O motorista prende o próprio cinto sozinho, e a criança puxa a fivela dos outros (adultos também). Na vida real cada adulto prende o seu e ajuda as crianças.",
-                         "A chave só liga o carro depois de todos de cinto (\"o carro só sai com todos de cinto\"): a definição diz que a gente deve prender ao entrar, não fala da chave.",
-                         "A criança vai no meio do banco de trás: vem da regra de trânsito (criança no banco de trás), não do glossário. Pelo mesmo motivo nenhuma criança vai na frente; o banco da frente fica vazio na maior parte das missões (também pra cabeça de quem vai na frente não tapar a rua), e só a vovó senta lá, no fim da missão 2.",
-                         "Coisas soltas (ursinho, caixas) voam na freada e vão pro chão do carro; nos níveis 4 e 5 a criança guarda tudo no porta-malas antes de sair. A definição fala de não machucar quem está de cinto, não de objetos.",
-                         "A bola que atravessa a rua e faz o motorista frear (níveis 2 e 4), e quem está de cinto inclinar um pouco e ficar no banco.",
-                         "Buzinar à toa ser errado e assustar a família: a definição diz para que serve a buzina, não proíbe outros usos.",
-                         "A hora certa de buzinar (pessoa vindo pra rua sem ter visto o carro) e que ela para ao ouvir; sem buzina o motorista freia; a pessoa atenta, que anda pela calçada, não precisa de buzina.",
-                         "No cruzamento, o verde abre depois de alguns segundos com o carro parado.",
-                         "Desafivelar ao descer (escola): a definição não fala de soltar o cinto.",
-                         "\"Automóvel\" aceitar ônibus, ambulância, bombeiro, viatura e micro-ônibus (vem da letra: \"Veículo com motor, com quatro ou mais rodas\"); o semáforo de pedestre também responde \"semáforo\"; ciclista e bicicleta elétrica também respondem \"bicicleta\".",
-                         "Modelos substitutos: micro-ônibus = van; ciclista = bicicleta com menino parado em cima. O carro da família, os bancos e a cabine são formas da paleta.",
-                         "O retrovisor, o rádio, os carros que vêm na outra mão (níveis 2 a 5, mais cheio no 4 e no 5).",
-                         "Passageiro, cinto de segurança e buzina não aparecem como pedido do safari: são a própria mecânica. Os outros verbetes fora dos pedidos: via, via rural, via urbana, calçada, ciclofaixa, retorno, túnel, viaduto, passarela, passagem subterrânea, engarrafamento, bonde, quadriciclo, sinal verde, sinal amarelo e sinal vermelho (este aparece no cruzamento, sem pedido).",
-                     })
+            foreach (string item in NaoVemDasDefinicoes)
                 lista.AppendLine("  - " + item);
 
             // Pedidos de cada missão: o lugar tem de ter o objeto.
@@ -1035,7 +1058,7 @@ namespace CidadeViva.EditorArte
                 Object.DestroyImmediate(novo);
             }
             config.missoes = Missoes();
-            config.somDaFivela = TravessiaConstrutor.Som("Interface/switch_001.ogg");
+            config.somDaFivela = TravessiaConstrutor.Som("Efeitos/impactMetal_light_001.ogg"); // clique metálico (o switch_001 era 10 dB mais baixo que os outros sons)
             config.somDeSoltar = TravessiaConstrutor.Som("Interface/click_001.ogg");
             config.somDoMotor = TravessiaConstrutor.Som("Efeitos/motor_ligando.wav");
             config.somDaBuzina = TravessiaConstrutor.Som("Efeitos/buzina.wav");
@@ -1109,7 +1132,8 @@ namespace CidadeViva.EditorArte
             for (int i = 0; i < 3; i++)
             {
                 estrelas[i] = Imagem("Estrela_" + (i + 1), painel.transform, S("figura_estrela"), Color.white, new Vector2(-135 + i * 135, 20), new Vector2(66, 66));
-                rotulos[i] = Texto("Rotulo_" + (i + 1), painel.transform, "", 22, C("Grafite"), new Vector2(-135 + i * 135, -35), new Vector2(135, 32), FontStyle.Normal);
+                rotulos[i] = Texto("Rotulo_" + (i + 1), painel.transform, "", 30, C("Grafite"), new Vector2(-135 + i * 135, -35), new Vector2(140, 42), FontStyle.Normal);
+                rotulos[i].resizeTextForBestFit = true; rotulos[i].resizeTextMinSize = 24; rotulos[i].resizeTextMaxSize = 30;
             }
             hud.estrelasDosCriterios = estrelas;
             hud.rotulosDosCriterios = rotulos;

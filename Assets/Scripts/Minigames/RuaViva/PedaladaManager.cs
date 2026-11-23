@@ -28,6 +28,10 @@ public class PedaladaManager : MinigameBase
     public Transform ciclista;
     public Transform visualDoCiclista;
     public Animator animadorDoCiclista;
+    [Tooltip("Pernas pedalando e rodas girando (só aparência).")]
+    public PedalarNaBicicleta pedalar;
+    [Tooltip("Tamanho do capacete quando chega na cabeça (o do banquinho tem tamanho 1). A cabeça do menino é grande: ~1,15.")]
+    public float escalaDoCapaceteNaCabeca = 1.15f;
     [Tooltip("Onde ficam as coisas da cabeça, ao lado da bicicleta, antes de sair.")]
     public Transform banquinho;
     public CoisaDaCabeca[] coisasDaCabeca = new CoisaDaCabeca[0];
@@ -88,12 +92,20 @@ public class PedaladaManager : MinigameBase
     private class Pedestre
     {
         public Transform t;
-        public float x;
-        public float z;
-        public float de;
-        public float ate;
+        public int caminho;
+        public float d;
+        public float comprimento;
+        public float sentido;
+        public float lado;
         public Animator animator;
     }
+
+    [Tooltip("Velocidade dos pedestres nas calçadas (m/s), combinando com o passo da animação de andar.")]
+    public float velocidadeDosPedestres = 1.35f;
+    [Tooltip("Cada pedestre anda à direita do caminho (metros do meio), pra quem vai e quem vem não se atravessarem.")]
+    public float afastamentoDosPedestres = 0.45f;
+    [Tooltip("Se a bicicleta vem pela calçada, o pedestre vai pra beira (metros do meio).")]
+    public float beiraDaCalcada = 1.0f;
 
     // ------------------------------------------------------------------ começo
 
@@ -249,14 +261,19 @@ public class PedaladaManager : MinigameBase
         Vector3 ate = PontoDaCabeca(capacete);
         Quaternion rot = capacete.transform.rotation;
         Quaternion rotFinal = ciclista.rotation;
+        // O capacete cresce no ar até o tamanho da cabeça do menino.
+        Vector3 escalaDe = capacete.transform.localScale;
+        Vector3 escalaAte = escalaDe * escalaDoCapaceteNaCabeca;
         for (float t = 0f; t < 0.6f; t += Time.deltaTime)
         {
             float k = t / 0.6f;
             capacete.transform.position = Vector3.Lerp(de, ate, k) + Vector3.up * Mathf.Sin(k * Mathf.PI) * 0.5f;
             capacete.transform.rotation = Quaternion.Slerp(rot, rotFinal, k);
+            capacete.transform.localScale = Vector3.Lerp(escalaDe, escalaAte, k);
             yield return null;
         }
         capacete.transform.SetPositionAndRotation(ate, rotFinal);
+        capacete.transform.localScale = escalaAte;
         capacete.transform.SetParent(cabeca != null ? cabeca : visualDoCiclista, true);
         ComCapacete = true;
         foreach (CoisaDaCabeca c in coisasDaCabeca)
@@ -294,7 +311,7 @@ public class PedaladaManager : MinigameBase
         }
         Vector3 c = cabeca != null ? cabeca.position : visualDoCiclista.position;
         if (topo == float.MinValue) topo = c.y + 0.25f;
-        return new Vector3(c.x, topo - coisa.altura * 0.55f, c.z);
+        return new Vector3(c.x, topo - coisa.altura * 0.7f * escalaDoCapaceteNaCabeca, c.z);
     }
 
     // ------------------------------------------------------------------ pedalar
@@ -343,7 +360,7 @@ public class PedaladaManager : MinigameBase
             return false;
         }
         Faixa = nova;
-        Tocar(config.somDeTrocarDeFaixa, 0.5f);
+        Tocar(config.somDeTrocarDeFaixa, 1f);
         return true;
     }
 
@@ -435,7 +452,7 @@ public class PedaladaManager : MinigameBase
 
     private void LerTeclado()
     {
-        if (EtapaAtual == Etapa.Roteiro && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space)))
+        if (EtapaAtual == Etapa.Roteiro && (Teclado.Apertou(KeyCode.Return) || Teclado.Apertou(KeyCode.Space)))
         {
             ComecarRoteiro();
             return;
@@ -444,7 +461,7 @@ public class PedaladaManager : MinigameBase
         {
             for (int i = 0; i < 3; i++)
             {
-                if (Input.GetKeyDown(KeyCode.Alpha1 + i) || Input.GetKeyDown(KeyCode.Keypad1 + i))
+                if (Teclado.Apertou(KeyCode.Alpha1 + i) || Teclado.Apertou(KeyCode.Keypad1 + i))
                 {
                     CoisaDaCabeca c = CoisaNaPosicao(i);
                     if (c != null) EscolherCoisa(c.id);
@@ -453,16 +470,16 @@ public class PedaladaManager : MinigameBase
         }
         if (EtapaAtual == Etapa.Pedalando)
         {
-            if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) MudarDeFaixa(-1);
-            if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) MudarDeFaixa(1);
+            if (Teclado.Apertou(KeyCode.LeftArrow) || Teclado.Apertou(KeyCode.A)) MudarDeFaixa(-1);
+            if (Teclado.Apertou(KeyCode.RightArrow) || Teclado.Apertou(KeyCode.D)) MudarDeFaixa(1);
         }
-        if (EtapaAtual == Etapa.Engarrafamento && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space)))
+        if (EtapaAtual == Etapa.Engarrafamento && (Teclado.Apertou(KeyCode.Return) || Teclado.Apertou(KeyCode.Space)))
         {
             TocarNoEngarrafamento();
         }
-        if (Input.GetMouseButtonDown(0) && !(EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()))
+        if (Toque.Apertou && !(Toque.SobreAInterface()))
         {
-            TocarNaTela(Input.mousePosition);
+            TocarNaTela(Toque.Posicao);
         }
     }
 
@@ -665,6 +682,10 @@ public class PedaladaManager : MinigameBase
 
     private void AnimarCiclista()
     {
+        if (pedalar != null)
+        {
+            pedalar.velocidade = EtapaAtual == Etapa.Pedalando && !Pausado && parado <= 0f ? Nivel.velocidade : 0f;
+        }
         if (animadorDoCiclista != null && animadorDoCiclista.isActiveAndEnabled)
         {
             animadorDoCiclista.SetFloat(Velocidade, 0f);
@@ -882,12 +903,22 @@ public class PedaladaManager : MinigameBase
     private void PrepararPedestres()
     {
         pedestres.Clear();
-        foreach (Transform p in Rota.pedestres)
+        // Cada pedestre segue um caminho de calçada contínuo, feito pelo construtor (as calçadas do parque
+        // ligadas de um trecho ao outro, e as calçadas da rua). No fim do caminho ele volta pro começo,
+        // que fica fora da vista (antes da largada, depois da chegada ou numa pracinha).
+        for (int i = 0; i < Rota.pedestres.Length && i < Rota.caminhoDoPedestre.Length; i++)
         {
-            Vector3 local = Rota.transform.InverseTransformPoint(p.position);
-            int k = TrechoEm(local.z);
-            var pe = new Pedestre { t = p, x = local.x, z = local.z, de = inicios[k] + 1f, ate = inicios[k + 1] - 1f, animator = p.GetComponentInChildren<Animator>() };
-            pedestres.Add(pe);
+            int c = Rota.caminhoDoPedestre[i];
+            pedestres.Add(new Pedestre
+            {
+                t = Rota.pedestres[i],
+                caminho = c,
+                d = Rota.partidaDoPedestre[i],
+                comprimento = Rota.ComprimentoDoCaminho(c),
+                sentido = Rota.pedestreDeVolta[i] ? -1f : 1f,
+                lado = (Rota.pedestreDeVolta[i] ? -1f : 1f) * afastamentoDosPedestres,
+                animator = Rota.pedestres[i].GetComponentInChildren<Animator>(),
+            });
         }
     }
 
@@ -895,9 +926,25 @@ public class PedaladaManager : MinigameBase
     {
         foreach (Pedestre p in pedestres)
         {
-            p.z -= 1.1f * Time.deltaTime;
-            if (p.z < p.de) p.z = p.ate;
-            p.t.SetPositionAndRotation(Rota.Mundo(p.x, p.z), Rota.transform.rotation * Quaternion.Euler(0f, 180f, 0f));
+            if (p.comprimento <= 0f) continue;
+            p.d = Mathf.Repeat(p.d + p.sentido * velocidadeDosPedestres * Time.deltaTime, p.comprimento);
+            Vector3 local = Rota.PontoNoCaminho(p.caminho, p.d, out Vector3 direcao);
+            // Mão direita do caminho, e desvio da bicicleta: se ela está na calçada e vem perto,
+            // o pedestre vai pra beira do lado oposto (ninguém atravessa ninguém).
+            Vector3 lateral = new Vector3(direcao.z, 0f, -direcao.x);
+            float alvo = p.sentido * afastamentoDosPedestres;
+            Vector3 bici = Rota.transform.InverseTransformPoint(ciclista.position);
+            Vector3 ate = bici - local;
+            float aoLongo = Vector3.Dot(ate, direcao), deLado = Vector3.Dot(ate, lateral);
+            if (Mathf.Abs(aoLongo) < 4.5f && Mathf.Abs(deLado) < 1.6f)
+            {
+                alvo = deLado > 0f ? -beiraDaCalcada : beiraDaCalcada;
+            }
+            p.lado = Mathf.MoveTowards(p.lado, alvo, 2.5f * Time.deltaTime);
+            local += lateral * p.lado;
+            Vector3 olhar = Rota.transform.TransformDirection(direcao * p.sentido);
+            olhar.y = 0f;
+            p.t.SetPositionAndRotation(Rota.transform.TransformPoint(local), olhar.sqrMagnitude > 0.0001f ? Quaternion.LookRotation(olhar) : p.t.rotation);
             if (p.animator != null && p.animator.isActiveAndEnabled) p.animator.SetFloat(Velocidade, 0.5f);
         }
     }

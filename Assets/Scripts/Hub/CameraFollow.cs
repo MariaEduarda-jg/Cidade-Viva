@@ -61,7 +61,7 @@ public class CameraFollow : MonoBehaviour
     private void Update()
     {
         bool parado = !olharComOMouse || Time.timeScale <= 0f || CartaoVerbete.EstaAberto;
-        if (parado || Input.GetKeyDown(KeyCode.Escape))
+        if (parado || Teclado.Apertou(KeyCode.Escape))
         {
             if (MousePreso)
             {
@@ -73,21 +73,21 @@ public class CameraFollow : MonoBehaviour
             }
         }
 
-        bool sobreAInterface = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+        bool sobreAInterface = Toque.SobreAInterface();
         if (MousePreso)
         {
-            Girar(Input.GetAxis("Mouse X") * sensibilidadeDoGiro, -Input.GetAxis("Mouse Y") * sensibilidadeDaInclinacao);
+            Girar(Toque.EixoDoMouse("Mouse X") * sensibilidadeDoGiro, -Toque.EixoDoMouse("Mouse Y") * sensibilidadeDaInclinacao);
             return;
         }
 
         // Com o cursor fora da janela ou em cima de um botão, a câmera fica quieta.
-        Vector3 cursor = Input.mousePosition;
+        Vector3 cursor = Toque.Posicao;
         bool naTela = cursor.x >= 0f && cursor.x <= Screen.width && cursor.y >= 0f && cursor.y <= Screen.height;
         if (!naTela || sobreAInterface)
         {
             return;
         }
-        if (Input.GetMouseButtonDown(0))
+        if (Toque.Apertou)
         {
             // Clique no cenário: prende o mouse no jogo.
             Cursor.lockState = CursorLockMode.Locked;
@@ -95,7 +95,7 @@ public class CameraFollow : MonoBehaviour
             return;
         }
 
-        float giro = Input.GetAxis("Mouse X") * sensibilidadeDoGiro;
+        float giro = Toque.EixoDoMouse("Mouse X") * sensibilidadeDoGiro;
         float borda = Screen.width * bordaDaTela;
         if (cursor.x < borda)
         {

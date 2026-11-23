@@ -25,7 +25,66 @@ public static class Perfis
 
     public static string Pasta
     {
-        get { return Path.Combine(Application.persistentDataPath, "perfis"); }
+        get
+        {
+            TrazerDaPastaAntiga();
+            return Path.Combine(Application.persistentDataPath, "perfis");
+        }
+    }
+
+    // Até 2026-11-18 o projeto se chamava "DefaultCompany" (companyName), e no Windows a pasta dos dados
+    // leva esse nome: ...\AppData\LocalLow\<empresa>\<produto>. Com a empresa "Glotec UnB" a pasta mudou;
+    // na primeira vez, os perfis da pasta antiga são copiados pra nova (os arquivos antigos ficam onde estão).
+    // No navegador a pasta não depende da empresa, então não há o que copiar.
+    public const string EmpresaAntiga = "DefaultCompany";
+    private static bool pastaAntigaConferida;
+
+    public static int TrazerDaPastaAntiga()
+    {
+        if (pastaAntigaConferida)
+        {
+            return 0;
+        }
+        pastaAntigaConferida = true;
+#if UNITY_WEBGL && !UNITY_EDITOR
+        return 0;
+#else
+        int copiados = 0;
+        try
+        {
+            DirectoryInfo produto = new DirectoryInfo(Application.persistentDataPath.TrimEnd('/', Path.DirectorySeparatorChar));
+            DirectoryInfo empresa = produto.Parent;
+            if (empresa == null || empresa.Parent == null || empresa.Name == EmpresaAntiga)
+            {
+                return 0;
+            }
+            string antiga = Path.Combine(empresa.Parent.FullName, EmpresaAntiga, produto.Name, "perfis");
+            if (!Directory.Exists(antiga))
+            {
+                return 0;
+            }
+            string nova = Path.Combine(Application.persistentDataPath, "perfis");
+            Directory.CreateDirectory(nova);
+            foreach (string arquivo in Directory.GetFiles(antiga, "perfil_*.json"))
+            {
+                string destino = Path.Combine(nova, Path.GetFileName(arquivo));
+                if (!File.Exists(destino))
+                {
+                    File.Copy(arquivo, destino);
+                    copiados++;
+                }
+            }
+            if (copiados > 0)
+            {
+                Debug.Log("Perfis: " + copiados + " perfil(is) copiado(s) da pasta antiga (" + antiga + ").");
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("Perfis: não deu pra copiar os perfis da pasta antiga: " + e.Message);
+        }
+        return copiados;
+#endif
     }
 
     public static bool TemPerfilAtivo
@@ -52,6 +111,7 @@ public static class Perfis
     private static void Reiniciar()
     {
         ativo = null;
+        pastaAntigaConferida = false;
     }
 
     public static List<Perfil> Listar()

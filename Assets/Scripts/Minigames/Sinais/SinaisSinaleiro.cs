@@ -270,14 +270,14 @@ public class SinaisSinaleiro : MonoBehaviour
 
     private void Teclado()
     {
-        if (Input.GetKeyDown(KeyCode.Q)) MudarSinal(0, CorDoSinal.Verde);
-        if (Input.GetKeyDown(KeyCode.W)) MudarSinal(0, CorDoSinal.Amarelo);
-        if (Input.GetKeyDown(KeyCode.E)) MudarSinal(0, CorDoSinal.Vermelho);
-        if (Input.GetKeyDown(KeyCode.A)) MudarSinal(1, CorDoSinal.Verde);
-        if (Input.GetKeyDown(KeyCode.S)) MudarSinal(1, CorDoSinal.Amarelo);
-        if (Input.GetKeyDown(KeyCode.D)) MudarSinal(1, CorDoSinal.Vermelho);
-        if (Input.GetKeyDown(KeyCode.Z)) MudarSinalDePedestre(true);
-        if (Input.GetKeyDown(KeyCode.X)) MudarSinalDePedestre(false);
+        if (global::Teclado.Apertou(KeyCode.Q)) MudarSinal(0, CorDoSinal.Verde);
+        if (global::Teclado.Apertou(KeyCode.W)) MudarSinal(0, CorDoSinal.Amarelo);
+        if (global::Teclado.Apertou(KeyCode.E)) MudarSinal(0, CorDoSinal.Vermelho);
+        if (global::Teclado.Apertou(KeyCode.A)) MudarSinal(1, CorDoSinal.Verde);
+        if (global::Teclado.Apertou(KeyCode.S)) MudarSinal(1, CorDoSinal.Amarelo);
+        if (global::Teclado.Apertou(KeyCode.D)) MudarSinal(1, CorDoSinal.Vermelho);
+        if (global::Teclado.Apertou(KeyCode.Z)) MudarSinalDePedestre(true);
+        if (global::Teclado.Apertou(KeyCode.X)) MudarSinalDePedestre(false);
     }
 
     private void Nascer()
@@ -449,7 +449,24 @@ public class SinaisSinaleiro : MonoBehaviour
         {
             Pedestre p = pedestres[i];
             bool anda = true;
+            // Na fila, quem chega para atrás de quem já está esperando na mesma coluna (não fica um dentro do outro).
+            float paraEm = esperaDosPedestres;
             if (!p.atravessando)
+            {
+                foreach (Pedestre outro in pedestres)
+                {
+                    if (outro != p && !outro.atravessando && Mathf.Abs(outro.xDaFila - p.xDaFila) < 0.1f && outro.z > p.z)
+                    {
+                        paraEm = Mathf.Min(paraEm, outro.z - 0.9f);
+                    }
+                }
+            }
+            if (!p.atravessando && p.z >= paraEm && paraEm < esperaDosPedestres)
+            {
+                anda = false;
+                p.z = paraEm;
+            }
+            else if (!p.atravessando)
             {
                 if (p.z >= esperaDosPedestres)
                 {
@@ -469,7 +486,8 @@ public class SinaisSinaleiro : MonoBehaviour
             {
                 p.z += config.velocidadeDosPedestres * Time.deltaTime;
             }
-            float x = xDosPedestres + (p.atravessando ? 0f : p.xDaFila);
+            // Atravessam lado a lado, cada um na sua coluna da fila.
+            float x = xDosPedestres + p.xDaFila;
             p.t.localPosition = new Vector3(x, 0.08f, p.z);
             if (p.animator != null)
             {

@@ -181,8 +181,8 @@ public class SinaisMotorista : MonoBehaviour
             return;
         }
 
-        bool acelera = acelerando || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W);
-        bool freia = freando || Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.Space);
+        bool acelera = acelerando || Teclado.Segurando(KeyCode.UpArrow) || Teclado.Segurando(KeyCode.W);
+        bool freia = freando || Teclado.Segurando(KeyCode.DownArrow) || Teclado.Segurando(KeyCode.S) || Teclado.Segurando(KeyCode.Space);
         if (acelera)
         {
             manager.LigarRelogio();

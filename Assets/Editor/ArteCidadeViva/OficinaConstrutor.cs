@@ -86,6 +86,7 @@ namespace CidadeViva.EditorArte
             P(cenario, "Props/Caixa_Papelao", F.V(5.6f, 0, 2.1f), 25);
             P(cenario, "Props/Cone", F.V(5.9f, 0, .4f));
             P(cenario, "Props/Vassoura", F.V(-6.6f, 0, 2.7f), 0).transform.Rotate(-8, 0, 0);
+            CaraDeOficina(cenario);
 
             // O chassi nasce aqui, de lado pra câmera (a frente dele, +Z, aponta pra direita).
             var bancada = F.Grupo("Bancada_Encaixe", null, F.V(0, .95f, 0), F.V(0, 90, 0)).transform;
@@ -611,6 +612,79 @@ namespace CidadeViva.EditorArte
 
         // ------------------------------------------------------------------ prefabs (Assets/Prefabs/Art/Oficina)
 
+        // A sala da oficina (2026-11-19: a parede era lisa e vazia): parede de baixo mais escura com faixa
+        // de segurança, janelas no alto, teto com vigas e luminárias penduradas, quadro de ferramentas,
+        // pilha de pneus, carrinho de ferramentas, relógio e um macaco hidráulico.
+        // Atrás da bancada (x de -2 a 2, até 3 m de altura) continua livre: o veículo tem de aparecer limpo.
+        static void CaraDeOficina(Transform cenario)
+        {
+            var g = F.Grupo("Cara_De_Oficina", cenario).transform;
+            // Parede: barra de baixo mais escura e faixa amarela e preta.
+            F.Cubo(g, "Barra_Da_Parede", "Petroleo", F.V(0, .85f, 3.07f), F.V(15.2f, .7f, .04f));
+            for (int i = 0; i < 37; i++)
+                F.Cubo(g, "Faixa_De_Seguranca", i % 2 == 0 ? "Mostarda" : "Grafite", F.V(-7.4f + (i + .5f) * 0.4f, 1.27f, 3.05f), F.V(.4f, .14f, .03f));
+            foreach (float x in new[] { -7.48f, 7.48f })
+                F.Cubo(g, "Barra_Lateral", "Petroleo", F.V(x, .6f, 1f), F.V(.04f, 1.2f, 6f));
+
+            // Janelas no alto da parede do fundo.
+            foreach (float x in new[] { -5.6f, -2.6f, 2.6f, 5.6f })
+            {
+                F.Cubo(g, "Moldura", "Branco", F.V(x, 4.05f, 3.07f), F.V(2.1f, 1.1f, .05f));
+                F.Cubo(g, "Vidro", "Vidro", F.V(x, 4.05f, 3.05f), F.V(1.9f, .9f, .05f));
+                F.Cubo(g, "Travessa", "Branco", F.V(x, 4.05f, 3.03f), F.V(.06f, .9f, .04f));
+            }
+
+            // Teto com vigas e luminárias penduradas.
+            F.Cubo(g, "Teto", "Cinza_Claro", F.V(0, 5.05f, 1f), F.V(16f, .1f, 6.4f));
+            foreach (float x in new[] { -6f, -3f, 0f, 3f, 6f })
+                F.Cubo(g, "Viga", "Cinza_Escuro", F.V(x, 4.85f, 1f), F.V(.25f, .3f, 6.2f));
+            foreach (float x in new[] { -4.5f, 0f, 4.5f })
+            {
+                F.Cubo(g, "Fio", "Grafite", F.V(x, 4.75f, 1.2f), F.V(.03f, .6f, .03f));
+                F.M(g, "Cupula", "Funil", "Mostarda", F.V(x, 4.35f, 1.2f), F.V(.7f, .3f, .7f), F.V(180, 0, 0));
+                F.Esfera(g, "Lampada", "Luz_Amarela", F.V(x, 4.18f, 1.2f), F.V(.22f, .22f, .22f));
+            }
+
+            // Quadro de ferramentas (na parede da esquerda, acima do trabalhador).
+            var q = F.Grupo("Quadro_De_Ferramentas", g, F.V(-6.1f, 2.85f, 3.04f)).transform;
+            F.Cubo(q, "Painel", "Marrom_Claro", F.V(0, 0, 0), F.V(2.2f, 1.3f, .05f));
+            F.Cubo(q, "Moldura", "Marrom", F.V(0, 0, .01f), F.V(2.3f, 1.4f, .03f));
+            for (int i = 0; i < 4; i++)
+            {
+                float x = -.75f + i * .5f;
+                // chave inglesa, martelo, chave de fenda, alicate (formas simples, de pé na parede)
+                string cor = i % 2 == 0 ? "Cinza_Escuro" : "Vermelho";
+                F.Cubo(q, "Cabo", cor, F.V(x, -.15f, -.05f), F.V(.08f, .55f, .04f));
+                F.Cubo(q, "Ponta", i == 1 ? "Grafite" : "Cinza", F.V(x, .2f, -.05f), F.V(i == 1 ? .28f : .14f, .14f, .05f));
+            }
+            F.Cilindro(q, "Rolo_De_Fita", "Mostarda", F.V(.85f, .35f, -.06f), F.V(.25f, .04f, .25f), F.V(90, 0, 0));
+            F.Cilindro(q, "Mangueira", "Verde", F.V(.85f, -.25f, -.06f), F.V(.4f, .05f, .4f), F.V(90, 0, 0));
+
+            // Relógio no meio da parede, entre as janelas e acima dos quadros.
+            F.Cilindro(g, "Relogio", "Branco", F.V(0, 3.85f, 3.05f), F.V(.55f, .03f, .55f), F.V(90, 0, 0));
+            F.Cilindro(g, "Aro", "Vermelho", F.V(0, 3.85f, 3.07f), F.V(.62f, .02f, .62f), F.V(90, 0, 0));
+            F.Cubo(g, "Ponteiro_Hora", "Grafite", F.V(0, 3.92f, 3f), F.V(.04f, .16f, .02f));
+            F.Cubo(g, "Ponteiro_Minuto", "Grafite", F.V(.08f, 3.85f, 3f), F.V(.2f, .03f, .02f));
+
+            // Pilha de pneus e carrinho de ferramentas vermelho (canto direito, perto do barril).
+            for (int i = 0; i < 3; i++)
+            {
+                F.Cilindro(g, "Pneu", "Grafite", F.V(6.5f, .14f + i * .27f, .7f), F.V(.8f, .13f, .8f));
+                F.Cilindro(g, "Aro_Do_Pneu", "Cinza", F.V(6.5f, .15f + i * .27f, .7f), F.V(.36f, .135f, .36f));
+            }
+            var c = F.Grupo("Carrinho_De_Ferramentas", g, F.V(4.9f, 0, 2.6f)).transform;
+            F.Caixa(c, "Corpo", "Vermelho", 0, .12f, 0, .9f, .9f, .5f);
+            for (int i = 0; i < 3; i++)
+                F.Cubo(c, "Gaveta", "Cinza_Claro", F.V(0, .35f + i * .27f, -.26f), F.V(.6f, .04f, .02f));
+            foreach (float x in new[] { -.35f, .35f })
+                F.Cilindro(c, "Rodinha", "Grafite", F.V(x, .06f, 0), F.V(.12f, .03f, .12f), F.V(0, 0, 90));
+            // Macaco hidráulico no chão, do lado esquerdo.
+            var m = F.Grupo("Macaco", g, F.V(-4.6f, 0, -.2f), F.V(0, 25, 0)).transform;
+            F.Caixa(m, "Base", "Vermelho", 0, 0, 0, .35f, .14f, .8f);
+            F.Barra(m, "Alavanca", "Cinza_Escuro", F.V(0, .1f, -.35f), F.V(0, .55f, -.85f), .05f);
+            F.Cilindro(m, "Prato", "Cinza", F.V(0, .2f, .3f), F.V(.22f, .04f, .22f));
+        }
+
         static Transform NovaPeca(TipoDePeca tipo, Vector3 giroNaPrateleira, out GameObject raiz)
         {
             raiz = F.Grupo("Peca_" + tipo);
@@ -983,7 +1057,8 @@ namespace CidadeViva.EditorArte
             for (int i = 0; i < 3; i++)
             {
                 estrelas[i] = Imagem("Estrela_" + (i + 1), cartao.transform, S("figura_estrela"), Color.white, new Vector2(-135 + i * 135, 2), new Vector2(72, 72));
-                rotulos[i] = Texto("Rotulo_" + (i + 1), cartao.transform, "", 24, C("Grafite"), new Vector2(-135 + i * 135, -62), new Vector2(132, 36), FontStyle.Normal);
+                rotulos[i] = Texto("Rotulo_" + (i + 1), cartao.transform, "", 30, C("Grafite"), new Vector2(-135 + i * 135, -62), new Vector2(140, 42), FontStyle.Normal);
+                rotulos[i].resizeTextForBestFit = true; rotulos[i].resizeTextMinSize = 24; rotulos[i].resizeTextMaxSize = 30;
             }
             hud.estrelasDosCriterios = estrelas;
             hud.rotulosDosCriterios = rotulos;

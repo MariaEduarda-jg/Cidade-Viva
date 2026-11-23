@@ -172,6 +172,7 @@ namespace CidadeViva.EditorArte
             NovoEventSystem(false);
             Hud(canvas.transform, historia, final);
 
+            OtimizacaoWebGL.TirarSombraDosPequenos();
             EditorSceneManager.SaveScene(cena, PastaDasCenas + (final ? "Final" : "Abertura") + ".unity");
         }
 
@@ -207,6 +208,13 @@ namespace CidadeViva.EditorArte
             P(predios, "Predios/Brasilia_Bloco_Superquadra", F.V(26, 0, -14), -90);
             P(predios, "Predios/Escola", F.V(-22, 0, 22), 90);
             P(predios, "Predios/Padaria", F.V(19, 0, 0), -90);
+            // Ao sul do Eixo, atrás da família no fim da abertura (a câmera olha pra lá): mais cidade.
+            P(predios, "Predios/Brasilia_Palacio_Arcos", F.V(0, 0, -76), 0);
+            P(predios, "Predios/Brasilia_Bloco_Superquadra", F.V(-14, 0, -82), 0);
+            P(predios, "Predios/Brasilia_Bloco_Superquadra", F.V(24, 0, -62), 0);
+            P(predios, "Predios/Comercio_B", F.V(-11, 0, -47), 0, .9f);
+            P(predios, "Predios/Predio_Comercial_Loja", F.V(12, 0, -48), 0, .9f);
+            P(predios, "Predios/Casa_03", F.V(-17, 0, -44), 30, .9f);
 
             var verde = F.Grupo("Arvores", raiz).transform;
             for (float z = -50; z <= 70; z += 12)
@@ -248,6 +256,13 @@ namespace CidadeViva.EditorArte
                 P(b, "Natureza/Tronco_Caido", F.V(-3, .07f, 13), 70);
                 P(b, "Lixo_Reciclagem/Saco_De_Lixo_Preto_1", F.V(6.5f, .07f, 12));
                 P(b, "Lixo_Reciclagem/Pilha_De_Lixo", F.V(-6, .07f, 26), 120);
+                // Restos da enchente ao sul, atrás da família.
+                P(b, "Enchente/Chao_De_Lama", F.V(-2.5f, .07f, -44), 20);
+                P(b, "Enchente/Chao_De_Lama", F.V(3, .07f, -50), 80);
+                P(b, "Enchente/Cone_Quebrado_2", F.V(-5.5f, .07f, -41), 30);
+                P(b, "Enchente/Papeis_Espalhados", F.V(4, .07f, -42), 0, 1.3f);
+                Tombar(P(b, "Props/Placa_Pare", F.V(-6.5f, .3f, -46), 200));
+                P(b, "Enchente/Entulho_De_Concreto", F.V(6.5f, .07f, -45), 50, .45f);
                 bagunca = b.gameObject;
             }
             else
@@ -274,6 +289,12 @@ namespace CidadeViva.EditorArte
 
         // A família: na abertura, de costas pra câmera, olhando a cidade (no Eixo, ao sul);
         // no final, reunida no meio do cruzamento, de frente pra câmera.
+        static GameObject Tombar(GameObject go)
+        {
+            go.transform.Rotate(84f, 0, 0, Space.Self);
+            return go;
+        }
+
         static Animator[] Familia(Transform raiz, bool final)
         {
             var g = F.Grupo("Familia", raiz).transform;

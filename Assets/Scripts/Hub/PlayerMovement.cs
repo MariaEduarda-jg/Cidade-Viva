@@ -31,8 +31,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
+        float horizontal = Teclado.Eixo("Horizontal");
+        float vertical = Teclado.Eixo("Vertical");
 
         Quaternion giro = Quaternion.Euler(0f, olhar != null ? olhar.Giro : 0f, 0f);
         Vector3 move = giro * new Vector3(horizontal, 0f, vertical);

@@ -234,11 +234,11 @@ public class TravessiaManager : MinigameBase
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)) Andar();
-        if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) Voltar();
-        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) IrParaOLado(-1);
-        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) IrParaOLado(1);
-        if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.L) || Input.GetKeyDown(KeyCode.Return)) Olhar();
+        if (Teclado.Apertou(KeyCode.UpArrow) || Teclado.Apertou(KeyCode.W) || Teclado.Apertou(KeyCode.Space)) Andar();
+        if (Teclado.Apertou(KeyCode.DownArrow) || Teclado.Apertou(KeyCode.S)) Voltar();
+        if (Teclado.Apertou(KeyCode.LeftArrow) || Teclado.Apertou(KeyCode.A)) IrParaOLado(-1);
+        if (Teclado.Apertou(KeyCode.RightArrow) || Teclado.Apertou(KeyCode.D)) IrParaOLado(1);
+        if (Teclado.Apertou(KeyCode.E) || Teclado.Apertou(KeyCode.L) || Teclado.Apertou(KeyCode.Return)) Olhar();
 
         if (semaforoLigado)
         {

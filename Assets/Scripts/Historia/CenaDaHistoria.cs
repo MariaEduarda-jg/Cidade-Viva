@@ -98,7 +98,7 @@ public class CenaDaHistoria : MonoBehaviour
         {
             botaoOuvir.SetActive(Narracao.Voz.Disponivel && !string.IsNullOrEmpty(LegendaAtual));
         }
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Teclado.Apertou(KeyCode.Escape))
         {
             Pular();
         }

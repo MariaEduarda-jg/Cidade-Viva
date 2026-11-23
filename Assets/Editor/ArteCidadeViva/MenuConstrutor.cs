@@ -231,6 +231,7 @@ namespace CidadeViva.EditorArte
             foreach (var tela in new[] { menu.telaLista, menu.telaNome, menu.telaAvatar, menu.telaCodigo, menu.telaVisitante, menu.telaCreditos })
                 tela.SetActive(false);
 
+            OtimizacaoWebGL.TirarSombraDosPequenos();
             EditorSceneManager.SaveScene(cena, CaminhoDaCena);
 
             // Primeira cena do jogo.
@@ -299,6 +300,11 @@ namespace CidadeViva.EditorArte
             UnityEventTools.AddPersistentListener(entrar.onClick, menu.AbrirEntrar);
             UnityEventTools.AddPersistentListener(criar.onClick, menu.AbrirCriar);
             UnityEventTools.AddPersistentListener(visitante.onClick, menu.AbrirVisitante);
+            // Versão do jogo, pequena, no canto de baixo à esquerda (vem do "Version" do Player Settings).
+            PlayerSettings.bundleVersion = "1.0";
+            var versao = Texto("Versao", tela, "v" + PlayerSettings.bundleVersion, 28, C("Branco", .85f), new Vector2(70, 30), new Vector2(200, 44), FontStyle.Normal);
+            TravessiaConstrutor.Ancorar(versao, new Vector2(0, 0));
+            versao.raycastTarget = false;
             var creditos = Botao("Botao_Creditos", tela, "Créditos", "Branco", new Vector2(-150, -75), new Vector2(240, 96), 38);
             TravessiaConstrutor.Ancorar(creditos, new Vector2(1, 1));
             UnityEventTools.AddPersistentListener(creditos.onClick, menu.AbrirCreditos);

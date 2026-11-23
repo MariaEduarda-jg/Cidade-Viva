@@ -532,48 +532,124 @@ namespace CidadeViva.EditorArte
             MontarPonteJK(raiz.transform, 10.6f, 4.6f);
             F.Salvar(raiz, Categoria);
 
-            // ---- túnel: dois portais e a pista escura por dentro.
+            // ---- túnel: dois portais com boca em arco (aduelas, zebrado, luminárias, muros de ala, grama em cima)
+            // e a pista escura por dentro, com faixa amarela no meio.
             p = NovaEstrutura("tunel", out raiz);
-            F.Cubo(p, "Piso", "Asfalto_Escuro", F.V(0, .03f, 0), F.V(4.6f, .04f, 10.2f));
+            g = F.Grupo("Piso", p).transform;
+            F.Cubo(g, "Pista", "Asfalto_Escuro", F.V(0, .03f, 0), F.V(4.6f, .04f, 10.6f));
+            for (float z = -4.5f; z <= 4.6f; z += 1.5f)
+                SemSombra(F.Cubo(g, "Traco", "Mostarda", F.V(0, .055f, z), F.V(.12f, .01f, .8f)));
             foreach (float s in new[] { -1f, 1f })
-            {
-                g = F.Grupo(s < 0 ? "Portal_Sul" : "Portal_Norte", p).transform;
-                F.Cubo(g, "Portal", "Branco_Concreto", F.V(0, 2.2f, s * 3.9f), F.V(6.2f, 4.4f, 2.4f));
-                F.Cubo(g, "Boca", "Grafite", F.V(0, 1.75f, s * 4.92f), F.V(4.6f, 3.5f, .5f));
-                F.Cubo(g, "Faixa", "Mostarda", F.V(0, 4.1f, s * 5.12f), F.V(6.2f, .35f, .1f));
-            }
+                ArteDetalhes.BocaDeTunel(p, s < 0 ? "Portal_Sul" : "Portal_Norte", F.V(0, 0, s * 5.15f), s < 0 ? 0f : 180f, 4.6f, 3.9f, 2.4f);
             SalvarEstrutura(raiz, F.V(0, 0, -6f), F.V(0, 0, 6f));
 
             // ---- viaduto: via elevada, larga, com rampas compridas.
+            // Pilares redondos com travessa, laje com viga de borda, pista pintada, mureta de concreto
+            // (também nas rampas), muro de aterro embaixo das rampas e postes de luz.
             p = NovaEstrutura("viaduto", out raiz);
             g = F.Grupo("Pilares", p).transform;
-            foreach (float x in new[] { -1.9f, 1.9f })
-                foreach (float z in new[] { -4.3f, 4.3f })
-                    F.Cubo(g, "Pilar", "Branco_Concreto", F.V(x, 1.45f, z), F.V(.55f, 2.9f, .55f));
+            foreach (float z in new[] { -4.3f, 0f, 4.3f })
+            {
+                foreach (float x in new[] { -1.5f, 1.5f })
+                {
+                    F.Cilindro(g, "Pilar", "Branco_Concreto", F.V(x, 1.4f, z), F.V(.7f, 1.4f, .7f));
+                    F.Cilindro(g, "Base_Do_Pilar", "Cinza", F.V(x, .1f, z), F.V(1f, .1f, 1f));
+                }
+                F.Cubo(g, "Travessa", "Cinza", F.V(0, 2.65f, z), F.V(4.4f, .4f, .9f));
+            }
             g = F.Grupo("Tabuleiro", p).transform;
-            F.Cubo(g, "Laje", "Cinza", F.V(0, 3f, 0), F.V(4.8f, .35f, 9.7f));
-            F.Cubo(g, "Pista", "Asfalto", F.V(0, 3.19f, 0), F.V(4.1f, .03f, 9.7f));
-            Rampa(p, "Rampa_Sul", "Asfalto", 4.8f, .3f, -10f, 0f, -4.8f, 3.2f);
-            Rampa(p, "Rampa_Norte", "Asfalto", 4.8f, .3f, 4.8f, 3.2f, 10f, 0f);
-            g = F.Grupo("Guarda_Corpos", p).transform;
+            F.Cubo(g, "Laje", "Branco_Concreto", F.V(0, 3f, 0), F.V(4.8f, .35f, 9.7f));
             foreach (float x in new[] { -2.3f, 2.3f })
-                F.Cubo(g, "Guarda_Corpo", "Branco", F.V(x, 3.5f, 0), F.V(.16f, .55f, 9.7f));
+                F.Cubo(g, "Viga_De_Borda", "Cinza", F.V(x, 2.72f, 0), F.V(.2f, .3f, 9.7f));
+            F.Cubo(g, "Pista", "Asfalto", F.V(0, 3.19f, 0), F.V(4.1f, .03f, 9.7f));
+            foreach (float x in new[] { -1.85f, 1.85f })
+                SemSombra(F.Cubo(g, "Linha_Da_Borda", "Branco", F.V(x, 3.215f, 0), F.V(.1f, .01f, 9.7f)));
+            for (float z = -4.2f; z <= 4.3f; z += 1.4f)
+                SemSombra(F.Cubo(g, "Traco_Do_Meio", "Mostarda", F.V(0, 3.215f, z), F.V(.12f, .01f, .8f)));
+            foreach (int lado in new[] { -1, 1 })
+            {
+                g = F.Grupo(lado < 0 ? "Rampa_Sul" : "Rampa_Norte", p).transform;
+                float z0 = lado < 0 ? -10f : 4.8f, y0 = lado < 0 ? 0f : 3.2f, z1 = lado < 0 ? -4.8f : 10f, y1 = lado < 0 ? 3.2f : 0f;
+                Rampa(g, "Pista", "Asfalto", 4.8f, .3f, z0, y0, z1, y1);
+                // Muro de aterro: degraus de concreto embaixo da rampa, pros lados não ficarem ocos.
+                for (int i = 0; i < 4; i++)
+                {
+                    float k = (i + .5f) / 4f, zz = Mathf.Lerp(z0, z1, k), yy = Mathf.Lerp(y0, y1, k);
+                    F.Caixa(g, "Aterro", "Cinza_Claro", 0, 0, zz, 4.7f, Mathf.Max(.05f, yy - .45f), (z1 - z0) / 4f);
+                }
+            }
+            g = F.Grupo("Guarda_Corpos", p).transform;
+            foreach (float x in new[] { -2.25f, 2.25f })
+            {
+                F.Cubo(g, "Mureta", "Cinza_Claro", F.V(x, 3.45f, 0), F.V(.3f, .5f, 9.7f));
+                F.Cubo(g, "Mureta_Topo", "Branco", F.V(x, 3.73f, 0), F.V(.18f, .08f, 9.7f));
+                foreach (int lado in new[] { -1, 1 })
+                {
+                    float z0 = lado < 0 ? -10f : 4.8f, y0 = lado < 0 ? 0f : 3.2f, z1 = lado < 0 ? -4.8f : 10f, y1 = lado < 0 ? 3.2f : 0f;
+                    float dz = z1 - z0, dy = y1 - y0, comp = Mathf.Sqrt(dz * dz + dy * dy);
+                    F.Cubo(g, "Mureta_Da_Rampa", "Cinza_Claro", F.V(x, (y0 + y1) / 2f + .25f, (z0 + z1) / 2f), F.V(.3f, .5f, comp), F.V(-Mathf.Atan2(dy, dz) * Mathf.Rad2Deg, 0, 0));
+                }
+            }
+            g = F.Grupo("Postes", p).transform;
+            foreach (float z in new[] { -3.2f, 3.2f })
+                foreach (int lado in new[] { -1, 1 })
+                {
+                    float x = lado * 2.25f;
+                    F.Cubo(g, "Poste", "Cinza_Escuro", F.V(x, 4.9f, z), F.V(.12f, 2.4f, .12f));
+                    F.Cubo(g, "Braco", "Cinza_Escuro", F.V(x - lado * .4f, 6.05f, z), F.V(.8f, .08f, .08f));
+                    F.Cubo(g, "Luminaria", "Luz_Amarela", F.V(x - lado * .78f, 5.97f, z), F.V(.4f, .1f, .22f));
+                }
             SalvarEstrutura(raiz, F.V(0, 0, -10f), F.V(0, 3.22f, -4.8f), F.V(0, 3.22f, 4.8f), F.V(0, 0, 10f));
 
             // ---- passarela: estreita, alta, de pedestre, com corrimão.
+            // Pilares em "Y" com sapata, piso com faixas antiderrapantes, painéis coloridos nas laterais,
+            // corrimão também nas rampas, patamar no pé de cada rampa e luminárias.
             p = NovaEstrutura("passarela", out raiz);
             g = F.Grupo("Pilares", p).transform;
             foreach (float z in new[] { -4.3f, 4.3f })
-                F.Cubo(g, "Pilar", "Cinza", F.V(0, 1.65f, z), F.V(.4f, 3.3f, .4f));
-            F.Cubo(p, "Piso", "Petroleo_Claro", F.V(0, 3.4f, 0), F.V(2f, .2f, 9.5f));
-            Rampa(p, "Rampa_Sul", "Petroleo_Claro", 2f, .18f, -10f, 0f, -4.7f, 3.5f);
-            Rampa(p, "Rampa_Norte", "Petroleo_Claro", 2f, .18f, 4.7f, 3.5f, 10f, 0f);
+            {
+                F.Cilindro(g, "Pilar", "Branco_Concreto", F.V(0, 1.55f, z), F.V(.5f, 1.55f, .5f));
+                F.Cubo(g, "Sapata", "Cinza", F.V(0, .1f, z), F.V(.9f, .2f, .9f));
+                foreach (float x in new[] { -1f, 1f })
+                    F.Barra(g, "Braco_Do_Y", "Branco_Concreto", F.V(0, 2.6f, z), F.V(x * .8f, 3.3f, z), .22f);
+            }
+            g = F.Grupo("Piso", p).transform;
+            F.Cubo(g, "Laje", "Petroleo_Claro", F.V(0, 3.4f, 0), F.V(2f, .2f, 9.5f));
+            for (float z = -4.5f; z <= 4.6f; z += .6f)
+                SemSombra(F.Cubo(g, "Antiderrapante", "Petroleo", F.V(0, 3.505f, z), F.V(1.7f, .01f, .12f)));
+            foreach (int lado in new[] { -1, 1 })
+            {
+                g = F.Grupo(lado < 0 ? "Rampa_Sul" : "Rampa_Norte", p).transform;
+                float z0 = lado < 0 ? -10f : 4.7f, y0 = lado < 0 ? 0f : 3.5f, z1 = lado < 0 ? -4.7f : 10f, y1 = lado < 0 ? 3.5f : 0f;
+                Rampa(g, "Pista", "Petroleo_Claro", 2f, .18f, z0, y0, z1, y1);
+                F.Caixa(g, "Patamar", "Cinza_Claro", 0, -.02f, lado * 10.6f, 2.6f, .08f, 1.4f);
+                F.Cilindro(g, "Apoio", "Branco_Concreto", F.V(0, .9f, lado * 6.9f), F.V(.3f, .9f, .3f));
+            }
             g = F.Grupo("Corrimaos", p).transform;
             foreach (float x in new[] { -.95f, .95f })
             {
-                F.Cubo(g, "Corrimao", "Mostarda", F.V(x, 4.25f, 0), F.V(.08f, .08f, 9.5f));
+                F.Cubo(g, "Corrimao", "Mostarda", F.V(x, 4.45f, 0), F.V(.08f, .08f, 9.5f));
                 for (int i = 0; i < 7; i++)
-                    F.Cubo(g, "Balaustre", "Mostarda", F.V(x, 3.9f, -4.68f + i * 1.56f), F.V(.08f, .7f, .08f));
+                    F.Cubo(g, "Balaustre", "Mostarda", F.V(x, 4f, -4.68f + i * 1.56f), F.V(.08f, .9f, .08f));
+                for (int i = 0; i < 6; i++)
+                    F.Cubo(g, "Painel", i % 2 == 0 ? "Laranja" : "Petroleo", F.V(x, 3.85f, -3.9f + i * 1.56f), F.V(.04f, .55f, 1.4f));
+                foreach (int lado in new[] { -1, 1 })
+                {
+                    float z0 = lado < 0 ? -10f : 4.7f, y0 = lado < 0 ? 0f : 3.5f, z1 = lado < 0 ? -4.7f : 10f, y1 = lado < 0 ? 3.5f : 0f;
+                    var a = F.V(x, y0 + .95f, z0); var b = F.V(x, y1 + .95f, z1);
+                    F.Barra(g, "Corrimao_Da_Rampa", "Mostarda", a, b, .08f);
+                    for (int i = 0; i <= 4; i++)
+                    {
+                        var q = Vector3.Lerp(a, b, i / 4f);
+                        F.Cubo(g, "Balaustre", "Mostarda", q - Vector3.up * .45f, F.V(.07f, .9f, .07f));
+                    }
+                }
+            }
+            g = F.Grupo("Luzes", p).transform;
+            foreach (float z in new[] { -2.3f, 2.3f })
+            {
+                F.Cubo(g, "Poste", "Cinza_Escuro", F.V(-.95f, 4.9f, z), F.V(.08f, .9f, .08f));
+                F.Cubo(g, "Luminaria", "Luz_Amarela", F.V(-.75f, 5.35f, z), F.V(.4f, .08f, .2f));
             }
             SalvarEstrutura(raiz, F.V(0, 0, -10f), F.V(0, 3.52f, -4.7f), F.V(0, 3.52f, 4.7f), F.V(0, 0, 10f));
 
@@ -643,6 +719,9 @@ namespace CidadeViva.EditorArte
             F.Esfera(raiz.transform, "Morro_Direito", "Verde_Musgo", F.V(6.8f, 0, -.2f), F.V(6.2f, 6f, 9.6f));
             P(raiz.transform, "Natureza/Pedra_2", F.V(-8.8f, 0, -4.2f), 0, 1.8f);
             P(raiz.transform, "Natureza/Pedra_3", F.V(8.6f, 0, 4.2f), 60, 1.6f);
+            // Árvores e pedras no morro, longe do meio (por onde o túnel passa).
+            ArteDetalhes.EnfeitarMorro(raiz.transform, "Mato_Do_Morro", F.V(0, 0, 0), F.V(18.4f, 11f, 10.5f), 9, 7, new Rect(-3.6f, -6f, 7.2f, 12f));
+            ArteDetalhes.EnfeitarMorro(raiz.transform, "Mato_Do_Morro_Atras", F.V(0, 0, 0), F.V(18.4f, 11f, -10.5f), 6, 8, new Rect(-3.6f, -6f, 7.2f, 12f));
             F.Salvar(raiz, Categoria);
 
             // ---- obstáculo: avenida com carros (a via corre em X).
@@ -1054,7 +1133,8 @@ namespace CidadeViva.EditorArte
             for (int i = 0; i < 3; i++)
             {
                 estrelas[i] = Imagem("Estrela_" + (i + 1), cartao.transform, S("figura_estrela"), Color.white, new Vector2(-135 + i * 135, 2), new Vector2(72, 72));
-                rotulos[i] = Texto("Rotulo_" + (i + 1), cartao.transform, "", 24, C("Grafite"), new Vector2(-135 + i * 135, -62), new Vector2(132, 36), FontStyle.Normal);
+                rotulos[i] = Texto("Rotulo_" + (i + 1), cartao.transform, "", 30, C("Grafite"), new Vector2(-135 + i * 135, -62), new Vector2(140, 42), FontStyle.Normal);
+                rotulos[i].resizeTextForBestFit = true; rotulos[i].resizeTextMinSize = 24; rotulos[i].resizeTextMaxSize = 30;
             }
             hud.estrelasDosCriterios = estrelas;
             hud.rotulosDosCriterios = rotulos;
