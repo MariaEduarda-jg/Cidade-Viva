@@ -84,11 +84,11 @@ namespace CidadeViva.EditorArte
 
         static readonly FalaDoNpc[] Npcs =
         {
-            new FalaDoNpc { quem = QuemFala.Mae, nome = "Mãe", lugar = "perto da praça" },
-            new FalaDoNpc { quem = QuemFala.Mecanico, nome = "o mecânico Zé", lugar = "na Oficina" },
-            new FalaDoNpc { quem = QuemFala.Engenheira, nome = "a engenheira Ana", lugar = "nas Obras, perto do rio" },
-            new FalaDoNpc { quem = QuemFala.Guarda, nome = "o guarda Beto", lugar = "no Cruzamento Central" },
-            new FalaDoNpc { quem = QuemFala.Vizinha, nome = "a vizinha Lúcia", lugar = "na Rua Viva" },
+            new FalaDoNpc { quem = QuemFala.Mae, nome = "Mãe", lugar = "perto do parquinho" },
+            new FalaDoNpc { quem = QuemFala.Mecanico, nome = "o mecânico Zé", lugar = "na Oficina, no comércio" },
+            new FalaDoNpc { quem = QuemFala.Engenheira, nome = "a engenheira Ana", lugar = "nas Obras, na beira do lago" },
+            new FalaDoNpc { quem = QuemFala.Guarda, nome = "o guarda Beto", lugar = "no Cruzamento Central, no Eixinho" },
+            new FalaDoNpc { quem = QuemFala.Vizinha, nome = "a vizinha Lúcia", lugar = "na Rua Viva, perto do ponto de ônibus" },
         };
 
         public static void Dados()
@@ -100,16 +100,16 @@ namespace CidadeViva.EditorArte
                 new[] { "Oi! A água entrou na oficina e desmontou tudo.",
                         "Sem veículos, ninguém consegue ir trabalhar nem ir pra escola.",
                         "Me ajuda a montar os primeiros? Entre na oficina!" },
-                "Ficaram ótimos! Já tem veículo pronto no pátio. Obrigado!",
+                "Ficaram ótimos! Já tem veículo pronto aqui na frente. Obrigado!",
                 "Minigame_Oficina", -1, "Oficina de Veículos", 1, "Area_Oficina",
-                "Os primeiros veículos ficam prontos e estacionados no pátio da oficina.");
+                "Os primeiros veículos ficam prontos e estacionados na frente da oficina.");
             var pontes = Missao("d1_pontes", QuemFala.Engenheira, "Entre nas Obras e ajude a engenheira Ana.",
                 new[] { "Que bom que você veio! A enchente estragou os caminhos da cidade.",
-                        "Tem gente que não consegue chegar ao outro lado do rio.",
+                        "Tem gente que não consegue atravessar o rio nem passar pelo morro.",
                         "Me ajuda a escolher as obras? Entre na área das Obras!" },
-                "Muito bem! O pessoal já consegue passar. A obra da ponte grande começou!",
+                "Muito bem! O pessoal já consegue passar. E a obra do píer do lago começou!",
                 "Minigame_Obras", 0, "Obras da Cidade", 1, "Area_ObrasDaCidade",
-                "Na beira do rio, a bagunça some e aparece a obra organizada: cavaletes em pé e sinalização.");
+                "Na beira do lago, a bagunça some e aparece a obra organizada: cavaletes em pé e sinalização.");
             var motorista = Missao("d1_motorista", QuemFala.Guarda, "Entre no Cruzamento Central e ajude o guarda Beto.",
                 new[] { "Olá! Os semáforos da cidade voltaram a ligar.",
                         "Mas antes de liberar o trânsito, eles precisam ser testados.",
@@ -121,9 +121,9 @@ namespace CidadeViva.EditorArte
                 new[] { "Oi, vizinho! O parque reabriu hoje!",
                         "Vou levar a família pra passear de carro. Vem com a gente?",
                         "O carro está aqui na Rua Viva. É só entrar!" },
-                "Que passeio bom! E a pracinha já está ficando limpinha de novo.",
+                "Que passeio bom! E a calçada da ciclovia já está ficando limpinha de novo.",
                 "Minigame_RuaViva_Carro", -1, "Rua Viva", 1, "Area_RuaViva",
-                "Na pracinha, o lixo some e o banco volta a ficar em pé, com flores.");
+                "Na calçada da ciclovia, o lixo some e o banco volta a ficar em pé, com flores.");
 
             var dia1 = Carregar<DiaDaCampanha>($"{PastaDosDados}/Dia_1.asset");
             dia1.numero = 1;
@@ -162,7 +162,7 @@ namespace CidadeViva.EditorArte
                 "Por hoje é só! Os próximos dias da reconstrução estão chegando.",
                 "Enquanto isso, você pode jogar de novo o que quiser.",
             };
-            d.falaAntesDaMae = "Calma! Primeiro fale com a sua mãe. Ela está perto da praça.";
+            d.falaAntesDaMae = "Calma! Primeiro fale com a sua mãe. Ela está perto do parquinho.";
             d.falaSemMissaoHoje = "Ainda não é hora daqui. Fale com a sua mãe pra saber o que fazer hoje.";
             d.falaMissaoAceita = "É só entrar ali! Siga as setas.";
             d.falaJaAjudou = "Obrigado pela ajuda! Se quiser jogar de novo, é só entrar.";
@@ -215,15 +215,34 @@ namespace CidadeViva.EditorArte
             foreach (var r in go.GetComponentsInChildren<Renderer>()) r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         }
 
-        // Onde cada um fica (mundo) e pra onde olha. Os ajudantes ficam uns metros antes do marcador da área.
+        // Onde cada um fica e pra onde olha. A mãe, no mundo (perto do parquinho, no meio da superquadra); os
+        // ajudantes, no espaço da área deles (o mapa novo gira cada área: +Z = o cenário, -Z = de onde o jogador
+        // chega), uns metros antes do marcador e olhando pra quem chega.
         static readonly (QuemFala quem, string prefab, string area, Vector3 pos, Vector3 olhar)[] OndeFicam =
         {
-            (QuemFala.Mae, "Personagens/Familia_Mae_Animado", "", new Vector3(7.6f, 0, -5.5f), new Vector3(.35f, 0, -1f)),
-            (QuemFala.Mecanico, "Personagens/Trabalhador", "Area_Oficina", new Vector3(-72.5f, 0, 64.5f), Vector3.back),
-            (QuemFala.Engenheira, "Personagens/Trabalhadora", "Area_ObrasDaCidade", new Vector3(43.2f, 0, 64.8f), Vector3.back),
-            (QuemFala.Guarda, "Personagens/Mini_Homem_3", "Area_CruzamentoCentral", new Vector3(1.8f, 0, 44.5f), Vector3.back),
-            (QuemFala.Vizinha, "Personagens/Pedestre_Mulher", "Area_RuaViva", new Vector3(-41.8f, 0, 53.8f), Vector3.forward),
+            (QuemFala.Mae, "Personagens/Familia_Mae_Animado", "", new Vector3(56.5f, 0, 1f), new Vector3(-.85f, 0, -.5f)),
+            (QuemFala.Mecanico, "Personagens/Trabalhador", "Area_Oficina", new Vector3(-3f, 0, -8.5f), Vector3.back),
+            (QuemFala.Engenheira, "Personagens/Trabalhadora", "Area_ObrasDaCidade", new Vector3(-3f, 0, -4.5f), Vector3.back),
+            (QuemFala.Guarda, "Personagens/Mini_Homem_3", "Area_CruzamentoCentral", new Vector3(2.5f, 0, -4.5f), Vector3.back),
+            (QuemFala.Vizinha, "Personagens/Pedestre_Mulher", "Area_RuaViva", new Vector3(2.5f, 0, -4.5f), Vector3.back),
         };
+
+        // Do espaço da área pro mundo (no chão).
+        static Vector3 NoMundo(string area, Vector3 local)
+        {
+            if (string.IsNullOrEmpty(area)) return local;
+            var t = GameObject.Find(area);
+            if (t == null) { Debug.LogError("[Campanha] Área não encontrada: " + area); return local; }
+            var p = t.transform.position + t.transform.rotation * local;
+            p.y = 0f;
+            return p;
+        }
+
+        static Vector3 DirecaoNoMundo(string area, Vector3 local)
+        {
+            var t = string.IsNullOrEmpty(area) ? null : GameObject.Find(area);
+            return t == null ? local : t.transform.rotation * local;
+        }
 
         // Chamado pelo HubConstrutor depois do PainelDoHub (precisa do Canvas UI_Hub) e antes dos colisores.
         public static void NoHub()
@@ -242,8 +261,9 @@ namespace CidadeViva.EditorArte
             var npcs = new List<NpcDaCampanha>();
             var grupoNpcs = new GameObject("NPCs").transform;
             grupoNpcs.SetParent(raiz, false);
-            foreach (var o in OndeFicam)
+            foreach (var ondeFica in OndeFicam)
             {
+                var o = (ondeFica.quem, ondeFica.prefab, ondeFica.area, pos: NoMundo(ondeFica.area, ondeFica.pos), olhar: DirecaoNoMundo(ondeFica.area, ondeFica.olhar));
                 var go = P(grupoNpcs, o.prefab, o.pos, Quaternion.LookRotation(o.olhar).eulerAngles.y);
                 go.name = "NPC_" + o.quem;
                 var npc = go.AddComponent<NpcDaCampanha>();
@@ -317,11 +337,12 @@ namespace CidadeViva.EditorArte
             var g = new GameObject("Consertos").transform;
             g.SetParent(raiz, false);
             c.consertos = g;
-            Transform Grupo(string id, Vector3 pos, out Transform antes, out Transform depois)
+            // "pos" no espaço da área (como os NPCs); o grupo fica alinhado com o mundo.
+            Transform Grupo(string id, string area, Vector3 pos, out Transform antes, out Transform depois)
             {
                 var t = new GameObject("Conserto_" + id).transform;
                 t.SetParent(g, false);
-                t.position = pos;
+                t.position = NoMundo(area, pos);
                 antes = new GameObject("Antes").transform; antes.SetParent(t, false);
                 depois = new GameObject("Depois").transform; depois.SetParent(t, false);
                 depois.gameObject.SetActive(false);
@@ -329,8 +350,8 @@ namespace CidadeViva.EditorArte
             }
             Transform a, d;
 
-            // Oficina: peças e uma bicicleta tombada no pátio -> bicicleta, moto e carro estacionados.
-            Grupo("d1_oficina", new Vector3(-68f, 0, 72.5f), out a, out d);
+            // Oficina: peças e uma bicicleta tombada na varanda -> bicicleta, moto e carro estacionados.
+            Grupo("d1_oficina", "Area_Oficina", new Vector3(5.5f, 0, 2f), out a, out d);
             P(a, "Carros/Bicicleta_Q1", new Vector3(-2.5f, .2f, 0), 30).transform.Rotate(0, 0, 80);
             P(a, "Enchente/Caixa_Aberta", new Vector3(0, 0, .5f), 20);
             P(a, "Enchente/Entulho_De_Concreto", new Vector3(2.5f, 0, 0), 60, .7f);
@@ -338,8 +359,8 @@ namespace CidadeViva.EditorArte
             P(d, "Carros/Moto", new Vector3(-1.6f, 0, 0), 180);
             P(d, "Carros/Carro_Sedan", new Vector3(1.8f, 0, 0), 0);
 
-            // Obras: cavaletes caídos e placa no chão na beira do rio -> obra organizada.
-            Grupo("d1_pontes", new Vector3(50.6f, 0, 72.8f), out a, out d);
+            // Obras: cavaletes caídos e placa no chão na beira do lago -> obra organizada.
+            Grupo("d1_pontes", "Area_ObrasDaCidade", new Vector3(5f, 0, .6f), out a, out d);
             P(a, "Enchente/Cavalete_Grande_1", new Vector3(0, .2f, 0), 30).transform.Rotate(0, 0, 80);
             P(a, "Enchente/Cavalete_Medio_1", new Vector3(.8f, .2f, -1.2f), 100).transform.Rotate(0, 0, -75);
             P(a, "Enchente/Papeis_Espalhados", new Vector3(-.5f, .02f, -.8f), 0);
@@ -348,12 +369,12 @@ namespace CidadeViva.EditorArte
             P(d, "Props/Sinalizador_Obra", new Vector3(.2f, 0, -2.8f), 90);
 
             // Cruzamento: semáforo caído -> de pé.
-            Grupo("d1_motorista", new Vector3(3.4f, 0, 47.2f), out a, out d);
+            Grupo("d1_motorista", "Area_CruzamentoCentral", new Vector3(-2.2f, 0, 2f), out a, out d);
             P(a, "Props/Semaforo_Carros", new Vector3(0, .3f, 0), 200).transform.Rotate(0, 0, 82);
             P(d, "Props/Semaforo_Carros", Vector3.zero, 180);
 
-            // Rua Viva: lixo e banco virado na pracinha -> banco em pé com flores.
-            Grupo("d1_passeio", new Vector3(-48.6f, 0, 51.5f), out a, out d);
+            // Rua Viva: lixo e banco virado na calçada da ciclovia -> banco em pé com flores.
+            Grupo("d1_passeio", "Area_RuaViva", new Vector3(-4.5f, 0, -1.6f), out a, out d);
             P(a, "Props/Banco_De_Praca", new Vector3(0, .3f, 0), 90).transform.Rotate(0, 0, 85);
             P(a, "Lixo_Reciclagem/Pilha_De_Lixo", new Vector3(1.2f, 0, -1.2f), 30);
             P(d, "Props/Banco_De_Praca", Vector3.zero, 90);
@@ -386,11 +407,18 @@ namespace CidadeViva.EditorArte
             var trocados = new List<GameObject>();
             foreach (Transform t in c.consertos.GetComponentsInChildren<Transform>(true))
                 if ((t.name == "Antes" || t.name == "Depois") && !t.gameObject.activeSelf) { t.gameObject.SetActive(true); trocados.Add(t.gameObject); }
+            // O mesmo com o caos e a ordem das áreas (Ordem_*, Arrumado): o que aparece quando a área se arruma
+            // também tem colisor, e a trilha tem de desviar dele em qualquer estado.
+            foreach (var area in Object.FindObjectsByType<AreaTrigger>(FindObjectsInactive.Exclude))
+                foreach (Transform t in area.transform)
+                    if ((t.name.StartsWith("Ordem_") || t.name.StartsWith("Caos") || t.name == "Arrumado") && !t.gameObject.activeSelf)
+                    { t.gameObject.SetActive(true); trocados.Add(t.gameObject); }
             // Pelas caixas (bounds) de cada colisor, sem a física do editor (que só registra colisor novo depois):
             // célula bloqueada se a caixa, alargada pelo raio do jogador, cobre o centro dela na altura do corpo.
             const float passo = .6f, r = .65f, baixo = .35f, cima = 1.85f; // r: raio do jogador (0,5) + folga
-            var origem = new Vector2(-95f, -45f);
-            int lx = Mathf.CeilToInt(170f / passo), lz = Mathf.CeilToInt(165f / passo);
+            // Só a zona da superquadra (onde ficam os NPCs e as áreas) e a calçada até o Eixo Monumental.
+            var origem = new Vector2(20f, -46f);
+            int lx = Mathf.CeilToInt(70f / passo), lz = Mathf.CeilToInt(132f / passo);
             var livre = new byte[lx * lz];
             for (int i = 0; i < livre.Length; i++) livre[i] = 1;
             foreach (Collider col in Object.FindObjectsByType<Collider>(FindObjectsInactive.Exclude))
@@ -413,6 +441,20 @@ namespace CidadeViva.EditorArte
                         }
                         else if (dx > r || dz > r) continue;
                         livre[z * lx + x] = 0;
+                    }
+            }
+            // Os marcadores das áreas também ficam fora da trilha (raio 2 m + a folga): seguindo as setas pra outro
+            // lugar, a criança não pisa numa área sem querer. Quando o destino é a área, a trilha chega na borda e o
+            // último trecho vai reto até o marcador.
+            foreach (var area in Object.FindObjectsByType<AreaTrigger>(FindObjectsInactive.Exclude))
+            {
+                Vector3 p = area.transform.position;
+                float raio = 2f + r;
+                for (int z = 0; z < lz; z++)
+                    for (int x = 0; x < lx; x++)
+                    {
+                        float px = origem.x + x * passo - p.x, pz = origem.y + z * passo - p.z;
+                        if (px * px + pz * pz <= raio * raio) livre[z * lx + x] = 0;
                     }
             }
             int livres = 0;
@@ -458,6 +500,9 @@ namespace CidadeViva.EditorArte
 
             c.botaoConversar = Botao("Botao_Conversar", canvas, "Conversar (E)", "Laranja", new Vector2(0, 210), new Vector2(460, 120), 42);
             Ancorar(c.botaoConversar, new Vector2(.5f, 0));
+
+            // "Ir", à direita da barra do objetivo: leva pra perto de quem a criança precisa encontrar.
+            c.botaoIr = Botao("Botao_Ir", barra.transform, "Ir", "Laranja", new Vector2(460, 4), new Vector2(150, 92), 46);
 
             c.botaoPular = Botao("Botao_Pular_Tutorial", canvas, "Pular tutorial", "Cinza", new Vector2(-200, 130), new Vector2(340, 96), 34);
             Ancorar(c.botaoPular, new Vector2(1, 0));

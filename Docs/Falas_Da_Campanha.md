@@ -1,16 +1,16 @@
 # Falas da campanha "Os 5 dias da reconstrução"
 
-Gerado pelo `CampanhaConstrutor` (menu **Cidade Viva > Campanha > Gerar o documento das falas**) em 22/11/2026. Pra a coordenação revisar.
+Gerado pelo `CampanhaConstrutor` (menu **Cidade Viva > Campanha > Gerar o documento das falas**) em 26/11/2026. Pra a coordenação revisar.
 
 **Regra das falas:** os personagens só dão o motivo da missão. Nenhuma fala explica um verbete nem resume uma definição: quem ensina o verbete é o cartão, com a definição copiada do glossário. Frases curtas, pra crianças de 6 a 9 anos. **Nada aqui vem do glossário.**
 
 ## Personagens
 
-- **Mãe** (perto da praça)
-- **o mecânico Zé** (na Oficina)
-- **a engenheira Ana** (nas Obras, perto do rio)
-- **o guarda Beto** (no Cruzamento Central)
-- **a vizinha Lúcia** (na Rua Viva)
+- **Mãe** (perto do parquinho)
+- **o mecânico Zé** (na Oficina, no comércio)
+- **a engenheira Ana** (nas Obras, na beira do lago)
+- **o guarda Beto** (no Cruzamento Central, no Eixinho)
+- **a vizinha Lúcia** (na Rua Viva, perto do ponto de ônibus)
 
 ## Tutorial (Dia 1, com a mãe)
 
@@ -37,18 +37,18 @@ Gerado pelo `CampanhaConstrutor` (menu **Cidade Viva > Campanha > Gerar o docume
   - "Oi! A água entrou na oficina e desmontou tudo."
   - "Sem veículos, ninguém consegue ir trabalhar nem ir pra escola."
   - "Me ajuda a montar os primeiros? Entre na oficina!"
-- Agradecimento (na volta): "Ficaram ótimos! Já tem veículo pronto no pátio. Obrigado!"
-- O que se conserta no Hub: Os primeiros veículos ficam prontos e estacionados no pátio da oficina.
+- Agradecimento (na volta): "Ficaram ótimos! Já tem veículo pronto aqui na frente. Obrigado!"
+- O que se conserta no Hub: Os primeiros veículos ficam prontos e estacionados na frente da oficina.
 
 ### a engenheira Ana (Pontes e Passagens, nível 1)
 
 - Objetivo no alto da tela: "Entre nas Obras e ajude a engenheira Ana."
 - Conversa:
   - "Que bom que você veio! A enchente estragou os caminhos da cidade."
-  - "Tem gente que não consegue chegar ao outro lado do rio."
+  - "Tem gente que não consegue atravessar o rio nem passar pelo morro."
   - "Me ajuda a escolher as obras? Entre na área das Obras!"
-- Agradecimento (na volta): "Muito bem! O pessoal já consegue passar. A obra da ponte grande começou!"
-- O que se conserta no Hub: Na beira do rio, a bagunça some e aparece a obra organizada: cavaletes em pé e sinalização.
+- Agradecimento (na volta): "Muito bem! O pessoal já consegue passar. E a obra do píer do lago começou!"
+- O que se conserta no Hub: Na beira do lago, a bagunça some e aparece a obra organizada: cavaletes em pé e sinalização.
 
 ### o guarda Beto (Motorista Mirim, nível 1)
 
@@ -67,8 +67,8 @@ Gerado pelo `CampanhaConstrutor` (menu **Cidade Viva > Campanha > Gerar o docume
   - "Oi, vizinho! O parque reabriu hoje!"
   - "Vou levar a família pra passear de carro. Vem com a gente?"
   - "O carro está aqui na Rua Viva. É só entrar!"
-- Agradecimento (na volta): "Que passeio bom! E a pracinha já está ficando limpinha de novo."
-- O que se conserta no Hub: Na pracinha, o lixo some e o banco volta a ficar em pé, com flores.
+- Agradecimento (na volta): "Que passeio bom! E a calçada da ciclovia já está ficando limpinha de novo."
+- O que se conserta no Hub: Na calçada da ciclovia, o lixo some e o banco volta a ficar em pé, com flores.
 
 **A mãe fecha o dia:**
 - "Você ajudou o bairro todo hoje! Que orgulho!"
@@ -76,7 +76,7 @@ Gerado pelo `CampanhaConstrutor` (menu **Cidade Viva > Campanha > Gerar o docume
 
 ## Frases gerais
 
-- Ajudante, antes de falar com a mãe: "Calma! Primeiro fale com a sua mãe. Ela está perto da praça."
+- Ajudante, antes de falar com a mãe: "Calma! Primeiro fale com a sua mãe. Ela está perto do parquinho."
 - Ajudante, sem missão no dia: "Ainda não é hora daqui. Fale com a sua mãe pra saber o que fazer hoje."
 - Ajudante, missão já aceita: "É só entrar ali! Siga as setas."
 - Ajudante, já ajudou: "Obrigado pela ajuda! Se quiser jogar de novo, é só entrar."

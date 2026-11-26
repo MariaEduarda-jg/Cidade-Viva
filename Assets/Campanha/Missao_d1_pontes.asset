@@ -17,12 +17,12 @@ MonoBehaviour:
   objetivo: Entre nas Obras e ajude a engenheira Ana.
   falas:
   - "Que bom que voc\xEA veio! A enchente estragou os caminhos da cidade."
-  - "Tem gente que n\xE3o consegue chegar ao outro lado do rio."
+  - "Tem gente que n\xE3o consegue atravessar o rio nem passar pelo morro."
   - "Me ajuda a escolher as obras? Entre na \xE1rea das Obras!"
-  agradecimento: "Muito bem! O pessoal j\xE1 consegue passar. A obra da ponte grande come\xE7ou!"
+  agradecimento: "Muito bem! O pessoal j\xE1 consegue passar. E a obra do p\xEDer do lago come\xE7ou!"
   cena: Minigame_Obras
   modo: 0
   nomeDaArea: Obras da Cidade
   nivel: 1
   areaDoHub: Area_ObrasDaCidade
-  conserto: "Na beira do rio, a bagun\xE7a some e aparece a obra organizada: cavaletes em p\xE9 e sinaliza\xE7\xE3o."
+  conserto: "Na beira do lago, a bagun\xE7a some e aparece a obra organizada: cavaletes em p\xE9 e sinaliza\xE7\xE3o."

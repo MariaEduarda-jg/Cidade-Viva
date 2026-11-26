@@ -33,6 +33,9 @@ namespace CidadeViva.EditorArte
                 if (r is ParticleSystemRenderer || r is SkinnedMeshRenderer && r.GetComponentInParent<CharacterController>(true) != null) continue;
                 if (r.GetComponentInParent<CharacterController>(true) != null || r.GetComponentInParent<Canvas>(true) != null) continue;
                 if (TemNomeDeChao(r.transform, raiz)) continue;
+                // Malha juntada (OtimizacaoWebGL.Combinar) ou peça de algo que já tem colisor próprio (monumento,
+                // ministério, bloco sobre pilotis): quem montou cuidou do colisor.
+                if (r.name.StartsWith("Combinado_") || TemColisorAcima(r.transform, raiz)) continue;
 
                 var instancia = PrefabUtility.GetOutermostPrefabInstanceRoot(r.gameObject);
                 GameObject dono = instancia != null && instancia.transform.IsChildOf(raiz) ? instancia : r.gameObject;
@@ -56,8 +59,9 @@ namespace CidadeViva.EditorArte
                 }
                 else if (instancia != null)
                 {
+                    // Prédio (mais de 4 m): caixa inteira, pra câmera também não entrar nele. O resto, até 2 m.
                     var caixa = dono.AddComponent<BoxCollider>();
-                    Bounds local = MedirLocal(dono, b.min.y + 2f);
+                    Bounds local = MedirLocal(dono, b.size.y > 4f ? b.max.y : b.min.y + 2f);
                     caixa.center = local.center;
                     caixa.size = local.size;
                 }
@@ -78,6 +82,16 @@ namespace CidadeViva.EditorArte
                 n++;
             }
             return n;
+        }
+
+        static bool TemColisorAcima(Transform t, Transform raiz)
+        {
+            for (var x = t.parent; x != null; x = x.parent)
+            {
+                foreach (var c in x.GetComponents<Collider>()) if (!c.isTrigger) return true;
+                if (x == raiz) break;
+            }
+            return false;
         }
 
         static bool TemNomeDeChao(Transform t, Transform raiz)

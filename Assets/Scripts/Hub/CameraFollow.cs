@@ -30,6 +30,12 @@ public class CameraFollow : MonoBehaviour
     [Tooltip("Graus por segundo com o cursor na borda.")]
     public float giroNaBorda = 70f;
 
+    [Header("Não ficar atrás de prédio")]
+    [Tooltip("Se um prédio (ou outra coisa com colisor) fica entre o jogador e a câmera, ela sobe e, se precisar, chega mais perto.")]
+    public bool desviarDasCoisas = true;
+    public float raioDaColisao = 0.3f;
+    public float distanciaMinima = 1.6f;
+
     // Pra onde o jogador está olhando, em graus em volta de Y (0 = +Z, como era a câmera fixa).
     public float Giro { get; set; }
     // Quanto a câmera olha de cima, em graus.
@@ -131,7 +137,57 @@ public class CameraFollow : MonoBehaviour
             return;
         }
 
-        transform.position = Vector3.Lerp(transform.position, PosicaoPara(target.position), followSpeed * Time.deltaTime);
-        transform.LookAt(target.position + Vector3.up * lookHeightOffset);
+        Vector3 foco = target.position + Vector3.up * lookHeightOffset;
+        Vector3 desejada = PosicaoPara(target.position);
+        Vector3 livre = desviarDasCoisas ? Desviar(foco, desejada) : desejada;
+        // Chegando mais perto (prédio no caminho) vai rápido, pra não mostrar o prédio por dentro; voltando, devagar.
+        bool aproximando = (livre - foco).sqrMagnitude < (transform.position - foco).sqrMagnitude - 0.01f;
+        float rapidez = aproximando && inclinacaoExtra > 0.5f ? followSpeed * 2f : followSpeed;
+        transform.position = Vector3.Lerp(transform.position, livre, Mathf.Min(1f, rapidez * Time.deltaTime));
+        transform.LookAt(foco);
+    }
+
+    // Prédio no caminho: primeiro a câmera sobe (olha mais de cima, por cima dele); só se nem assim der,
+    // ela chega mais perto. A subida é suave e some quando o caminho fica livre.
+    // Paredes invisíveis ficam na camada "Ignore Raycast" e não contam.
+    private float inclinacaoExtra;
+
+    private Vector3 Desviar(Vector3 foco, Vector3 desejada)
+    {
+        float precisa = 0f;
+        for (float extra = 0f; extra <= 60f; extra += 10f)
+        {
+            float inclinacao = Mathf.Min(Inclinacao + extra, 80f);
+            if (Distancia(foco, Posicao(foco, inclinacao), out _) < 0f) { precisa = inclinacao - Inclinacao; break; }
+            precisa = inclinacao - Inclinacao;
+        }
+        inclinacaoExtra = Mathf.MoveTowards(inclinacaoExtra, precisa, 90f * Time.deltaTime);
+        Vector3 posicao = Posicao(foco, Inclinacao + inclinacaoExtra);
+        float bate = Distancia(foco, posicao, out Vector3 d);
+        if (bate < 0f) return posicao;
+        return foco + d * Mathf.Max(distanciaMinima, bate - 0.1f);
+    }
+
+    private Vector3 Posicao(Vector3 foco, float inclinacao)
+    {
+        Vector3 p = foco - Quaternion.Euler(Mathf.Min(inclinacao, 80f), Giro, 0f) * Vector3.forward * distancia;
+        p.y = Mathf.Max(p.y, 0.4f);
+        return p;
+    }
+
+    // Distância do foco até a primeira coisa no caminho da câmera (-1 se o caminho está livre).
+    private float Distancia(Vector3 foco, Vector3 posicao, out Vector3 d)
+    {
+        d = posicao - foco;
+        float dist = d.magnitude;
+        if (dist < 0.01f) return -1f;
+        d /= dist;
+        float menor = -1f;
+        foreach (RaycastHit h in Physics.SphereCastAll(foco, raioDaColisao, d, dist, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+        {
+            if (h.distance <= 0f || h.collider is CharacterController || h.collider.transform.IsChildOf(target)) continue;
+            if (menor < 0f || h.distance < menor) menor = h.distance;
+        }
+        return menor;
     }
 }

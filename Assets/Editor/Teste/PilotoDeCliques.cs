@@ -354,6 +354,8 @@ public static class PilotoDeCliques
         if (Faz("hub")) { yield return Foto("hub"); yield return Medir("andando"); }
         if (Faz("campanha")) yield return CampanhaDia1();
         if (Faz("campanha_antiga")) yield return CampanhaPerfilAntigo();
+        if (Faz("fim_do_dia")) yield return FimDoDia1();
+        if (Faz("mapa")) yield return HubNovo();
         if (Faz("oficina")) yield return Area("Area_Oficina", "Minigame_Oficina", null, Oficina());
         if (Faz("obras")) yield return Area("Area_ObrasDaCidade", "Minigame_Obras", "Pontes e Passagens", Obras());
         if (Faz("ruas")) yield return Area("Area_ObrasDaCidade", "Minigame_Obras", "Planejar a rua", Obras());
@@ -437,18 +439,8 @@ public static class PilotoDeCliques
         L($"abertura terminou em {Time.unscaledTime - t0:0.0} s");
     }
 
-    // Anda até a área (setas simuladas, pelas ruas), escolhe a aba e o nível 1, joga, e volta ao Hub.
-    static readonly Dictionary<string, Vector3[]> Caminhos = new Dictionary<string, Vector3[]>
-    {
-        // Pelo Eixo, na pista da direita (x = 6): o calçadão do meio (x = 0) tem a área do Cruzamento em z = 50.
-        ["Area_Oficina"] = new[] { V(10, -10), V(10, 30), V(6, 36), V(6, 64), V(-76, 64), V(-76, 70) },
-        ["Area_ObrasDaCidade"] = new[] { V(10, -10), V(10, 30), V(6, 36), V(6, 64), V(46, 64), V(46, 69) },
-        ["Area_CruzamentoCentral"] = new[] { V(10, -10), V(10, 30), V(6, 36), V(6, 46), V(0, 50) },
-        ["Area_RuaViva"] = new[] { V(10, -10), V(10, 30), V(6, 36), V(6, 64), V(-45, 64), V(-45, 48) },
-        ["Area_TravessiaSegura"] = new[] { V(10, -10), V(0, -10), V(0, -20) },
-        ["Area_CorreCorrendo"] = new[] { V(10, -10), V(-10, -10), V(-10, 0), V(-20, 0) },
-    };
-
+    // Anda até a área pela mesma trilha de setas da campanha (A* na grade do Hub), escolhe a aba e o nível 1,
+    // joga, e volta ao Hub. (Até 2026-11-25 eram rotas fixas pelo mapa antigo.)
     static Vector3 V(float x, float z) => new Vector3(x, 0, z);
 
     static IEnumerator Area(string area, string cena, string aba, IEnumerator jogo)
@@ -463,10 +455,9 @@ public static class PilotoDeCliques
         if (Cena != "Hub") yield break;
         yield return 1f;
         var player = GameObject.Find("Player");
-        var caminho = new List<Vector3>();
-        if (Vector3.Distance(Achatar(player.transform.position), V(10, -10)) > 3f)
-            caminho.Add(new Vector3(player.transform.position.x > 30 ? 10 : player.transform.position.x, 0, -35));
-        caminho.AddRange(Caminhos[area]);
+        Vector3 destino = GameObject.Find(area).transform.position;
+        var caminho = Camp != null ? Camp.Caminho(player.transform.position, destino) : new List<Vector3> { player.transform.position, destino };
+        caminho.RemoveAt(0);
         foreach (Vector3 alvo in caminho)
         {
             yield return AndarAte(player, alvo, cena);
@@ -651,7 +642,22 @@ public static class PilotoDeCliques
             L($"== missão de {mi.quem}; objetivo: {Objetivo}");
             var npc = Camp.Npc(mi.quem);
             L($"{mi.quem} com exclamação: {npc.exclamacao.gameObject.activeSelf}");
-            yield return SeguirTrilha(Frente(npc));
+            var ir = Camp.botaoIr;
+            L($"botão Ir visível: {ir != null && ir.gameObject.activeInHierarchy}");
+            if (mi.quem == QuemFala.Mecanico && ir != null && ir.gameObject.activeInHierarchy)
+            {
+                var player = GameObject.Find("Player");
+                float antes = Vector3.Distance(Achatar(player.transform.position), Achatar(npc.transform.position));
+                Clicar(ir, "Ir");
+                yield return 0.15f;
+                yield return Foto("ir_escurecendo");
+                yield return 1f;
+                float depois = Vector3.Distance(Achatar(player.transform.position), Achatar(npc.transform.position));
+                L($"Ir: distância até {mi.quem} {antes:0.0} m -> {depois:0.0} m; perto pra conversar: {npc.Perto}");
+                if (!npc.Perto) Nota("o Ir não deixou o jogador perto do " + mi.quem);
+                yield return Foto("depois_do_ir");
+            }
+            if (!npc.Perto) yield return SeguirTrilha(Frente(npc));
             yield return Conversar(mi.quem.ToString());
             int moedasAntes = Loja.Moedas;
             yield return SeguirTrilha(GameObject.Find(mi.area).transform.position, mi.cena);
@@ -696,7 +702,15 @@ public static class PilotoDeCliques
             }
         }
 
-        // Fim do dia: falar com a mãe.
+        yield return FimDoDia1();
+    }
+
+    // Fim do dia: falar com a mãe. (A mãe é buscada de novo: o Hub foi recarregado a cada missão.)
+    static IEnumerator FimDoDia1()
+    {
+        yield return EsperarAte(() => Cena == "Hub" && Camp != null, 10, "Hub");
+        yield return 1f;
+        var mae = Camp.Npc(QuemFala.Mae);
         L($"== fim do Dia 1; objetivo: {Objetivo}; mãe com exclamação: {mae.exclamacao.gameObject.activeSelf}");
         yield return SeguirTrilha(Frente(mae));
         yield return Conversar("mae_fim");
@@ -710,6 +724,56 @@ public static class PilotoDeCliques
         L("rejogar Oficina: cena=" + Cena + " seleção aberta=" + (selecao != null && selecao.gameObject.activeInHierarchy));
         Clicar("Botao_VoltarAoHub");
         yield return EsperarAte(() => Cena == "Hub", 8, "voltar ao Hub");
+    }
+
+    // Mapa novo do Hub (2026-11-26): anda entre as 4 áreas pela trilha (medindo o tempo de cada trecho), parando
+    // na frente do marcador; depois abre o Mapa pelo botão e pela tecla M e viaja tocando numa área.
+    static IEnumerator HubNovo()
+    {
+        L("== hub novo: andar entre as áreas, Mapa");
+        yield return EsperarAte(() => Cena == "Hub" && Camp != null, 10, "Hub");
+        yield return 1.5f;
+        var player = GameObject.Find("Player");
+        string[] areas = { "Area_CruzamentoCentral", "Area_RuaViva", "Area_ObrasDaCidade", "Area_Oficina", "Area_RuaViva", "Area_Oficina", "Area_CruzamentoCentral" };
+        foreach (string nome in areas)
+        {
+            var a = GameObject.Find(nome).transform;
+            Vector3 frente = a.position + a.rotation * Vector3.back * 3.6f;
+            Vector3 de = player.transform.position;
+            float t0 = Time.unscaledTime;
+            var caminho = Camp.Caminho(de, frente);
+            float metros = 0f;
+            for (int i = 1; i < caminho.Count; i++) metros += Vector3.Distance(Achatar(caminho[i - 1]), Achatar(caminho[i]));
+            yield return SeguirTrilha(frente);
+            if (Cena != "Hub") { Nota("entrou numa área sem querer indo pra " + nome); Clicar("Botao_VoltarAoHub"); yield return EsperarAte(() => Cena == "Hub", 10); yield break; }
+            float tempo = Time.unscaledTime - t0;
+            L($"andou até {nome}: {metros:0} m de trilha em {tempo:0.0} s ({metros / 5f:0.0} s a 5 m/s); ficou a {Vector3.Distance(Achatar(player.transform.position), Achatar(frente)):0.0} m");
+            if (metros / 5f > 15f) Nota($"trecho até {nome} passa de 15 s andando ({metros:0} m)");
+            if (Camp.Conversando) { Clicar(Camp.botaoSeguir, "Seguir"); yield return 0.5f; }
+        }
+        yield return Foto("hub_novo_chao");
+
+        var mapa = UnityEngine.Object.FindAnyObjectByType<MapaDoHub>();
+        Clicar("Botao_Mapa");
+        yield return 0.6f;
+        L($"Mapa aberto pelo botão: {mapa.Aberto}; jogo parado: {Time.timeScale == 0f}; você está aqui em {mapa.voceEstaAqui.anchoredPosition:F0}");
+        yield return Foto("mapa_aberto");
+        Clicar("Lugar_Area_ObrasDaCidade");
+        yield return 1.2f;
+        var obras = GameObject.Find("Area_ObrasDaCidade").transform;
+        L($"viajou pras Obras: a {Vector3.Distance(Achatar(player.transform.position), Achatar(obras.position)):0.0} m do marcador; mapa fechado: {!mapa.Aberto}; cena {Cena}");
+        yield return Foto("depois_do_mapa_obras");
+        yield return Tecla(KeyCode.M);
+        yield return 0.5f;
+        L("Mapa aberto pela tecla M: " + mapa.Aberto);
+        Clicar("Lugar_Area_TravessiaSegura");
+        yield return 1.2f;
+        L($"viajou pra Travessia: a {Vector3.Distance(Achatar(player.transform.position), Achatar(GameObject.Find("Area_TravessiaSegura").transform.position)):0.0} m; cena {Cena}");
+        yield return Tecla(KeyCode.M);
+        yield return 0.4f;
+        yield return Tecla(KeyCode.M);
+        yield return 0.4f;
+        L("M de novo fecha: " + !mapa.Aberto + "; jogo andando: " + (Time.timeScale > 0f));
     }
 
     // Perfil antigo (sem campanha no JSON, com níveis feitos): entra direto no dia certo, sem tutorial.

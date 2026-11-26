@@ -19,10 +19,10 @@ MonoBehaviour:
   - Oi, vizinho! O parque reabriu hoje!
   - "Vou levar a fam\xEDlia pra passear de carro. Vem com a gente?"
   - "O carro est\xE1 aqui na Rua Viva. \xC9 s\xF3 entrar!"
-  agradecimento: "Que passeio bom! E a pracinha j\xE1 est\xE1 ficando limpinha de novo."
+  agradecimento: "Que passeio bom! E a cal\xE7ada da ciclovia j\xE1 est\xE1 ficando limpinha de novo."
   cena: Minigame_RuaViva_Carro
   modo: -1
   nomeDaArea: Rua Viva
   nivel: 1
   areaDoHub: Area_RuaViva
-  conserto: "Na pracinha, o lixo some e o banco volta a ficar em p\xE9, com flores."
+  conserto: "Na cal\xE7ada da ciclovia, o lixo some e o banco volta a ficar em p\xE9, com flores."

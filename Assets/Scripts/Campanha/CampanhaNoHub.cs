@@ -42,6 +42,8 @@ public class CampanhaNoHub : MonoBehaviour
     public Text textoDoSeguir;
     public Button botaoConversar;
     public Button botaoPular;
+    [Tooltip("Botão \"Ir\" na barra do objetivo: leva o jogador pra perto de quem ele precisa encontrar.")]
+    public Button botaoIr;
     public RectTransform setaDoAlbum;
     public GameObject avisoDasMoedas;
     public Text textoDasMoedas;
@@ -61,6 +63,7 @@ public class CampanhaNoHub : MonoBehaviour
     private bool ocupado; // sequência de volta da missão rodando
     private List<Vector3> caminhoGuardado;
     private Vector3 alvoGuardado, inicioGuardado;
+    private NpcDaCampanha alvoDoIr;
 
     private CampanhaDados D => Campanha.Dados;
     private ProgressoDaCampanha P => Campanha.P;
@@ -93,6 +96,7 @@ public class CampanhaNoHub : MonoBehaviour
         botaoSeguir.onClick.AddListener(Seguir);
         botaoConversar.onClick.AddListener(ConversarComQuemEstaPerto);
         botaoPular.onClick.AddListener(PularTutorial);
+        if (botaoIr != null) botaoIr.onClick.AddListener(IrAteONpc);
         botaoOuvir.GetComponentInChildren<Text>().text = D.textoOuvir;
         botaoConversar.GetComponentInChildren<Text>().text = D.textoConversar;
         botaoPular.GetComponentInChildren<Text>().text = D.textoPular;
@@ -187,6 +191,7 @@ public class CampanhaNoHub : MonoBehaviour
     {
         string objetivo = "";
         temAlvo = false;
+        alvoDoIr = null;
         NpcDaCampanha mae = Npc(QuemFala.Mae);
         MissaoDaCampanha ativa = Campanha.Ativa;
 
@@ -203,18 +208,21 @@ public class CampanhaNoHub : MonoBehaviour
         {
             objetivo = D.objetivoVoltarAMae;
             Alvo(mae);
+            alvoDoIr = mae;
         }
         else if (ativa != null)
         {
             objetivo = ativa.objetivo;
             GameObject area = GameObject.Find(ativa.areaDoHub);
             if (area != null) { alvoDaTrilha = area.transform.position; temAlvo = true; }
+            alvoDoIr = Npc(ativa.npc);
         }
         else if (Campanha.Sugerida != null)
         {
             MissaoDaCampanha s = Campanha.Sugerida;
             objetivo = string.Format(D.objetivoFalarCom, D.NomeDe(s.npc), D.LugarDe(s.npc));
             Alvo(Npc(s.npc));
+            alvoDoIr = Npc(s.npc);
         }
         else
         {
@@ -224,6 +232,8 @@ public class CampanhaNoHub : MonoBehaviour
         textoDoObjetivo.text = objetivo;
         barraDoObjetivo.SetActive(!string.IsNullOrEmpty(objetivo));
         botaoPular.gameObject.SetActive(!P.tutorialFeito);
+        // No começo do tutorial (andar até a mãe e falar com ela) não tem "Ir": é ali que a criança aprende a andar.
+        if (botaoIr != null) botaoIr.gameObject.SetActive(alvoDoIr != null && (P.tutorialFeito || P.passoDoTutorial >= 2));
         setaDoAlbum.gameObject.SetActive(!P.tutorialFeito && P.passoDoTutorial == 4);
         if (dicaDoOlhar != null) dicaDoOlhar.SetActive(P.tutorialFeito);
 
@@ -332,7 +342,7 @@ public class CampanhaNoHub : MonoBehaviour
         custo[a] = 0f;
         fila.Por(a, Heuristica(a, b));
         int passos = 0;
-        while (fila.Quantos > 0 && passos++ < 200000)
+        while (fila.Quantos > 0 && passos++ < 400000)
         {
             int u = fila.Tirar();
             if (u == b) break;
@@ -421,7 +431,14 @@ public class CampanhaNoHub : MonoBehaviour
         {
             float t = n == 0 ? 0f : i / (float)n;
             int x = Mathf.RoundToInt(Mathf.Lerp(x0, x1, t)), z = Mathf.RoundToInt(Mathf.Lerp(z0, z1, t));
-            if (livre[z * largura + x] == 0) return false;
+            // Folga de uma célula pros lados (o caminho alisado não raspa nas coisas).
+            for (int dz = -1; dz <= 1; dz++)
+                for (int dx = -1; dx <= 1; dx++)
+                {
+                    if (dx != 0 && dz != 0) continue;
+                    int xx = Mathf.Clamp(x + dx, 0, largura - 1), zz = Mathf.Clamp(z + dz, 0, altura - 1);
+                    if (livre[zz * largura + xx] == 0) return false;
+                }
         }
         return true;
     }
@@ -556,6 +573,7 @@ public class CampanhaNoHub : MonoBehaviour
         painelDaConversa.transform.SetAsLastSibling();
         botaoConversar.gameObject.SetActive(false);
         botaoPular.gameObject.SetActive(false);
+        if (botaoIr != null) botaoIr.gameObject.SetActive(false);
         if (dicaDoOlhar != null) dicaDoOlhar.SetActive(false);
         if (movimento != null) movimento.enabled = false;
         npc.Acenar();
@@ -600,6 +618,23 @@ public class CampanhaNoHub : MonoBehaviour
     private void DesenharTrilhaVazia()
     {
         foreach (Transform s in setas) s.gameObject.SetActive(false);
+    }
+
+    // "Ir": com um escurecer rápido, põe o jogador na frente de quem ele precisa encontrar (num lugar livre da grade).
+    public void IrAteONpc()
+    {
+        if (Conversando || ocupado || alvoDoIr == null || jogador == null) return;
+        Vector3 frente = alvoDoIr.transform.position + alvoDoIr.olharPadrao.normalized * 2.2f;
+        if (livre != null && livre.Length == largura * altura && largura > 0)
+        {
+            int c = CelulaLivreMaisPerto(Celula(frente));
+            if (c >= 0) frente = Centro(c);
+        }
+        Vector3 olhar = alvoDoIr.transform.position - frente;
+        olhar.y = 0f;
+        Quaternion giro = olhar.sqrMagnitude > 0.01f ? Quaternion.LookRotation(olhar) : jogador.rotation;
+        if (MapaDoHub.Instancia != null) MapaDoHub.Instancia.Levar(frente, giro);
+        else { MapaDoHub.Teleportar(jogador, frente, giro); Atualizar(); }
     }
 
     private void PularTutorial()

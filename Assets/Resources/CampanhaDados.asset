@@ -17,19 +17,19 @@ MonoBehaviour:
   npcs:
   - quem: 0
     nome: "M\xE3e"
-    lugar: "perto da pra\xE7a"
+    lugar: perto do parquinho
   - quem: 1
     nome: "o mec\xE2nico Z\xE9"
-    lugar: na Oficina
+    lugar: "na Oficina, no com\xE9rcio"
   - quem: 2
     nome: a engenheira Ana
-    lugar: nas Obras, perto do rio
+    lugar: nas Obras, na beira do lago
   - quem: 3
     nome: o guarda Beto
-    lugar: no Cruzamento Central
+    lugar: no Cruzamento Central, no Eixinho
   - quem: 4
     nome: "a vizinha L\xFAcia"
-    lugar: na Rua Viva
+    lugar: "na Rua Viva, perto do ponto de \xF4nibus"
   objetivoAndarAteAMae: "Ande at\xE9 a sua m\xE3e (setas ou W A S D)."
   objetivoFalarComAMae: "Fale com a sua m\xE3e: toque nela ou aperte E."
   objetivoAbrirOAlbum: "Toque no \xC1lbum pra ver a sua figurinha nova!"
@@ -45,7 +45,7 @@ MonoBehaviour:
   falasDoFimDaCampanha:
   - "Por hoje \xE9 s\xF3! Os pr\xF3ximos dias da reconstru\xE7\xE3o est\xE3o chegando."
   - "Enquanto isso, voc\xEA pode jogar de novo o que quiser."
-  falaAntesDaMae: "Calma! Primeiro fale com a sua m\xE3e. Ela est\xE1 perto da pra\xE7a."
+  falaAntesDaMae: "Calma! Primeiro fale com a sua m\xE3e. Ela est\xE1 perto do parquinho."
   falaSemMissaoHoje: "Ainda n\xE3o \xE9 hora daqui. Fale com a sua m\xE3e pra saber o que fazer hoje."
   falaMissaoAceita: "\xC9 s\xF3 entrar ali! Siga as setas."
   falaJaAjudou: "Obrigado pela ajuda! Se quiser jogar de novo, \xE9 s\xF3 entrar."

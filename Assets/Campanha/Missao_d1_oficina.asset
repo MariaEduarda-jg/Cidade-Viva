@@ -19,10 +19,10 @@ MonoBehaviour:
   - "Oi! A \xE1gua entrou na oficina e desmontou tudo."
   - "Sem ve\xEDculos, ningu\xE9m consegue ir trabalhar nem ir pra escola."
   - Me ajuda a montar os primeiros? Entre na oficina!
-  agradecimento: "Ficaram \xF3timos! J\xE1 tem ve\xEDculo pronto no p\xE1tio. Obrigado!"
+  agradecimento: "Ficaram \xF3timos! J\xE1 tem ve\xEDculo pronto aqui na frente. Obrigado!"
   cena: Minigame_Oficina
   modo: -1
   nomeDaArea: "Oficina de Ve\xEDculos"
   nivel: 1
   areaDoHub: Area_Oficina
-  conserto: "Os primeiros ve\xEDculos ficam prontos e estacionados no p\xE1tio da oficina."
+  conserto: "Os primeiros ve\xEDculos ficam prontos e estacionados na frente da oficina."

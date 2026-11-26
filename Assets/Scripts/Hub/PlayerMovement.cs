@@ -10,7 +10,11 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("Quão rápido o personagem vira (maior = mais seco).")]
     public float velocidadeDeVirar = 12f;
 
+    [Tooltip("Metros por segundo ao quadrado.")]
+    public float gravidade = 20f;
+
     private CharacterController controller;
+    private float velocidadeVertical;
     private CameraFollow olhar;
 
     private void Awake()
@@ -44,6 +48,17 @@ public class PlayerMovement : MonoBehaviour
         Vector3 frente = move.sqrMagnitude > 0.0001f ? move : giro * Vector3.forward;
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(frente), velocidadeDeVirar * Time.deltaTime);
 
-        controller.Move(move * moveSpeed * Time.deltaTime);
+        // Gravidade: sem ela, o personagem que subia num degrau baixo (borda da caixa de areia, banco) ficava
+        // lá em cima, "voando" (2026-11-26). Encostado no chão, uma força pequena pra baixo o mantém colado.
+        if (controller.isGrounded && velocidadeVertical < 0f)
+        {
+            velocidadeVertical = -2f;
+        }
+        else
+        {
+            velocidadeVertical = Mathf.Max(velocidadeVertical - gravidade * Time.deltaTime, -30f);
+        }
+
+        controller.Move((move * moveSpeed + Vector3.up * velocidadeVertical) * Time.deltaTime);
     }
 }
